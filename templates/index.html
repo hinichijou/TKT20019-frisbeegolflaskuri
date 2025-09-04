@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Frisbeegolflaskuri</title>
+</head>
+
+<body>
+  <h1>Frisbeegolflaskuri</h1>
+  {% if session.username %}
+  <p>
+    Olet kirjautunut nimellä {{ session.username }}
+  </p>
+  <p>
+    <a href="/logout">Kirjaudu ulos</a>
+  </p>
+  {% endif %}
+  <p>
+    <a href="/login">Kirjaudu sisään</a>
+    <a href="/register">Luo tunnus</a>
+  </p>
+</body>
+
+</html>

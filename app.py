@@ -42,7 +42,12 @@ def login():
         password = request.form["password"]
 
         sql = "SELECT password_hash FROM users WHERE username = ?"
-        password_hash = db.query(sql, [username])[0][0]
+        password_query_result = db.query(sql, [username])
+
+        if password_query_result:
+            password_hash = password_query_result[0][0]
+        else:
+            return "VIRHE: käyttäjää ei ole olemassa"
 
         if check_password_hash(password_hash, password):
             session["username"] = username

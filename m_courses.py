@@ -7,3 +7,7 @@ def add_course(coursename, num_holes):
 def get_courses():
     sql = "SELECT id, coursename FROM courses"
     return db.query(sql)
+
+def get_coursename(id):
+    sql = "SELECT coursename FROM courses WHERE id = ?"
+    return db.query(sql, [id])

@@ -8,23 +8,37 @@
 <body>
   <h1>Frisbeegolflaskuri</h1>
   {% if session.username %}
+
   <p>
     Olet kirjautunut nimellä {{ session.username }}
   </p>
+
   <p>
     <a href="/new_course">Lisää rata</a>
   </p>
+
   <p>
     <a href="/new_round">Lisää kierros</a>
   </p>
+
   <p>
     <a href="/logout">Kirjaudu ulos</a>
   </p>
+
+  <h2>Kierrokset</h2>
+  <ul>
+    {% for round in rounds %}
+      <li><a href="/round/{{round.id}}">Aloitusaika: {{round.start_time}} Paikka: {{round.coursename}}, Lisännyt: {{round.username}}, Pelaajia: {{round.num_participating}} / {{round.num_players}}</a></li>
+    {% endfor %}
+  </ul>
+
   {% else %}
+
   <p>
     <a href="/login">Kirjaudu sisään</a>
     <a href="/register">Luo tunnus</a>
   </p>
+
   {% endif %}
 </body>
 

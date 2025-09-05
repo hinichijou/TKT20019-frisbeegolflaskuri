@@ -13,7 +13,17 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    rounds = m_rounds.get_rounds()
+
+    if not rounds:
+        dictrounds = []
+    else:
+        dictrounds = [dict(row) for row in rounds]
+        for row in dictrounds:
+            print(row["start_time"])
+            row["start_time"] = datetime.datetime.fromisoformat(row["start_time"]).strftime("%d/%m/%Y %H:%M")
+
+    return render_template("index.html", rounds = dictrounds)
 
 @app.route("/new_course")
 def new_course():
@@ -74,7 +84,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        result = m_users.get_user(username)
+        result = m_users.get_user_id_and_hash(username)
 
         if result:
             user_id = result[0]["id"]

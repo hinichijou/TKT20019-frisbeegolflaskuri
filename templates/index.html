@@ -12,13 +12,20 @@
     Olet kirjautunut nimellä {{ session.username }}
   </p>
   <p>
+    <a href="/new_course">Lisää rata</a>
+  </p>
+  <p>
+    <a href="/new_round">Lisää kierros</a>
+  </p>
+  <p>
     <a href="/logout">Kirjaudu ulos</a>
   </p>
-  {% endif %}
+  {% else %}
   <p>
     <a href="/login">Kirjaudu sisään</a>
     <a href="/register">Luo tunnus</a>
   </p>
+  {% endif %}
 </body>
 
 </html>

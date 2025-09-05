@@ -4,6 +4,7 @@ from flask import redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import db
+import datetime
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -11,6 +12,44 @@ app.secret_key = config.secret_key
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/new_course")
+def new_course():
+    return render_template("new_course.html")
+
+@app.route("/create_course", methods=["POST"])
+def create_course():
+    coursename = request.form["coursename"]
+    num_holes = request.form["num_holes"]
+
+    sql = "INSERT INTO courses (coursename, num_holes) VALUES (?, ?)"
+    db.execute(sql, [coursename, num_holes])
+
+    return redirect("/")
+
+@app.route("/new_round")
+def new_round():
+    sql = "SELECT id, coursename FROM courses"
+    result = db.query(sql)
+
+    if result:
+        courses = result
+    else:
+        return "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen."
+
+    return render_template("new_round.html", courses = courses, date = datetime.datetime.now().isoformat(timespec="minutes"))
+
+@app.route("/create_round", methods=["POST"])
+def create_round():
+    course_id = request.form["course_select"]
+    start_time = request.form["start_time"]
+    num_players = request.form["num_players"]
+    attendees = ""
+
+    sql = "INSERT INTO rounds (course_id, creator_id, start_time, num_players, attendees) VALUES (?, ?, ?, ?, ?)"
+    db.execute(sql, [course_id, session["user_id"], start_time, num_players, attendees])
+
+    return redirect("/")
 
 @app.route("/register")
 def register():
@@ -41,15 +80,17 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        sql = "SELECT password_hash FROM users WHERE username = ?"
-        password_query_result = db.query(sql, [username])
+        sql = "SELECT id, password_hash FROM users WHERE username = ?"
+        result = db.query(sql, [username])
 
-        if password_query_result:
-            password_hash = password_query_result[0][0]
+        if result:
+            user_id = result[0]["id"]
+            password_hash = result[0]["password_hash"]
         else:
             return "VIRHE: käyttäjää ei ole olemassa"
 
         if check_password_hash(password_hash, password):
+            session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
         else:
@@ -58,4 +99,5 @@ def login():
 @app.route("/logout")
 def logout():
     del session["username"]
+    del session["user_id"]
     return redirect("/")

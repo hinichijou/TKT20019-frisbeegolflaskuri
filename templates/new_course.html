@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Uusi rata</title>
+</head>
+
+<body>
+  {% if session.username %}
+  <h1>Uusi rata</h1>
+  <form action="/create_course" method="post">
+    <p>
+      Nimi: <br />
+      <input type="text" name="coursename" />
+    </p>
+    <p>
+      Väylien lukumäärä: <br />
+      <input type="number" value="18" min="1" oninput="this.value = Math.max(this.value|0, 1)" name="num_holes" />
+    </p>
+    <input type="submit" value="Lisää rata" />
+  </form>
+  {% endif %}
+</body>
+
+</html>

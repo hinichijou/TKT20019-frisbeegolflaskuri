@@ -2,9 +2,11 @@ import sqlite3
 from flask import Flask
 from flask import redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
-import config
-import db
 import datetime
+import config
+import m_users
+import m_rounds
+import m_courses
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -22,19 +24,15 @@ def create_course():
     coursename = request.form["coursename"]
     num_holes = request.form["num_holes"]
 
-    sql = "INSERT INTO courses (coursename, num_holes) VALUES (?, ?)"
-    db.execute(sql, [coursename, num_holes])
+    m_courses.add_course(coursename, num_holes)
 
     return redirect("/")
 
 @app.route("/new_round")
 def new_round():
-    sql = "SELECT id, coursename FROM courses"
-    result = db.query(sql)
+    courses = m_courses.get_courses()
 
-    if result:
-        courses = result
-    else:
+    if not courses:
         return "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen."
 
     return render_template("new_round.html", courses = courses, date = datetime.datetime.now().isoformat(timespec="minutes"))
@@ -44,10 +42,8 @@ def create_round():
     course_id = request.form["course_select"]
     start_time = request.form["start_time"]
     num_players = request.form["num_players"]
-    attendees = ""
 
-    sql = "INSERT INTO rounds (course_id, creator_id, start_time, num_players, attendees) VALUES (?, ?, ?, ?, ?)"
-    db.execute(sql, [course_id, session["user_id"], start_time, num_players, attendees])
+    m_rounds.add_round(course_id, session["user_id"], start_time, num_players)
 
     return redirect("/")
 
@@ -62,11 +58,9 @@ def create():
     password2 = request.form["password2"]
     if password1 != password2:
         return "VIRHE: salasanat eivät ole samat"
-    password_hash = generate_password_hash(password1)
 
     try:
-        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
+        m_users.create_user(username, generate_password_hash(password1))
     except sqlite3.IntegrityError:
         return "VIRHE: tunnus on jo varattu"
 
@@ -80,8 +74,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        sql = "SELECT id, password_hash FROM users WHERE username = ?"
-        result = db.query(sql, [username])
+        result = m_users.get_user(username)
 
         if result:
             user_id = result[0]["id"]

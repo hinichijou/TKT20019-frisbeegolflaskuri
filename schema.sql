@@ -15,6 +15,11 @@ CREATE TABLE rounds (
     course_id INTEGER REFERENCES courses,
     creator_id INTEGER REFERENCES users,
     start_time DATE,
-    num_players NUMBER,
-    attendees TEXT
+    num_players NUMBER
+);
+
+CREATE TABLE participations (
+    id INTEGER PRIMARY KEY,
+    round_id INTEGER REFERENCES rounds,
+    participator_id INTEGER REFERENCES users
 );

@@ -58,6 +58,15 @@ def create_round():
 
     return redirect("/")
 
+@app.route("/round/<int:round_id>")
+def show_round(round_id):
+    round = m_rounds.get_round(round_id)
+
+    if not round:
+        return "VIRHE: kierrosta ei löytynyt tietokannasta."
+
+    return render_template("show_round.html", round = round)
+
 @app.route("/register")
 def register():
     return render_template("register.html")

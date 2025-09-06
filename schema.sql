@@ -14,9 +14,11 @@ CREATE TABLE courses (
 CREATE TABLE rounds (
     id INTEGER PRIMARY KEY,
     creator_id INTEGER REFERENCES users,
-    course_data TEXT,
     start_time DATE,
-    num_players NUMBER
+    num_players NUMBER,
+    coursename TEXT,
+    num_holes NUMBER,
+    hole_data TEXT
 );
 
 CREATE TABLE participations (

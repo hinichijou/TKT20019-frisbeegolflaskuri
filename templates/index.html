@@ -28,7 +28,7 @@
   <h2>Kierrokset</h2>
   <ul>
     {% for round in rounds %}
-      <li><a href="/round/{{round.id}}">Aloitusaika: {{round.start_time}} Paikka: {{round.course_data.coursename}}, Lisännyt: {{round.username}}, Pelaajia: {{round.num_participating}} / {{round.num_players}}</a></li>
+      <li><a href="/round/{{round.id}}">Aloitusaika: {{round.start_time}} Paikka: {{round.coursename}}, Lisännyt: {{round.username}}, Pelaajia: {{round.num_participating}} / {{round.num_players}}</a></li>
     {% endfor %}
   </ul>
 

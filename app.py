@@ -13,17 +13,7 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    rounds = m_rounds.get_rounds()
-
-    if not rounds:
-        dictrounds = []
-    else:
-        dictrounds = [dict(row) for row in rounds]
-        for row in dictrounds:
-            print(row["start_time"])
-            row["start_time"] = datetime.datetime.fromisoformat(row["start_time"]).strftime("%d/%m/%Y %H:%M")
-
-    return render_template("index.html", rounds = dictrounds)
+    return render_template("index.html", rounds = m_rounds.get_all_rounds())
 
 @app.route("/new_course")
 def new_course():
@@ -34,7 +24,18 @@ def create_course():
     coursename = request.form["coursename"]
     num_holes = request.form["num_holes"]
 
-    m_courses.add_course(coursename, num_holes)
+    return render_template("new_holes.html", coursename = coursename, num_holes = num_holes)
+
+@app.route("/create_holes", methods=["POST"])
+def create_holes():
+    coursename = request.form["coursename"]
+    num_holes = request.form["num_holes"]
+
+    holes_dict = {}
+    for i in range(1, int(num_holes) + 1):
+        holes_dict[i] = {"par": request.form[f"par_{i}"], "length": request.form[f"length_{i}"]}
+
+    m_courses.add_course(coursename, num_holes, holes_dict)
 
     return redirect("/")
 

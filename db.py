@@ -22,3 +22,11 @@ def query(sql, params=[]):
     result = con.execute(sql, params).fetchall()
     con.close()
     return result
+
+def query_dict(sql, params=[]):
+    result = query(sql, params)
+
+    if result:
+        return [dict(row) for row in result]
+
+    return result

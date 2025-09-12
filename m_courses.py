@@ -10,7 +10,7 @@ def add_course(coursename, num_holes, holes_dict):
 
 def get_courses():
     sql = "SELECT id, coursename FROM courses"
-    return db.query_db(sql)
+    return db.query_db(sql, resp_type = db.RespType.DICT)
 
 def get_coursename(id):
     sql = "SELECT coursename FROM courses WHERE id = ?"

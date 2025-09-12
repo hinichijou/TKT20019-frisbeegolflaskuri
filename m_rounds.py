@@ -25,7 +25,9 @@ def update_round(creator, data):
 
 
 def get_all_rounds(format_options = default_format_options):
-    sql = "SELECT rounds.id, coursename, username, start_time, num_players, IFNULL(SUM(participations.participator_id) + 1, 1) AS num_participating FROM rounds " \
+    sql = "SELECT rounds.id, coursename, username, start_time, num_players, " \
+            "IFNULL(SUM(participations.participator_id) + 1, 1) AS num_participating " \
+            "FROM rounds " \
             "JOIN users ON users.id=rounds.creator_id " \
             "LEFT JOIN participations ON participations.round_id=rounds.id " \
             "GROUP BY rounds.id"
@@ -48,6 +50,23 @@ def get_round(id, format_options = default_format_options):
             "WHERE rounds.id = ?"
     result = db.query_db(sql, [id], db.RespType.DICT)
     return format_rounds(result, format_options)[0] if result else result
+
+def find_rounds(coursename, date, format_options = default_format_options):
+    where = "WHERE start_time LIKE ? "
+    params = [date + "%"]
+    if coursename and coursename != "":
+        where = where + "AND coursename = ? "
+        params.append(coursename)
+    sql = "SELECT rounds.id, coursename, username, start_time, num_players, " \
+            "IFNULL(SUM(participations.participator_id) + 1, 1) AS num_participating " \
+            "FROM rounds " \
+            "JOIN users ON users.id=rounds.creator_id " \
+            "LEFT JOIN participations ON participations.round_id=rounds.id " \
+            + where + \
+            "GROUP BY rounds.id " \
+            "ORDER BY start_time DESC"
+    result = db.query_db(sql, params)
+    return format_rounds(result, format_options) if result else result
 
 def format_rounds(rounds, format_options):
     for row in rounds:

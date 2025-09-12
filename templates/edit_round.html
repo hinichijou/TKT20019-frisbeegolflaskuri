@@ -14,7 +14,7 @@
         <select name="course_select">
           <option value="">{{ round.coursename }}</option>
           {% for course in courses %}
-            <option value="{{ course[0] }}">{{ course[1] }}</option>
+            <option value="{{ course.id }}">{{ course.coursename }}</option>
           {% endfor %}
         </select>
       </p>

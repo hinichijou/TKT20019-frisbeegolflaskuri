@@ -12,9 +12,9 @@
     <p>
       Valitse rata: <br />
       <select name="course_select">
-        <option value="">--Valitse rata--</option>
+        <option hidden selected value="">--Valitse rata--</option>
         {% for course in courses %}
-          <option value="{{ course[0] }}">{{ course[1] }}</option>
+          <option value="{{ course.id }}">{{ course.coursename }}</option>
         {% endfor %}
       </select>
     </p>

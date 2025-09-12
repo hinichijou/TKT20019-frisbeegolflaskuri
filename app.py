@@ -82,6 +82,21 @@ def delete_round(round_id):
 
         return redirect("/round/" + str(round_id))
 
+@app.route("/find_round")
+def find_round():
+    courses = m_courses.get_courses()
+
+    course_query = request.args.get("course_select")
+    if not course_query:
+        course_query = ""
+    start_time = request.args.get("start_time")
+    if not start_time:
+        start_time = datetime.date.today().isoformat()
+
+    results = m_rounds.find_rounds(course_query, start_time)
+
+    return render_template("find_round.html", courses = courses, course_query = course_query, start_time = start_time, results = results)
+
 @app.route("/round/<int:round_id>")
 def show_round(round_id):
     round = m_rounds.get_round(round_id)
@@ -96,12 +111,17 @@ def edit_round(round_id):
     courses = m_courses.get_courses()
 
     if not courses:
-        return str_no_courses_found
+        courses = []
 
     round = m_rounds.get_round(round_id, {"start_time": False, "hole_data": True})
 
     if not round:
         return str_round_not_found
+
+    for i in range(len(courses)):
+        if courses[i]["coursename"] == round["coursename"]:
+            del courses[i]
+            break
 
     return render_template("edit_round.html", courses = courses, round = round)
 

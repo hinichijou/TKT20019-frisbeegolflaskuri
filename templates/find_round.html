@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Etsi kierros</title>
+</head>
+
+<body>
+  {% if session.user_id %}
+    <h1>Etsi kierros</h1>
+    <form action="/find_round"  method="get">
+      <p>
+        Etsi radan nimellä: <br />
+        <select name="course_select">
+          <option value="">--Valitse rata--</option>
+          {% for course in courses %}
+            {% if course_query == course.coursename %}
+              <option selected value="{{ course.coursename  }}">{{ course.coursename }}</option>
+            {% else %}
+              <option value="{{ course.coursename  }}">{{ course.coursename }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </p>
+      <p>
+        Etsi päivämäärällä: <br />
+        <input type="date" value="{{ start_time }}" name="start_time" />
+      </p>
+      <input type="submit" value="Lähetä" />
+    </form>
+    {% if course_query or start_time %}
+      <h2>Tulokset</h2>
+      {% for result in results %}
+        <li><a href="/round/{{result.id}}">Aloitusaika: {{result.start_time}} Paikka: {{result.coursename}}, Lisännyt: {{result.username}}, Pelaajia: {{result.num_participating}} / {{result.num_players}}</a></li>
+      {% endfor %}
+    {% endif %}
+  {% endif %}
+</body>
+
+</html>

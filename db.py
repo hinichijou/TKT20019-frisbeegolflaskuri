@@ -1,5 +1,10 @@
 import sqlite3
 from flask import g
+from enum import Enum
+
+class RespType(Enum):
+    DEFAULT = 1,
+    DICT = 2
 
 def get_connection():
     con = sqlite3.connect("database.db")
@@ -30,3 +35,6 @@ def query_dict(sql, params=[]):
         return [dict(row) for row in result]
 
     return result
+
+def query_db(sql, params=[], resp_type = RespType.DEFAULT):
+    return query_dict(sql, params) if resp_type == RespType.DICT else query(sql, params)

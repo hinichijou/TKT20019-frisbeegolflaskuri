@@ -7,6 +7,11 @@
 
 <body>
   <h1>{{ round.coursename }}</h1>
+  {% if session.user_id == round.user_id %}
+  <p>
+    <a href="/edit_round/{{ round.id }}">Muokkaa kierrosta</a>
+  </p>
+  {% endif %}
   <p>Lisännyt: {{round.username}}</p>
   <p>Aloitusaika: {{round.start_time}}</p>
   <p>Ilmoittautuneita pelaajia: {{round.num_participating}} / {{round.num_players}}</p>

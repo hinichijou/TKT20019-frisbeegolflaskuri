@@ -8,7 +8,7 @@ CREATE TABLE courses (
     id INTEGER PRIMARY KEY,
     coursename TEXT UNIQUE,
     num_holes NUMBER,
-    holes TEXT
+    hole_data TEXT
 );
 
 CREATE TABLE rounds (

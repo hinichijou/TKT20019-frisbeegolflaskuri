@@ -11,6 +11,10 @@ import m_courses
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+#TODO: Collect strings to own file. Localization support?
+str_no_courses_found = "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen."
+str_round_not_found = "VIRHE: kierrosta ei löytynyt tietokannasta."
+
 @app.route("/")
 def index():
     return render_template("index.html", rounds = m_rounds.get_all_rounds())
@@ -26,16 +30,19 @@ def create_course():
 
     return render_template("new_holes.html", coursename = coursename, num_holes = num_holes)
 
+def create_holes_dict(form):
+    holes_dict = {}
+    for i in range(1, int(form["num_holes"]) + 1):
+        holes_dict[i] = {"par": form[f"par_{i}"], "length": form[f"length_{i}"]}
+
+    return holes_dict
+
 @app.route("/create_holes", methods=["POST"])
 def create_holes():
     coursename = request.form["coursename"]
     num_holes = request.form["num_holes"]
 
-    holes_dict = {}
-    for i in range(1, int(num_holes) + 1):
-        holes_dict[i] = {"par": request.form[f"par_{i}"], "length": request.form[f"length_{i}"]}
-
-    m_courses.add_course(coursename, num_holes, holes_dict)
+    m_courses.add_course(coursename, num_holes, create_holes_dict(request.form))
 
     return redirect("/")
 
@@ -44,7 +51,7 @@ def new_round():
     courses = m_courses.get_courses()
 
     if not courses:
-        return "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen."
+        return str_no_courses_found
 
     return render_template("new_round.html", courses = courses, date = datetime.datetime.now().isoformat(timespec="minutes"))
 
@@ -63,9 +70,82 @@ def show_round(round_id):
     round = m_rounds.get_round(round_id)
 
     if not round:
-        return "VIRHE: kierrosta ei löytynyt tietokannasta."
+        return str_round_not_found
 
     return render_template("show_round.html", round = round)
+
+@app.route("/edit_round/<int:round_id>")
+def edit_round(round_id):
+    courses = m_courses.get_courses()
+
+    if not courses:
+        return str_no_courses_found
+
+    round = m_rounds.get_round(round_id, {"start_time": False, "hole_data": True})
+
+    if not round:
+        return str_round_not_found
+
+    print(round)
+
+    return render_template("edit_round.html", courses = courses, round = round)
+
+def build_round_data_course_select(form):
+    round = {
+        "id": form["id"],
+        "user_id": int(form["user_id"]),
+        "start_time": form["start_time"],
+        "num_players": form["num_players"],
+        "course_id": form["course_select"]
+    }
+
+    #In this case the user didn't change the course selection
+    if round["course_id"] == "":
+        round["coursename"] = form["coursename"]
+        round["num_holes"] = form["num_holes"]
+        round["hole_data"] = create_holes_dict(form)
+    #The user did change the course selection. Update the course information from db
+    else:
+        course_data = m_courses.get_course_data(round["course_id"])
+        round["coursename"] = course_data["coursename"]
+        round["num_holes"] = course_data["num_holes"]
+        round["hole_data"] = course_data["hole_data"]
+
+    return round
+
+@app.route("/update_round_basic", methods=["POST"])
+def update_round_basic():
+    round = build_round_data_course_select(request.form)
+    m_rounds.update_round(session["user_id"], round)
+    return redirect("/round/" + str(round["id"]))
+
+@app.route("/edit_round_num_holes", methods=["POST"])
+def edit_round_num_holes():
+    return render_template("edit_round_num_holes.html", round = build_round_data_course_select(request.form))
+
+def build_round_data(form):
+    round = {
+        "id": form["id"],
+        "user_id": int(form["user_id"]),
+        "start_time": form["start_time"],
+        "num_players": form["num_players"],
+        "coursename": form["coursename"],
+        "num_holes": form["num_holes"],
+        "hole_data": create_holes_dict(form)
+    }
+
+    return round
+
+@app.route("/edit_round_holes", methods=["POST"])
+def edit_round_holes():
+    return render_template("edit_round_holes.html", round = build_round_data(request.form))
+
+@app.route("/update_round_full", methods=["POST"])
+def update_round_full():
+    round = build_round_data(request.form)
+    m_rounds.update_round(session["user_id"], round)
+
+    return redirect("/round/" + str(round["id"]))
 
 @app.route("/register")
 def register():

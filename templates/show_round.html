@@ -9,7 +9,8 @@
   <h1>{{ round.coursename }}</h1>
   {% if session.user_id == round.user_id %}
   <p>
-    <a href="/edit_round/{{ round.id }}">Muokkaa kierrosta</a>
+    <a href="/edit_round/{{ round.id }}">Muokkaa</a>
+    <a href="/delete_round/{{ round.id }}">Poista</a>
   </p>
   {% endif %}
   <p>Lisännyt: {{round.username}}</p>

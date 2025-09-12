@@ -65,6 +65,23 @@ def create_round():
 
     return redirect("/")
 
+@app.route("/delete_round/<int:round_id>", methods=["GET", "POST"])
+def delete_round(round_id):
+    if request.method == "GET":
+        round = m_rounds.get_round(round_id)
+
+        if not round:
+            return str_round_not_found
+
+        return render_template("delete_round.html", round = round)
+
+    if request.method == "POST":
+        if "remove" in request.form:
+            m_rounds.delete_round(round_id)
+            return redirect("/")
+
+        return redirect("/round/" + str(round_id))
+
 @app.route("/round/<int:round_id>")
 def show_round(round_id):
     round = m_rounds.get_round(round_id)
@@ -85,8 +102,6 @@ def edit_round(round_id):
 
     if not round:
         return str_round_not_found
-
-    print(round)
 
     return render_template("edit_round.html", courses = courses, round = round)
 
@@ -117,7 +132,7 @@ def build_round_data_course_select(form):
 def update_round_basic():
     round = build_round_data_course_select(request.form)
     m_rounds.update_round(session["user_id"], round)
-    return redirect("/round/" + str(round["id"]))
+    return redirect("/round/" + round["id"])
 
 @app.route("/edit_round_num_holes", methods=["POST"])
 def edit_round_num_holes():
@@ -145,7 +160,7 @@ def update_round_full():
     round = build_round_data(request.form)
     m_rounds.update_round(session["user_id"], round)
 
-    return redirect("/round/" + str(round["id"]))
+    return redirect("/round/" + round["id"])
 
 @app.route("/register")
 def register():

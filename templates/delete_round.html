@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Poista kierros</title>
+</head>
+
+<body>
+  {% if session.user_id == round.user_id %}
+    <h1>Poista kierros</h1>
+    <form action="/delete_round/{{round.id}}"  method="post">
+      <p>
+        Aloitusaika: {{round.start_time}} Paikka: {{round.coursename}}, Lisännyt: {{round.username}}, Pelaajia: {{round.num_participating}} / {{round.num_players}}
+      </p>
+      <p>Haluatko varmasti poistaa tämän kierroksen?</p>
+      <input type="submit" name="remove" value="Poista kierros" />
+      <input type="submit" name="return" value="Palaa takaisin" />
+    </form>
+  {% endif %}
+</body>
+
+</html>

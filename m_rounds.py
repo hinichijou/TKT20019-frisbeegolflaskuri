@@ -15,6 +15,10 @@ def add_round(course_id, creator, start_time, num_players):
         #TODO: Virheilmoitus
         print(f"VIRHE: Rataa id:llä {course_id} ei löytynyt tietokannasta. Uutta kierrosta ei luotu")
 
+def delete_round(round_id):
+    sql = "DELETE FROM rounds WHERE id = ?"
+    db.execute(sql, [round_id])
+
 def update_round(creator, data):
     sql = "UPDATE rounds SET coursename = ?, num_holes = ?, hole_data = ?, creator_id = ?, start_time = ?, num_players = ? WHERE id = ?"
     db.execute(sql, [data["coursename"], data["num_holes"], json.dumps(data["hole_data"]), creator, data["start_time"], data["num_players"], data["id"]])

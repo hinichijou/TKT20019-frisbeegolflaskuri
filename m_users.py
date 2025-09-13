@@ -6,8 +6,10 @@ def create_user(username, password_hash):
 
 def get_user_id_and_hash(username):
     sql = "SELECT id, password_hash FROM users WHERE username = ?"
-    return db.query_db(sql, [username])
+    result = db.query_db(sql, [username])
+    return result[0] if result else result
 
-def get_username(id):
-    sql = "SELECT username FROM users WHERE id = ?"
-    return db.query_db(sql, [id])
+def get_user(id):
+    sql = "SELECT id, username FROM users WHERE id = ?"
+    result = db.query_db(sql, [id])
+    return result[0] if result else result

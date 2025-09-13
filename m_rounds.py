@@ -1,3 +1,4 @@
+from enum import Enum
 import json
 import db
 import m_courses
@@ -52,12 +53,37 @@ def get_round(id, format_options = default_format_options):
     result = db.query_db(sql, [id], db.RespType.DICT)
     return format_rounds(result, format_options)[0] if result else result
 
-def find_rounds(coursename, date, format_options = default_format_options):
-    where = "WHERE start_time LIKE ? "
-    params = [date + "%"]
-    if coursename and coursename != "":
-        where = where + "AND coursename = ? "
-        params.append(coursename)
+class FindRoundParam(Enum):
+    DATE = 1,
+    COURSENAME = 2,
+    CREATORID = 3
+
+def get_sql_for_param(param):
+    match(param):
+        case FindRoundParam.DATE:
+            return "start_time LIKE ?"
+        case FindRoundParam.COURSENAME:
+            return "coursename = ?"
+        case FindRoundParam.CREATORID:
+            return "creator_id = ?"
+        case _:
+            return ""
+
+def create_where_condition(params):
+    where = ""
+
+    for i in range(len(params)):
+        if i == 0:
+            where += "WHERE " + get_sql_for_param(params[i]) + " "
+        else:
+            where += "AND " + get_sql_for_param(params[i]) + " "
+
+    return where
+
+
+def find_rounds(searchparams, format_options = default_format_options):
+    types, params = zip(*searchparams)
+    where = create_where_condition(types)
     sql = "SELECT rounds.id, coursename, username, start_time, num_players, " \
             "IFNULL(SUM(participations.participator_id) + 1, 1) AS num_participating " \
             "FROM rounds " \

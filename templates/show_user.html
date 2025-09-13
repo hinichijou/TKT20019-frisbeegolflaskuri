@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Käyttäjäsivu</title>
+</head>
+
+<body>
+  <h1>{{ user.username }}</h1>
+  <p>
+    Käyttäjänimi: {{ user.username }}
+  </p>
+  <p>
+    Käyttäjän ID: {{ user.id }}
+  </p>
+  {% if rounds|length > 0 %}
+    <p>
+      Käyttäjällä on yhteensä {{ rounds|length }} luotua kierrosta
+    </p>
+    <h2>Käyttäjän lisäämät kierrokset:</h2>
+    {% for round in rounds %}
+      <li>
+        <a href="/round/{{round.id}}">Aloitusaika: {{round.start_time}} Paikka: {{round.coursename}}, Lisännyt: {{round.username}}, Pelaajia: {{round.num_participating}} / {{round.num_players}}</a>
+      </li>
+    {% endfor %}
+  {% endif %}
+  <p>
+    <a href="/">Palaa etusivulle</a>
+  </p>
+</body>
+
+</html>

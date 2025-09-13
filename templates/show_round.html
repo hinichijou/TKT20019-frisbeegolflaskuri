@@ -13,7 +13,9 @@
     <a href="/delete_round/{{ round.id }}">Poista</a>
   </p>
   {% endif %}
-  <p>Lisännyt: {{round.username}}</p>
+  <p>
+    Lisännyt: <a href="/user/{{ round.user_id }}">{{round.username}}</a>
+  </p>
   <p>Aloitusaika: {{round.start_time}}</p>
   <p>Ilmoittautuneita pelaajia: {{round.num_participating}} / {{round.num_players}}</p>
   <p>Väyliä: {{round.num_holes}}</p>
@@ -26,7 +28,7 @@
       {{round.hole_data[i|string]["length"]}}<br />
     </p>
   {% endfor %}
-   <p>
+  <p>
     <a href="/">Palaa etusivulle</a>
   </p>
 </body>

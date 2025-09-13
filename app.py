@@ -69,6 +69,9 @@ def test_course_id(course_id):
 def test_round_id(round_id):
     return test_num(round_id)
 
+def test_user_id(user_id):
+    return test_num(user_id)
+
 def test_start_time(start_time):
     return test_date(start_time)
 
@@ -201,22 +204,33 @@ def delete_round(round_id):
 def find_round():
     require_login()
 
-    course_query = request.args.get("course_select")
-    start_time = request.args.get("start_time")
+    input_tests = []
 
-    test_inputs(
-        [
-            lambda: test_coursename(course_query),
-            lambda: test_start_time(start_time)
-        ]
-    )
+    course_query = request.args.get("course_select")
+    if course_query and course_query != "":
+        input_tests.append(lambda: test_coursename(course_query))
+
+    start_time = request.args.get("start_time")
+    if start_time and start_time != "":
+        input_tests.append(lambda: test_start_time(start_time))
+
+    test_inputs(input_tests)
+
+    searchparams = []
 
     if not course_query:
         course_query = ""
+    else:
+        #Search course name only if something is set
+        searchparams.append((m_rounds.FindRoundParam.COURSENAME, course_query))
+
     if not start_time:
         start_time = datetime.date.today().isoformat()
 
-    results = m_rounds.find_rounds(course_query, start_time)
+    #Always search date as there is always something set
+    searchparams.append((m_rounds.FindRoundParam.DATE, start_time + "%"))
+
+    results = m_rounds.find_rounds(searchparams)
     courses = m_courses.get_courses()
 
     return render_template("find_round.html", courses = courses, course_query = course_query, start_time = start_time, results = results)
@@ -357,9 +371,25 @@ def update_round_full():
 
     return redirect("/round/" + round["id"])
 
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    require_login()
+    test_inputs([lambda: test_user_id(user_id)])
+
+    user = m_users.get_user(user_id)
+    rounds = m_rounds.find_rounds([(m_rounds.FindRoundParam.CREATORID, user_id)])
+
+    abort_if_null(user, 404)
+
+    return render_template("show_user.html", user = user, rounds = rounds)
+
 @app.route("/register")
 def register():
     return render_template("register.html", constants = constants)
+
+@app.route("/registered")
+def registered():
+    return render_template("registered.html")
 
 @app.route("/create", methods=["POST"])
 def create():
@@ -382,7 +412,7 @@ def create():
     except sqlite3.IntegrityError:
         return "VIRHE: tunnus on jo varattu"
 
-    return "Tunnus luotu"
+    return redirect("/registered")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -402,8 +432,8 @@ def login():
         result = m_users.get_user_id_and_hash(username)
 
         if result:
-            user_id = result[0]["id"]
-            password_hash = result[0]["password_hash"]
+            user_id = result["id"]
+            password_hash = result["password_hash"]
         else:
             return "VIRHE: käyttäjää ei ole olemassa"
 

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Radat</title>
+</head>
+
+<body>
+  <h1>Radat</h1>
+  {% for course in courses %}
+    <li>
+      <a href="/course/{{course.id}}">{{course.coursename}}, Väyliä: {{course.num_holes}}</a>
+    </li>
+  {% endfor %}
+  <p>
+    <a href="/">Palaa etusivulle</a>
+  </p>
+</body>
+
+</html>

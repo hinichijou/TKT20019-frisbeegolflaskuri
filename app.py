@@ -114,6 +114,96 @@ def create_course():
 
     return render_template("new_holes.html", constants = constants, coursename = coursename, num_holes = num_holes)
 
+@app.route("/delete_course/<int:course_id>", methods=["GET", "POST"])
+def delete_course(course_id):
+    require_login()
+
+    test_inputs([lambda: test_course_id(course_id)])
+
+    if request.method == "GET":
+        course = m_courses.get_course_data(course_id)
+
+        abort_if_null(course, 404)
+
+        return render_template("delete_course.html", course = course)
+
+    if request.method == "POST":
+        if "remove" in request.form:
+            m_courses.delete_course(course_id)
+            return redirect("/")
+
+        return redirect("/course/" + str(course_id))
+
+@app.route("/show_courses")
+def show_courses():
+    require_login()
+
+    courses = m_courses.get_courses()
+    if not courses:
+        return str_no_courses_found
+
+    return render_template("show_courses.html", courses = courses)
+
+@app.route("/course/<int:course_id>")
+def show_course(course_id):
+    require_login()
+    test_inputs([lambda: test_course_id(course_id)])
+
+    course = m_courses.get_course_data(course_id)
+
+    abort_if_null(course, 404)
+
+    return render_template("show_course.html", course = course)
+
+@app.route("/edit_course/<int:course_id>")
+def edit_course(course_id):
+    require_login()
+    test_inputs([lambda: test_course_id(course_id)])
+
+    course = m_courses.get_course_data(course_id)
+
+    abort_if_null(course, 404)
+
+    return render_template("edit_course_num_holes.html", constants = constants, course = course)
+
+def build_course_data(form):
+    hole_data = create_holes_dict(form)
+
+    test_inputs(
+        [
+            lambda: test_course_id(form["id"]),
+            lambda: test_coursename(form["coursename"]),
+            lambda: test_num_holes(form["num_holes"]),
+            lambda: test_hole_data(hole_data)
+        ]
+    )
+
+    course = {
+        "id": form["id"],
+        "coursename": form["coursename"],
+        "num_holes": form["num_holes"],
+        "hole_data": hole_data
+    }
+
+    return course
+
+@app.route("/edit_course_holes", methods=["POST"])
+def edit_course_holes():
+    require_login()
+
+    course = build_course_data(request.form)
+
+    return render_template("edit_course_holes.html", constants = constants, course = course)
+
+@app.route("/update_course", methods=["POST"])
+def update_course():
+    require_login()
+
+    course = build_course_data(request.form)
+    m_courses.update_course(course)
+
+    return redirect("/course/" + course["id"])
+
 def create_holes_dict(form):
     holes_dict = {}
     for i in range(1, int(form["num_holes"]) + 1):
@@ -152,7 +242,6 @@ def new_round():
     require_login()
 
     courses = m_courses.get_courses()
-
     if not courses:
         return str_no_courses_found
 
@@ -232,6 +321,8 @@ def find_round():
 
     results = m_rounds.find_rounds(searchparams)
     courses = m_courses.get_courses()
+    if not courses:
+        courses = []
 
     return render_template("find_round.html", courses = courses, course_query = course_query, start_time = start_time, results = results)
 
@@ -257,7 +348,6 @@ def edit_round(round_id):
     abort_if_id_not_sid(m_rounds.get_user_id_for_round(round["id"]))
 
     courses = m_courses.get_courses()
-
     if not courses:
         courses = []
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{ course.coursename }}</title>
+</head>
+
+<body>
+  <h1>{{ course.coursename }}</h1>
+  <p>
+    <a href="/edit_course/{{ course.id }}">Muokkaa</a>
+    <a href="/delete_course/{{ course.id }}">Poista</a>
+  </p>
+  <p>
+    <a href="/show_courses">Palaa ratalistaukseen</a>
+  </p>
+  <h2>Väylien tiedot</h2>
+  <p>
+    Väylien lukumäärä: {{course.num_holes}}
+  </p>
+  {% for i in range(1, 1 + course.num_holes|int) %}
+    <p>
+      Väylä {{i}}: <br />
+      Par: {{course.hole_data[i|string]["par"]}} <br />
+      Pituus (m): {{course.hole_data[i|string]["length"]}}<br />
+    </p>
+  {% endfor %}
+</body>
+
+</html>

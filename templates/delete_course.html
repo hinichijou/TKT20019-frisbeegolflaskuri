@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Poista rata</title>
+</head>
+
+<body>
+  <h1>Poista rata</h1>
+  <form action="/delete_course/{{course.id}}"  method="post">
+    <p>
+      Nimi: {{ course.coursename }} Väyliä: {{ course.num_holes }}
+    </p>
+    <p>Haluatko varmasti poistaa tämän radan?</p>
+    <input type="submit" name="remove" value="Poista rata" />
+    <input type="submit" name="return" value="Palaa takaisin" />
+  </form>
+</body>
+
+</html>

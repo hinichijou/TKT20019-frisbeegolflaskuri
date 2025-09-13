@@ -11,11 +11,26 @@
   <form action="/create_course" method="post">
     <p>
       Nimi: <br />
-      <input type="text" name="coursename" />
+      <input
+        type="text"
+        required
+        value=""
+        name="coursename"
+        minlength="{{constants.coursename_minlength}}"
+        maxlength="{{constants.coursename_maxlength}}"
+      />
     </p>
     <p>
       Väylien lukumäärä: <br />
-      <input type="number" value="18" min="1" oninput="this.value = Math.max(this.value|0, 1)" name="num_holes" />
+      <input
+        type="number"
+        required
+        value="{{constants.course_holes_default}}"
+        min="{{constants.course_holes_min}}"
+        max="{{constants.course_holes_max}}"
+        oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
+        name="num_holes"
+      />
     </p>
     <input type="submit" value="Seuraava" />
   </form>

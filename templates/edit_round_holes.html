@@ -20,17 +20,25 @@
       <p>
         Väylä {{i}}: <br />
         Par: <br />
-        {% if i <= round.hole_data|length %}
-          <input type="number" value='{{round.hole_data[i]["par"]}}' min="1" oninput="this.value = Math.max(this.value|0, 1)" name="par_{{i}}" /><br />
-        {% else %}
-          <input type="number" value="3" min="1" oninput="this.value = Math.max(this.value|0, 1)" name="par_{{i}}" /><br />
-        {% endif %}
+        {% set par_val = round.hole_data[i]["par"] if i <= round.hole_data|length else constants.hole_par_default %}
+        <input
+          type="number"
+          value="{{par_val}}"
+          min="{{constants.hole_par_min}}"
+          max="{{constants.hole_par_max}}"
+          oninput="this.value = Math.min('{{constants.hole_par_max}}', Math.max(this.value|0, '{{constants.hole_par_min}}'))"
+          name="par_{{i}}"
+        /><br />
         Pituus (m): <br />
-        {% if i <= round.hole_data|length %}
-          <input type="number" value='{{round.hole_data[i]["length"]}}' min="1" oninput="this.value = Math.max(this.value|0, 1)" name="length_{{i}}" /><br />
-        {% else %}
-          <input type="number" value="70" min="1" oninput="this.value = Math.max(this.value|0, 1)" name="length_{{i}}" /><br />
-        {% endif %}
+        {% set length_val = round.hole_data[i]["length"] if i <= round.hole_data|length else constants.hole_length_default %}
+        <input
+          type="number"
+          value="{{length_val}}"
+          min="{{constants.hole_length_min}}"
+          max="{{constants.hole_length_max}}"
+          oninput="this.value = Math.min('{{constants.hole_length_max}}', Math.max(this.value|0, '{{constants.hole_length_min}}'))"
+          name="length_{{i}}"
+        /><br />
       </p>
     {% endfor %}
     <input type="submit" value="Tallenna muutokset" />

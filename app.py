@@ -4,6 +4,7 @@ from flask import abort, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 import config
+from constants import constants
 import m_users
 import m_rounds
 import m_courses
@@ -26,6 +27,14 @@ def abort_if_null(obj, abortcode):
     if not obj:
         abort(abortcode)
 
+def test_limits(val_limits):
+    for f in val_limits:
+        if not f():
+            abort(403)
+
+def test_minmax_limits(val, min, max):
+    return val >= min and val <= max
+
 @app.route("/")
 def index():
     return render_template("index.html", rounds = m_rounds.get_all_rounds())
@@ -33,7 +42,7 @@ def index():
 @app.route("/new_course")
 def new_course():
     require_login()
-    return render_template("new_course.html")
+    return render_template("new_course.html", constants = constants)
 
 @app.route("/create_course", methods=["POST"])
 def create_course():
@@ -42,7 +51,15 @@ def create_course():
     coursename = request.form["coursename"]
     num_holes = request.form["num_holes"]
 
-    return render_template("new_holes.html", coursename = coursename, num_holes = num_holes)
+    test_limits(
+        [
+            lambda: test_minmax_limits(len(coursename), constants.coursename_minlength, constants.coursename_maxlength),
+            lambda: num_holes.isdigit(),
+            lambda: test_minmax_limits(int(num_holes), constants.course_holes_min, constants.course_holes_max)
+        ]
+    )
+
+    return render_template("new_holes.html", constants = constants, coursename = coursename, num_holes = num_holes)
 
 def create_holes_dict(form):
     holes_dict = {}
@@ -77,7 +94,7 @@ def new_round():
     if not courses:
         return str_no_courses_found
 
-    return render_template("new_round.html", courses = courses, date = datetime.datetime.now().isoformat(timespec="minutes"))
+    return render_template("new_round.html", constants = constants, courses = courses, date = datetime.datetime.now().isoformat(timespec="minutes"))
 
 @app.route("/create_round", methods=["POST"])
 def create_round():
@@ -156,7 +173,7 @@ def edit_round(round_id):
             del courses[i]
             break
 
-    return render_template("edit_round.html", courses = courses, round = round)
+    return render_template("edit_round.html", constants = constants, courses = courses, round = round)
 
 def build_round_data_course_select(form):
     round = {
@@ -199,7 +216,7 @@ def edit_round_num_holes():
 
     round = build_round_data_course_select(request.form)
     get_round_user_id(round)
-    return render_template("edit_round_num_holes.html", round = round)
+    return render_template("edit_round_num_holes.html", constants = constants, round = round)
 
 def build_round_data(form):
     round = {
@@ -219,7 +236,7 @@ def edit_round_holes():
 
     round = build_round_data(request.form)
     get_round_user_id(round)
-    return render_template("edit_round_holes.html", round = round)
+    return render_template("edit_round_holes.html", constants = constants, round = round)
 
 @app.route("/update_round_full", methods=["POST"])
 def update_round_full():
@@ -233,7 +250,7 @@ def update_round_full():
 
 @app.route("/register")
 def register():
-    return render_template("register.html")
+    return render_template("register.html", constants = constants)
 
 @app.route("/create", methods=["POST"])
 def create():
@@ -253,7 +270,7 @@ def create():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        return render_template("login.html", constants = constants)
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]

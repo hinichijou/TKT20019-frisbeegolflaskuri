@@ -19,11 +19,22 @@
     </p>
     <p>
       Aloitusaika: <br />
-      <input type="datetime-local" value="{{ round.start_time }}" name="start_time" />
+      <input
+        type="datetime-local"
+        value="{{ round.start_time }}"
+        name="start_time"
+      />
     </p>
     <p>
       Pelaajien määrä: <br />
-      <input type="number" value="{{ round.num_players }}" min="1" oninput="this.value = Math.max(this.value|0, 1)" name="num_players" />
+      <input
+        type="number"
+        name="num_players"
+        value="{{round.num_players}}"
+        min="{{constants.round_min_players}}"
+        max="{{constants.round_max_players}}"
+        oninput="this.value = Math.min('{{constants.round_max_players}}', Math.max(this.value|0, '{{constants.round_min_players}}'))"
+      />
     </p>
     <input type="submit" formaction="/update_round_basic" value="Tallenna muutokset" />
     <input type="submit" formaction="/edit_round_num_holes" value="Muokkaa väyliä" />

@@ -14,7 +14,14 @@
     </p>
     <p>
       Väylien lukumäärä: <br />
-      <input type="number" value={{round.num_holes}} min="1" oninput="this.value = Math.max(this.value|0, 1)" name="num_holes" />
+      <input
+        type="number"
+        name="num_holes"
+        value="{{round.num_holes}}"
+        min="{{constants.course_holes_min}}"
+        max="{{constants.course_holes_max}}"
+        oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
+      />
     </p>
     <input type="submit" value="Seuraava" />
     <input type="hidden" name="id" value="{{ round.id }}" />

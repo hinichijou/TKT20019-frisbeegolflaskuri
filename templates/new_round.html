@@ -20,11 +20,22 @@
     </p>
     <p>
       Aloitusaika: <br />
-      <input type="datetime-local" value="{{ date }}" name="start_time" />
+      <input
+        type="datetime-local"
+        value="{{ date }}"
+        name="start_time"
+      />
     </p>
     <p>
       Pelaajien määrä: <br />
-      <input type="number" value="1" min="1" oninput="this.value = Math.max(this.value|0, 1)" name="num_players" />
+      <input
+        type="number"
+        name="num_players"
+        value="{{constants.round_min_players}}"
+        min="{{constants.round_min_players}}"
+        max="{{constants.round_max_players}}"
+        oninput="this.value = Math.min('{{constants.round_max_players}}', Math.max(this.value|0, '{{constants.round_min_players}}'))"
+      />
     </p>
     <input type="submit" value="Lisää kierros" />
   </form>

@@ -17,11 +17,21 @@
   <form action="/login" method="post">
     <p>
       Tunnus: <br />
-      <input type="text" name="username" />
+      <input
+        type="text"
+        name="username"
+        minlength="{{constants.username_minlength}}"
+        maxlength="{{constants.username_maxlength}}"
+      />
     </p>
     <p>
       Salasana: <br />
-      <input type="password" name="password" />
+      <input
+        type="password"
+        name="password"
+        minlength="{{constants.password_minlength}}"
+        maxlength="{{constants.password_maxlength}}"
+      />
     </p>
     <input type="submit" value="Kirjaudu" />
   </form>

@@ -14,6 +14,10 @@ app.secret_key = config.secret_key
 #TODO: Collect strings to own file. Localization support?
 str_no_courses_found = "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen."
 
+def require_login():
+    if "user_id" not in session:
+        abort(403)
+
 def abort_if_id_not_sid(user_id):
     if session["user_id"] != user_id:
         abort(403)
@@ -28,10 +32,13 @@ def index():
 
 @app.route("/new_course")
 def new_course():
+    require_login()
     return render_template("new_course.html")
 
 @app.route("/create_course", methods=["POST"])
 def create_course():
+    require_login()
+
     coursename = request.form["coursename"]
     num_holes = request.form["num_holes"]
 
@@ -52,6 +59,8 @@ def create_holes_dict(form):
 
 @app.route("/create_holes", methods=["POST"])
 def create_holes():
+    require_login()
+
     coursename = request.form["coursename"]
     num_holes = request.form["num_holes"]
 
@@ -61,6 +70,8 @@ def create_holes():
 
 @app.route("/new_round")
 def new_round():
+    require_login()
+
     courses = m_courses.get_courses()
 
     if not courses:
@@ -70,6 +81,8 @@ def new_round():
 
 @app.route("/create_round", methods=["POST"])
 def create_round():
+    require_login()
+
     course_id = request.form["course_select"]
     start_time = request.form["start_time"]
     num_players = request.form["num_players"]
@@ -80,6 +93,7 @@ def create_round():
 
 @app.route("/delete_round/<int:round_id>", methods=["GET", "POST"])
 def delete_round(round_id):
+    require_login()
     abort_if_id_not_sid(m_rounds.get_user_id_for_round(round_id))
 
     if request.method == "GET":
@@ -98,6 +112,8 @@ def delete_round(round_id):
 
 @app.route("/find_round")
 def find_round():
+    require_login()
+
     courses = m_courses.get_courses()
 
     course_query = request.args.get("course_select")
@@ -113,6 +129,8 @@ def find_round():
 
 @app.route("/round/<int:round_id>")
 def show_round(round_id):
+    require_login()
+
     round = m_rounds.get_round(round_id)
 
     abort_if_null(round, 404)
@@ -121,6 +139,8 @@ def show_round(round_id):
 
 @app.route("/edit_round/<int:round_id>")
 def edit_round(round_id):
+    require_login()
+
     round = m_rounds.get_round(round_id, {"start_time": False, "hole_data": True})
 
     abort_if_null(round, 404)
@@ -166,6 +186,8 @@ def get_round_user_id(round):
 
 @app.route("/update_round_basic", methods=["POST"])
 def update_round_basic():
+    require_login()
+
     round = build_round_data_course_select(request.form)
     get_round_user_id(round)
     m_rounds.update_round(round)
@@ -173,6 +195,8 @@ def update_round_basic():
 
 @app.route("/edit_round_num_holes", methods=["POST"])
 def edit_round_num_holes():
+    require_login()
+
     round = build_round_data_course_select(request.form)
     get_round_user_id(round)
     return render_template("edit_round_num_holes.html", round = round)
@@ -191,12 +215,16 @@ def build_round_data(form):
 
 @app.route("/edit_round_holes", methods=["POST"])
 def edit_round_holes():
+    require_login()
+
     round = build_round_data(request.form)
     get_round_user_id(round)
     return render_template("edit_round_holes.html", round = round)
 
 @app.route("/update_round_full", methods=["POST"])
 def update_round_full():
+    require_login()
+
     round = build_round_data(request.form)
     get_round_user_id(round)
     m_rounds.update_round(round)
@@ -247,6 +275,8 @@ def login():
 
 @app.route("/logout")
 def logout():
+    require_login()
+
     del session["username"]
     del session["user_id"]
     return redirect("/")

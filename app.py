@@ -35,6 +35,23 @@ def test_limits(val_limits):
 def test_minmax_limits(val, min, max):
     return val >= min and val <= max
 
+def test_num_minmax(input, min, max):
+    return input.isdigit() and test_minmax_limits(int(input), min, max)
+
+def test_coursename(coursename):
+    return test_minmax_limits(len(coursename), constants.coursename_minlength, constants.coursename_maxlength)
+
+def test_num_holes(num_holes):
+    return test_num_minmax(num_holes, constants.course_holes_min, constants.course_holes_max)
+
+def test_hole_data(hole_data):
+    for v in hole_data.values():
+        if not (test_num_minmax(v["par"], constants.hole_par_min, constants.hole_par_max)
+            and test_num_minmax(v["length"], constants.hole_length_min, constants.hole_length_max)):
+            return False
+
+    return True
+
 @app.route("/")
 def index():
     return render_template("index.html", rounds = m_rounds.get_all_rounds())
@@ -53,9 +70,8 @@ def create_course():
 
     test_limits(
         [
-            lambda: test_minmax_limits(len(coursename), constants.coursename_minlength, constants.coursename_maxlength),
-            lambda: num_holes.isdigit(),
-            lambda: test_minmax_limits(int(num_holes), constants.course_holes_min, constants.course_holes_max)
+            lambda: test_coursename(coursename),
+            lambda: test_num_holes(num_holes)
         ]
     )
 
@@ -80,8 +96,17 @@ def create_holes():
 
     coursename = request.form["coursename"]
     num_holes = request.form["num_holes"]
+    hole_data = create_holes_dict(request.form)
 
-    m_courses.add_course(coursename, num_holes, create_holes_dict(request.form))
+    test_limits(
+        [
+            lambda: test_coursename(coursename),
+            lambda: test_num_holes(num_holes),
+            lambda: test_hole_data(hole_data)
+        ]
+    )
+
+    m_courses.add_course(coursename, num_holes, hole_data)
 
     return redirect("/")
 

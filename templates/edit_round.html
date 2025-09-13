@@ -6,40 +6,37 @@
 </head>
 
 <body>
-  {% if session.user_id == round.user_id %}
-    <h1>Muokkaa kierrosta</h1>
-    <form method="post">
-      <p>
-        Valitse rata: <br />
-        <select name="course_select">
-          <option value="">{{ round.coursename }}</option>
-          {% for course in courses %}
-            <option value="{{ course.id }}">{{ course.coursename }}</option>
-          {% endfor %}
-        </select>
-      </p>
-      <p>
-        Aloitusaika: <br />
-        <input type="datetime-local" value="{{ round.start_time }}" name="start_time" />
-      </p>
-      <p>
-        Pelaajien määrä: <br />
-        <input type="number" value="{{ round.num_players }}" min="1" oninput="this.value = Math.max(this.value|0, 1)" name="num_players" />
-      </p>
-      <input type="submit" formaction="/update_round_basic" value="Tallenna muutokset" />
-      <input type="submit" formaction="/edit_round_num_holes" value="Muokkaa väyliä" />
-      <input type="hidden" name="id" value="{{ round.id }}" />
-      <input type="hidden" name="user_id" value="{{ round.user_id }}" />
-      <input type="hidden" name="coursename" value="{{ round.coursename }}" />
-      <input type="hidden" name="num_holes" value="{{ round.num_holes }}" />
-      <input type="hidden" name="num_players" value="{{ round.num_players }}" />
-      <input type="hidden" name="hole_data" value="{{ round.hole_data }}" />
-      {% for i in range(1, 1 + round.num_holes|int) %}
-        <input type="hidden" value='{{round.hole_data[i|string]["par"]}}' name="par_{{i}}" /><br />
-        <input type="hidden" value='{{round.hole_data[i|string]["length"]}}' name="length_{{i}}" /><br />
-      {% endfor %}
-    </form>
-  {% endif %}
+  <h1>Muokkaa kierrosta</h1>
+  <form method="post">
+    <p>
+      Valitse rata: <br />
+      <select name="course_select">
+        <option value="">{{ round.coursename }}</option>
+        {% for course in courses %}
+          <option value="{{ course.id }}">{{ course.coursename }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <p>
+      Aloitusaika: <br />
+      <input type="datetime-local" value="{{ round.start_time }}" name="start_time" />
+    </p>
+    <p>
+      Pelaajien määrä: <br />
+      <input type="number" value="{{ round.num_players }}" min="1" oninput="this.value = Math.max(this.value|0, 1)" name="num_players" />
+    </p>
+    <input type="submit" formaction="/update_round_basic" value="Tallenna muutokset" />
+    <input type="submit" formaction="/edit_round_num_holes" value="Muokkaa väyliä" />
+    <input type="hidden" name="id" value="{{ round.id }}" />
+    <input type="hidden" name="coursename" value="{{ round.coursename }}" />
+    <input type="hidden" name="num_holes" value="{{ round.num_holes }}" />
+    <input type="hidden" name="num_players" value="{{ round.num_players }}" />
+    <input type="hidden" name="hole_data" value="{{ round.hole_data }}" />
+    {% for i in range(1, 1 + round.num_holes|int) %}
+      <input type="hidden" value='{{round.hole_data[i|string]["par"]}}' name="par_{{i}}" /><br />
+      <input type="hidden" value='{{round.hole_data[i|string]["length"]}}' name="length_{{i}}" /><br />
+    {% endfor %}
+  </form>
 </body>
 
 </html>

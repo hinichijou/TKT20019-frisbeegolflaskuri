@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session
+from flask import abort, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 import config
@@ -14,6 +14,10 @@ app.secret_key = config.secret_key
 #TODO: Collect strings to own file. Localization support?
 str_no_courses_found = "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen."
 str_round_not_found = "VIRHE: kierrosta ei löytynyt tietokannasta."
+
+def abort_if_id_not_sid(user_id):
+    if session["user_id"] != user_id:
+        abort(403)
 
 @app.route("/")
 def index():
@@ -33,7 +37,13 @@ def create_course():
 def create_holes_dict(form):
     holes_dict = {}
     for i in range(1, int(form["num_holes"]) + 1):
-        holes_dict[i] = {"par": form[f"par_{i}"], "length": form[f"length_{i}"]}
+        parkey = f"par_{i}"
+        lengthkey = f"length_{i}"
+        # If we are adding holes the data for new holes might not be in the form yet
+        if parkey in form and lengthkey in form:
+            holes_dict[i] = {"par": form[parkey], "length": form[lengthkey]}
+        else:
+            break
 
     return holes_dict
 
@@ -67,6 +77,8 @@ def create_round():
 
 @app.route("/delete_round/<int:round_id>", methods=["GET", "POST"])
 def delete_round(round_id):
+    abort_if_id_not_sid(m_rounds.get_user_id_for_round(round_id))
+
     if request.method == "GET":
         round = m_rounds.get_round(round_id)
 
@@ -108,15 +120,17 @@ def show_round(round_id):
 
 @app.route("/edit_round/<int:round_id>")
 def edit_round(round_id):
-    courses = m_courses.get_courses()
-
-    if not courses:
-        courses = []
-
     round = m_rounds.get_round(round_id, {"start_time": False, "hole_data": True})
 
     if not round:
         return str_round_not_found
+
+    abort_if_id_not_sid(m_rounds.get_user_id_for_round(round["id"]))
+
+    courses = m_courses.get_courses()
+
+    if not courses:
+        courses = []
 
     for i in range(len(courses)):
         if courses[i]["coursename"] == round["coursename"]:
@@ -128,7 +142,6 @@ def edit_round(round_id):
 def build_round_data_course_select(form):
     round = {
         "id": form["id"],
-        "user_id": int(form["user_id"]),
         "start_time": form["start_time"],
         "num_players": form["num_players"],
         "course_id": form["course_select"]
@@ -148,20 +161,26 @@ def build_round_data_course_select(form):
 
     return round
 
+def get_round_user_id(round):
+    round["user_id"] = m_rounds.get_user_id_for_round(round["id"])
+    abort_if_id_not_sid(round["user_id"])
+
 @app.route("/update_round_basic", methods=["POST"])
 def update_round_basic():
     round = build_round_data_course_select(request.form)
-    m_rounds.update_round(session["user_id"], round)
+    get_round_user_id(round)
+    m_rounds.update_round(round)
     return redirect("/round/" + round["id"])
 
 @app.route("/edit_round_num_holes", methods=["POST"])
 def edit_round_num_holes():
-    return render_template("edit_round_num_holes.html", round = build_round_data_course_select(request.form))
+    round = build_round_data_course_select(request.form)
+    get_round_user_id(round)
+    return render_template("edit_round_num_holes.html", round = round)
 
 def build_round_data(form):
     round = {
         "id": form["id"],
-        "user_id": int(form["user_id"]),
         "start_time": form["start_time"],
         "num_players": form["num_players"],
         "coursename": form["coursename"],
@@ -173,12 +192,15 @@ def build_round_data(form):
 
 @app.route("/edit_round_holes", methods=["POST"])
 def edit_round_holes():
-    return render_template("edit_round_holes.html", round = build_round_data(request.form))
+    round = build_round_data(request.form)
+    get_round_user_id(round)
+    return render_template("edit_round_holes.html", round = round)
 
 @app.route("/update_round_full", methods=["POST"])
 def update_round_full():
     round = build_round_data(request.form)
-    m_rounds.update_round(session["user_id"], round)
+    get_round_user_id(round)
+    m_rounds.update_round(round)
 
     return redirect("/round/" + round["id"])
 

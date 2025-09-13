@@ -19,9 +19,9 @@ def delete_round(round_id):
     sql = "DELETE FROM rounds WHERE id = ?"
     db.execute(sql, [round_id])
 
-def update_round(creator, data):
+def update_round(data):
     sql = "UPDATE rounds SET coursename = ?, num_holes = ?, hole_data = ?, creator_id = ?, start_time = ?, num_players = ? WHERE id = ?"
-    db.execute(sql, [data["coursename"], data["num_holes"], json.dumps(data["hole_data"]), creator, data["start_time"], data["num_players"], data["id"]])
+    db.execute(sql, [data["coursename"], data["num_holes"], json.dumps(data["hole_data"]), data["user_id"], data["start_time"], data["num_players"], data["id"]])
 
 
 def get_all_rounds(format_options = default_format_options):
@@ -67,6 +67,11 @@ def find_rounds(coursename, date, format_options = default_format_options):
             "ORDER BY start_time DESC"
     result = db.query_db(sql, params)
     return format_rounds(result, format_options) if result else result
+
+def get_user_id_for_round(round_id):
+    sql = "SELECT rounds.id, users.id AS user_id FROM rounds JOIN users ON users.id=rounds.creator_id WHERE rounds.id = ?"
+    result = db.query_db(sql, [round_id])
+    return result[0]["user_id"] if result else result
 
 def format_rounds(rounds, format_options):
     for row in rounds:

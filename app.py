@@ -13,11 +13,14 @@ app.secret_key = config.secret_key
 
 #TODO: Collect strings to own file. Localization support?
 str_no_courses_found = "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen."
-str_round_not_found = "VIRHE: kierrosta ei löytynyt tietokannasta."
 
 def abort_if_id_not_sid(user_id):
     if session["user_id"] != user_id:
         abort(403)
+
+def abort_if_null(obj, abortcode):
+    if not obj:
+        abort(abortcode)
 
 @app.route("/")
 def index():
@@ -82,8 +85,7 @@ def delete_round(round_id):
     if request.method == "GET":
         round = m_rounds.get_round(round_id)
 
-        if not round:
-            return str_round_not_found
+        abort_if_null(round, 404)
 
         return render_template("delete_round.html", round = round)
 
@@ -113,8 +115,7 @@ def find_round():
 def show_round(round_id):
     round = m_rounds.get_round(round_id)
 
-    if not round:
-        return str_round_not_found
+    abort_if_null(round, 404)
 
     return render_template("show_round.html", round = round)
 
@@ -122,9 +123,7 @@ def show_round(round_id):
 def edit_round(round_id):
     round = m_rounds.get_round(round_id, {"start_time": False, "hole_data": True})
 
-    if not round:
-        return str_round_not_found
-
+    abort_if_null(round, 404)
     abort_if_id_not_sid(m_rounds.get_user_id_for_round(round["id"]))
 
     courses = m_courses.get_courses()

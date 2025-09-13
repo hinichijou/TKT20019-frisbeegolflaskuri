@@ -47,7 +47,8 @@ def get_round(id, format_options = default_format_options):
             "FROM rounds " \
             "JOIN users ON users.id IN (rounds.creator_id, participations.participator_id) " \
             "LEFT JOIN participations ON participations.round_id=rounds.id " \
-            "WHERE rounds.id = ?"
+            "WHERE rounds.id = ? " \
+            "GROUP BY rounds.id"
     result = db.query_db(sql, [id], db.RespType.DICT)
     return format_rounds(result, format_options)[0] if result else result
 

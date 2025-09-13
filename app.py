@@ -27,8 +27,8 @@ def abort_if_null(obj, abortcode):
     if not obj:
         abort(abortcode)
 
-def test_limits(val_limits):
-    for f in val_limits:
+def test_inputs(input_tests):
+    for f in input_tests:
         if not f():
             abort(403)
 
@@ -54,11 +54,20 @@ def test_minmax_limits(val, min, max):
 def test_num_minmax(input, min, max):
     return test_num(input) and test_minmax_limits(int(input), min, max)
 
+def test_username(username):
+    return test_minmax_limits(len(username), constants.username_minlength, constants.username_maxlength)
+
+def test_password(password):
+    return test_minmax_limits(len(password), constants.password_minlength, constants.password_maxlength)
+
 def test_coursename(coursename):
     return test_minmax_limits(len(coursename), constants.coursename_minlength, constants.coursename_maxlength)
 
 def test_course_id(course_id):
     return test_num(course_id)
+
+def test_round_id(round_id):
+    return test_num(round_id)
 
 def test_start_time(start_time):
     return test_date(start_time)
@@ -93,7 +102,7 @@ def create_course():
     coursename = request.form["coursename"]
     num_holes = request.form["num_holes"]
 
-    test_limits(
+    test_inputs(
         [
             lambda: test_coursename(coursename),
             lambda: test_num_holes(num_holes)
@@ -123,7 +132,7 @@ def create_holes():
     num_holes = request.form["num_holes"]
     hole_data = create_holes_dict(request.form)
 
-    test_limits(
+    test_inputs(
         [
             lambda: test_coursename(coursename),
             lambda: test_num_holes(num_holes),
@@ -154,7 +163,7 @@ def create_round():
     start_time = request.form["start_time"]
     num_players = request.form["num_players"]
 
-    test_limits(
+    test_inputs(
         [
             lambda: test_course_id(course_id),
             lambda: test_start_time(start_time),
@@ -169,6 +178,9 @@ def create_round():
 @app.route("/delete_round/<int:round_id>", methods=["GET", "POST"])
 def delete_round(round_id):
     require_login()
+
+    test_inputs([lambda: test_round_id(round_id)])
+
     abort_if_id_not_sid(m_rounds.get_user_id_for_round(round_id))
 
     if request.method == "GET":
@@ -189,22 +201,30 @@ def delete_round(round_id):
 def find_round():
     require_login()
 
-    courses = m_courses.get_courses()
-
     course_query = request.args.get("course_select")
+    start_time = request.args.get("start_time")
+
+    test_inputs(
+        [
+            lambda: test_coursename(course_query),
+            lambda: test_start_time(start_time)
+        ]
+    )
+
     if not course_query:
         course_query = ""
-    start_time = request.args.get("start_time")
     if not start_time:
         start_time = datetime.date.today().isoformat()
 
     results = m_rounds.find_rounds(course_query, start_time)
+    courses = m_courses.get_courses()
 
     return render_template("find_round.html", courses = courses, course_query = course_query, start_time = start_time, results = results)
 
 @app.route("/round/<int:round_id>")
 def show_round(round_id):
     require_login()
+    test_inputs([lambda: test_round_id(round_id)])
 
     round = m_rounds.get_round(round_id)
 
@@ -215,6 +235,7 @@ def show_round(round_id):
 @app.route("/edit_round/<int:round_id>")
 def edit_round(round_id):
     require_login()
+    test_inputs([lambda: test_round_id(round_id)])
 
     round = m_rounds.get_round(round_id, {"start_time": False, "hole_data": True})
 
@@ -234,6 +255,15 @@ def edit_round(round_id):
     return render_template("edit_round.html", constants = constants, courses = courses, round = round)
 
 def build_round_data_course_select(form):
+    test_inputs(
+        [
+            lambda: test_round_id(form["id"]),
+            lambda: test_course_id(form["course_select"]),
+            lambda: test_start_time(form["start_time"]),
+            lambda: test_num_players(form["num_players"])
+        ]
+    )
+
     round = {
         "id": form["id"],
         "start_time": form["start_time"],
@@ -243,9 +273,17 @@ def build_round_data_course_select(form):
 
     #In this case the user didn't change the course selection
     if round["course_id"] == "":
+        hole_data = create_holes_dict(form)
+        test_inputs(
+            [
+                lambda: test_coursename(form["coursename"]),
+                lambda: test_num_holes(form["num_holes"]),
+                lambda: test_hole_data(hole_data)
+            ]
+        )
         round["coursename"] = form["coursename"]
         round["num_holes"] = form["num_holes"]
-        round["hole_data"] = create_holes_dict(form)
+        round["hole_data"] = hole_data
     #The user did change the course selection. Update the course information from db
     else:
         course_data = m_courses.get_course_data(round["course_id"])
@@ -277,13 +315,26 @@ def edit_round_num_holes():
     return render_template("edit_round_num_holes.html", constants = constants, round = round)
 
 def build_round_data(form):
+    hole_data = create_holes_dict(form)
+
+    test_inputs(
+        [
+            lambda: test_round_id(form["id"]),
+            lambda: test_coursename(form["coursename"]),
+            lambda: test_start_time(form["start_time"]),
+            lambda: test_num_players(form["num_players"]),
+            lambda: test_num_holes(form["num_holes"]),
+            lambda: test_hole_data(hole_data)
+        ]
+    )
+
     round = {
         "id": form["id"],
         "start_time": form["start_time"],
         "num_players": form["num_players"],
         "coursename": form["coursename"],
         "num_holes": form["num_holes"],
-        "hole_data": create_holes_dict(form)
+        "hole_data": hole_data
     }
 
     return round
@@ -312,6 +363,14 @@ def register():
 
 @app.route("/create", methods=["POST"])
 def create():
+    test_inputs(
+        [
+            lambda: test_username(request.form["username"]),
+            lambda: test_password(request.form["password1"]),
+            lambda: test_password(request.form["password2"]),
+        ]
+    )
+
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
@@ -330,6 +389,13 @@ def login():
     if request.method == "GET":
         return render_template("login.html", constants = constants)
     if request.method == "POST":
+        test_inputs(
+            [
+                lambda: test_username(request.form["username"]),
+                lambda: test_password(request.form["password"]),
+            ]
+        )
+
         username = request.form["username"]
         password = request.form["password"]
 

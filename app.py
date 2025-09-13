@@ -32,14 +32,36 @@ def test_limits(val_limits):
         if not f():
             abort(403)
 
+def test_num(input):
+    try:
+        int(input)
+    except ValueError:
+        return False
+
+    return True
+
+def test_date(input):
+    try:
+        datetime.date.fromisoformat(input)
+    except ValueError:
+        return False
+
+    return True
+
 def test_minmax_limits(val, min, max):
     return val >= min and val <= max
 
 def test_num_minmax(input, min, max):
-    return input.isdigit() and test_minmax_limits(int(input), min, max)
+    return test_num(input) and test_minmax_limits(int(input), min, max)
 
 def test_coursename(coursename):
     return test_minmax_limits(len(coursename), constants.coursename_minlength, constants.coursename_maxlength)
+
+def test_course_id(course_id):
+    return test_num(course_id)
+
+def test_start_time(start_time):
+    return test_date(start_time)
 
 def test_num_holes(num_holes):
     return test_num_minmax(num_holes, constants.course_holes_min, constants.course_holes_max)
@@ -51,6 +73,9 @@ def test_hole_data(hole_data):
             return False
 
     return True
+
+def test_num_players(num_players):
+    return test_num_minmax(num_players, constants.round_min_players, constants.round_max_players)
 
 @app.route("/")
 def index():
@@ -128,6 +153,14 @@ def create_round():
     course_id = request.form["course_select"]
     start_time = request.form["start_time"]
     num_players = request.form["num_players"]
+
+    test_limits(
+        [
+            lambda: test_course_id(course_id),
+            lambda: test_start_time(start_time),
+            lambda: test_num_players(num_players)
+        ]
+    )
 
     m_rounds.add_round(course_id, session["user_id"], start_time, num_players)
 

@@ -28,7 +28,7 @@
       </p>
       <input type="submit" value="Lähetä" />
     </form>
-    {% if course_query or start_time %}
+    {% if arginput %}
       <h2>Tulokset</h2>
       {% for result in results %}
         <li><a href="/round/{{result.id}}">Aloitusaika: {{result.start_time}} Paikka: {{result.coursename}}, Lisännyt: {{result.username}}, Pelaajia: {{result.num_participating}} / {{result.num_players}}</a></li>

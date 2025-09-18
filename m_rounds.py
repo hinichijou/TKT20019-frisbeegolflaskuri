@@ -80,7 +80,6 @@ def create_where_condition(params):
 
     return where
 
-
 def find_rounds(searchparams, format_options = default_format_options):
     types, params = zip(*searchparams)
     where = create_where_condition(types)
@@ -92,7 +91,7 @@ def find_rounds(searchparams, format_options = default_format_options):
             + where + \
             "GROUP BY rounds.id " \
             "ORDER BY start_time DESC"
-    result = db.query_db(sql, params)
+    result = db.query_db(sql, params, resp_type = db.RespType.DICT)
     return format_rounds(result, format_options) if result else result
 
 def get_user_id_for_round(round_id):

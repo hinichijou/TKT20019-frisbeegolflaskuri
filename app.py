@@ -305,6 +305,8 @@ def find_round():
 
     test_inputs(input_tests)
 
+    arginput = course_query != None or start_time != None
+
     searchparams = []
 
     if not course_query:
@@ -314,17 +316,19 @@ def find_round():
         searchparams.append((m_rounds.FindRoundParam.COURSENAME, course_query))
 
     if not start_time:
-        start_time = datetime.date.today().isoformat()
+        start_time = "" # datetime.date.today().isoformat() would set to today
+    else:
+        #Search date only if something is set
+        searchparams.append((m_rounds.FindRoundParam.DATE, start_time + "%"))
 
-    #Always search date as there is always something set
-    searchparams.append((m_rounds.FindRoundParam.DATE, start_time + "%"))
+    #With default parameters returns all rounds if they are sent in the query
+    results = m_rounds.find_rounds(searchparams) if len(searchparams) > 0 else m_rounds.get_all_rounds() if arginput else []
 
-    results = m_rounds.find_rounds(searchparams)
     courses = m_courses.get_courses()
     if not courses:
         courses = []
 
-    return render_template("find_round.html", courses = courses, course_query = course_query, start_time = start_time, results = results)
+    return render_template("find_round.html", courses = courses, course_query = course_query, start_time = start_time, results = results, arginput = arginput)
 
 @app.route("/round/<int:round_id>")
 def show_round(round_id):

@@ -1,7 +1,7 @@
 # TKT20019-frisbeegolflaskuri
 TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 
-Sovelluksen kuvaus:
+# Sovelluksen kuvaus:
 * Sovellukseen pystyy luomaan frisbeegolfratoja, käyttäjät voivat pelata näillä radoilla kierroksia.
 
 * Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen.
@@ -25,3 +25,12 @@ Sovelluksen kuvaus:
 * Sovellus vastaa suunnilleen esimerkkisovellusta sulkapalloseura ollen hieman monimutkaisempi. Sovellus nähdäkseni täyttää tällä kuvauksella kaikki perusvaatimukset, mutta lisää yhden tietokohdetason (rata -> kierros -> ilmoittautuminen). Toinen lisäys on kierroksen aikainen tulosseuranta, jonka näkisin suunnilleen vastaavan sitä, jos sulkapallosovelluksessa olisi jonkunlainen tulostenmerkintämahdollisuus. Motivaationa tälle suunnitelmalle oli saada aikaan jotain mitä pystyisin toivottavasti kokeilemaan käytännössä.
 
 * Tietokannan rakenteesta: 4 taulua: käyttäjät, radat, kierrokset ja ilmoittautumiset. Radan tiedot periaatteessa kopioidaan kierrokseen luomishetkellä koska ratojen layoutit muuttuvat suhteellisen usein, toisaalta ajatuksena on että kierroksen tiedoissa valmista rataa voi muokata niin että esim. custom kierros missä heitetään vain osa väylistä on mahdollinen. Kierroksen ja käyttäjien väillä on relaatio. Kierroksen luojan id tallennetaan kierroksen tietoihin, kierrokselle ilmoittautumiset ovat omassa taulukossaan, joka toimii linkkinä kierroksen ja ilmoittautujien välillä.
+
+# Sovelluksen käyttöohje:
+* Sovellus tarvitsee toimiakseen tietokannan, jonka voi luoda ajamalla komennon `sqlite3 database.db < schema.sql` pääkansiossa.
+
+* Sovelluksen voi ajaa suorittamalla komennon `flask run` pääkansiossa.
+
+* Klikkaamalla "Luo tunnus" linkkiä pääset tunnuksenluontinäkymään, jossa pyydetään käyttäjänimi ja salasana.
+
+* Klikkaamalla "Kirjaudu sisään" linkkiä pääset kirjautumisnäkymään. Syöttämällä tietokannasta löytyvän tunnuksen ja salasanan pääset käsiksi sovelluksen kirjautuneen käyttäjän toimintoihin.

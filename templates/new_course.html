@@ -2,15 +2,15 @@
 <html>
 
 <head>
-  <title>Uusi rata</title>
+  <title>{{ get_localization("new_course_header") }}</title>
 </head>
 
 <body>
   {% if session.username %}
-  <h1>Uusi rata</h1>
+  <h1>{{ get_localization("new_course_header") }}</h1>
   <form action="/create_course" method="post">
     <p>
-      Nimi: <br />
+      {{ get_localization("course_name_header") }} <br />
       <input
         type="text"
         required
@@ -21,7 +21,7 @@
       />
     </p>
     <p>
-      Väylien lukumäärä: <br />
+      {{ get_localization("course_holes_header") }} <br />
       <input
         type="number"
         required
@@ -32,7 +32,25 @@
         name="num_holes"
       />
     </p>
-    <input type="submit" value="Seuraava" />
+    <p>
+      {{ get_localization("course_difficulty_header") }} <br />
+      <select required name="difficulty_select">
+        <option value="">{{ get_localization("course_diff_default") }}</option>
+        {% for d in selections.course_difficulty %}
+          <option value="{{ d[0] }},{{ d[1] }}">{{ get_localization(d[1]) }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <p>
+      {{ get_localization("course_type_header") }} <br />
+      <select required name="type_select">
+        <option value="">{{ get_localization("course_type_default") }}</option>
+        {% for t in selections.course_type %}
+          <option value="{{ t[0] }},{{ t[1] }}">{{ get_localization(t[1]) }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <input type="submit" value="{{ get_localization('next_button') }}" />
   </form>
   {% endif %}
 </body>

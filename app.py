@@ -4,16 +4,22 @@ from flask import abort, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 import config
-from constants import constants
+from constants import constants, SelectionItemClass
+import localization
+from localizationkeys import get_localization_key, LocalizationKeys
 import m_users
 import m_rounds
 import m_courses
+import m_selection_classes
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
-#TODO: Collect strings to own file. Localization support?
-str_no_courses_found = "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen."
+@app.context_processor
+def utility_processor():
+    def get_localization(key):
+        return localization.get_localization(key)
+    return dict(get_localization=get_localization)
 
 def require_login():
     if "user_id" not in session:
@@ -89,6 +95,14 @@ def test_hole_data(hole_data):
 def test_num_players(num_players):
     return test_num_minmax(num_players, constants.round_min_players, constants.round_max_players)
 
+def list_from_form_comma_string(t):
+    return t.split(",")
+
+def test_item_id(item):
+    item = list_from_form_comma_string(item)
+
+    return len(item) == 2 and test_num(item[0])
+
 @app.route("/")
 def index():
     return render_template("index.html", rounds = m_rounds.get_all_rounds())
@@ -96,23 +110,69 @@ def index():
 @app.route("/new_course")
 def new_course():
     require_login()
-    return render_template("new_course.html", constants = constants)
+
+    selections = m_selection_classes.get_selection_items([SelectionItemClass.COURSE_DIFFICULTY, SelectionItemClass.COURSE_TYPE])
+
+    return render_template("new_course.html", constants = constants, selections = selections)
+
+def get_basic_course_data(form):
+    course = {
+        "coursename": form["coursename"],
+        "num_holes": form["num_holes"],
+        "type_select": form["type_select"],
+        "difficulty_select": form["difficulty_select"]
+    }
+
+    return course
+
+def get_basic_course_data_input_tests(course):
+    return [
+        lambda: test_coursename(course["coursename"]),
+        lambda: test_num_holes(course["num_holes"]),
+        lambda: test_item_id(course["type_select"]),
+        lambda: test_item_id(course["difficulty_select"])
+    ]
 
 @app.route("/create_course", methods=["POST"])
 def create_course():
     require_login()
 
-    coursename = request.form["coursename"]
-    num_holes = request.form["num_holes"]
+    course = get_basic_course_data(request.form)
 
-    test_inputs(
-        [
-            lambda: test_coursename(coursename),
-            lambda: test_num_holes(num_holes)
-        ]
-    )
+    test_inputs(get_basic_course_data_input_tests(course))
 
-    return render_template("new_holes.html", constants = constants, coursename = coursename, num_holes = num_holes)
+    course["type_select"] = list_from_form_comma_string(course["type_select"])
+    course["difficulty_select"] = list_from_form_comma_string(course["difficulty_select"])
+
+    return render_template("new_holes.html", constants = constants, course = course)
+
+def create_holes_dict(form):
+    holes_dict = {}
+    for i in range(1, int(form["num_holes"]) + 1):
+        parkey = f"par_{i}"
+        lengthkey = f"length_{i}"
+        # If we are adding holes the data for new holes might not be in the form yet
+        if parkey in form and lengthkey in form:
+            holes_dict[i] = {"par": form[parkey], "length": form[lengthkey]}
+        else:
+            break
+
+    return holes_dict
+
+@app.route("/create_holes", methods=["POST"])
+def create_holes():
+    require_login()
+
+    course = get_basic_course_data(request.form)
+    course["hole_data"] = create_holes_dict(request.form)
+
+    input_tests = get_basic_course_data_input_tests(course)
+    input_tests.append(lambda: test_hole_data(course["hole_data"]))
+    test_inputs(input_tests)
+
+    m_courses.add_course(course)
+
+    return redirect("/")
 
 @app.route("/delete_course/<int:course_id>", methods=["GET", "POST"])
 def delete_course(course_id):
@@ -140,7 +200,7 @@ def show_courses():
 
     courses = m_courses.get_courses()
     if not courses:
-        return str_no_courses_found
+        return get_localization_key(LocalizationKeys.str_no_courses_found)
 
     return render_template("show_courses.html", courses = courses)
 
@@ -204,46 +264,13 @@ def update_course():
 
     return redirect("/course/" + course["id"])
 
-def create_holes_dict(form):
-    holes_dict = {}
-    for i in range(1, int(form["num_holes"]) + 1):
-        parkey = f"par_{i}"
-        lengthkey = f"length_{i}"
-        # If we are adding holes the data for new holes might not be in the form yet
-        if parkey in form and lengthkey in form:
-            holes_dict[i] = {"par": form[parkey], "length": form[lengthkey]}
-        else:
-            break
-
-    return holes_dict
-
-@app.route("/create_holes", methods=["POST"])
-def create_holes():
-    require_login()
-
-    coursename = request.form["coursename"]
-    num_holes = request.form["num_holes"]
-    hole_data = create_holes_dict(request.form)
-
-    test_inputs(
-        [
-            lambda: test_coursename(coursename),
-            lambda: test_num_holes(num_holes),
-            lambda: test_hole_data(hole_data)
-        ]
-    )
-
-    m_courses.add_course(coursename, num_holes, hole_data)
-
-    return redirect("/")
-
 @app.route("/new_round")
 def new_round():
     require_login()
 
     courses = m_courses.get_courses()
     if not courses:
-        return str_no_courses_found
+        return get_localization_key(LocalizationKeys.str_no_courses_found)
 
     return render_template("new_round.html", constants = constants, courses = courses, date = datetime.datetime.now().isoformat(timespec="minutes"))
 

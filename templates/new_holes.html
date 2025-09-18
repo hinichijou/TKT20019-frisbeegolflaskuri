@@ -10,14 +10,26 @@
   <h1>Lisää väylien tiedot</h1>
   <form action="/create_holes" method="post">
     <p>
-      Nimi: <br />
-      <input inert type="text" value={{coursename}} name="coursename" />
+      {{ get_localization("course_name_header") }} <br />
+      <input inert type="text" value={{course.coursename}} name="coursename" />
     </p>
     <p>
-      Väylien lukumäärä: <br />
-      <input inert type="text" value={{num_holes}} name="num_holes" />
+      {{ get_localization("course_holes_header") }} <br />
+      <input inert type="text" value={{course.num_holes}} name="num_holes" />
     </p>
-    {% for i in range(1, 1 + num_holes|int) %}
+    <p>
+      {{ get_localization("course_difficulty_header") }} <br />
+      <select inert name="difficulty_select">
+        <option value="{{ course.difficulty_select[0] }},{{ course.difficulty_select[1] }}">{{ get_localization(course.difficulty_select[1]) }}</option>
+      </select>
+    </p>
+    <p>
+      {{ get_localization("course_type_header") }} <br />
+      <select inert name="type_select">
+        <option value="{{ course.type_select[0] }},{{ course.type_select[1] }}">{{ get_localization(course.type_select[1]) }}</option>
+      </select>
+    </p>
+    {% for i in range(1, 1 + course.num_holes|int) %}
       <p>
         Väylä {{i}}: <br />
         Par: <br />

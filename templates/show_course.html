@@ -14,9 +14,16 @@
   <p>
     <a href="/show_courses">Palaa ratalistaukseen</a>
   </p>
+  <p>
+    {% if "items" in course %}
+      {% for k, v in course["items"].items() %}
+        {{ get_localization(k) }}: {{ get_localization(v) }} <br />
+      {% endfor %}
+    {% endif %}
+  </p>
   <h2>Väylien tiedot</h2>
   <p>
-    Väylien lukumäärä: {{course.num_holes}}
+    {{ get_localization("course_holes_header") }} {{course.num_holes}}
   </p>
   {% for i in range(1, 1 + course.num_holes|int) %}
     <p>

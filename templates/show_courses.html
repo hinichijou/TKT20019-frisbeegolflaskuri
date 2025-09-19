@@ -2,18 +2,18 @@
 <html>
 
 <head>
-  <title>Radat</title>
+  <title>{{ get_localization("courses_header") }}</title>
 </head>
 
 <body>
-  <h1>Radat</h1>
+  <h1>{{ get_localization("courses_header") }}</h1>
   {% for course in courses %}
     <li>
-      <a href="/course/{{course.id}}">{{course.coursename}}, Väyliä: {{course.num_holes}}</a>
+      <a href="/course/{{course.id}}">{{course.coursename}}, {{ get_localization("course_item_num_holes") }} {{course.num_holes}}</a>
     </li>
   {% endfor %}
   <p>
-    <a href="/">Palaa etusivulle</a>
+    <a href="/">{{ get_localization("return_to_index_button") }}</a>
   </p>
 </body>
 

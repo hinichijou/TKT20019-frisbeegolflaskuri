@@ -2,17 +2,17 @@
 <html>
 
 <head>
-  <title>Etsi kierros</title>
+  <title>{{ get_localization("find_round_header") }}</title>
 </head>
 
 <body>
   {% if session.user_id %}
-    <h1>Etsi kierros</h1>
+    <h1>{{ get_localization("find_round_header") }}</h1>
     <form action="/find_round"  method="get">
       <p>
-        Etsi radan nimellä: <br />
+        {{ get_localization("find_by_course_name_header") }} <br />
         <select name="course_select">
-          <option value="">--Valitse rata--</option>
+          <option value="">{{ get_localization("course_select_default") }}</option>
           {% for course in courses %}
             {% if course_query == course.coursename %}
               <option selected value="{{ course.coursename  }}">{{ course.coursename }}</option>
@@ -23,15 +23,15 @@
         </select>
       </p>
       <p>
-        Etsi päivämäärällä: <br />
+        {{ get_localization("find_by_date_header") }} <br />
         <input type="date" value="{{ start_time }}" name="start_time" />
       </p>
-      <input type="submit" value="Lähetä" />
+      <input type="submit" value="{{ get_localization('submit_search_button') }}" />
     </form>
     {% if arginput %}
-      <h2>Tulokset</h2>
+      <h2>{{ get_localization("search_results_header") }}</h2>
       {% for result in results %}
-        <li><a href="/round/{{result.id}}">Aloitusaika: {{result.start_time}} Paikka: {{result.coursename}}, Lisännyt: {{result.username}}, Pelaajia: {{result.num_participating}} / {{result.num_players}}</a></li>
+        <li><a href="/round/{{result.id}}">{{ get_localization("round_item_start") }} {{result.start_time}} {{ get_localization("round_item_place") }} {{result.coursename}}, {{ get_localization("round_item_creator") }} {{result.username}}, {{ get_localization("round_item_players") }} {{result.num_participating}} / {{result.num_players}}</a></li>
       {% endfor %}
     {% endif %}
   {% endif %}

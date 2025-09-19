@@ -2,18 +2,18 @@
 <html>
 
 <head>
-  <title>Muokkaa väylien tietoja</title>
+  <title>{{ get_localization("modify_num_holes_header") }}</title>
 </head>
 
 <body>
-  <h1>Muokkaa väylien lukumäärää</h1>
+  <h1>{{ get_localization("modify_num_holes_header") }}</h1>
   <form action="/edit_round_holes" method="post">
     <p>
-      Nimi: <br />
+      {{ get_localization("course_name_header") }} <br />
       <input inert type="text" value={{round.coursename}} name="coursename" />
     </p>
     <p>
-      Väylien lukumäärä: <br />
+      {{ get_localization("course_holes_header") }} <br />
       <input
         type="number"
         name="num_holes"
@@ -23,7 +23,7 @@
         oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
       />
     </p>
-    <input type="submit" value="Seuraava" />
+    <input type="submit" value="{{ get_localization('submit_changes_button') }}" />
     <input type="hidden" name="id" value="{{ round.id }}" />
     <input type="hidden" name="start_time" value="{{ round.start_time }}" />
     <input type="hidden" name="num_players" value="{{ round.num_players }}" />

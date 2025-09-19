@@ -2,21 +2,21 @@
 <html>
 
 <head>
-  <title>Kirjautuminen</title>
+  <title>{{ get_localization("log_in_header") }}</title>
 </head>
 
 <body>
   {% if session.username %}
   <p>
-    Olet kirjautunut nimellä {{ session.username }}
+    {{ get_localization("logged_in") }} {{ session.username }}
   </p>
   <p>
-    <a href="/logout">Kirjaudu ulos</a>
+    <a href="/logout">{{ get_localization("log_out_button") }}</a>
   </p>
   {% else %}
   <form action="/login" method="post">
     <p>
-      Tunnus: <br />
+      {{ get_localization("account_name_header") }} <br />
       <input
         type="text"
         name="username"
@@ -25,7 +25,7 @@
       />
     </p>
     <p>
-      Salasana: <br />
+      {{ get_localization("password_header") }} <br />
       <input
         type="password"
         name="password"
@@ -33,7 +33,7 @@
         maxlength="{{constants.password_maxlength}}"
       />
     </p>
-    <input type="submit" value="Kirjaudu" />
+    <input type="submit" value="{{ get_localization('log_in_button') }}" />
   </form>
   {% endif %}
 </body>

@@ -2,34 +2,34 @@
 <html>
 
 <head>
-  <title>Kierroksen tiedot</title>
+  <title>{{ get_localization("round_information_header") }}</title>
 </head>
 
 <body>
   <h1>{{ round.coursename }}</h1>
   {% if session.user_id == round.user_id %}
   <p>
-    <a href="/edit_round/{{ round.id }}">Muokkaa</a>
-    <a href="/delete_round/{{ round.id }}">Poista</a>
+    <a href="/edit_round/{{ round.id }}">{{ get_localization("modify_button") }}</a>
+    <a href="/delete_round/{{ round.id }}">{{ get_localization("delete_button") }}</a>
   </p>
   {% endif %}
   <p>
-    Lisännyt: <a href="/user/{{ round.user_id }}">{{round.username}}</a>
+    {{ get_localization("round_item_creator") }} <a href="/user/{{ round.user_id }}">{{round.username}}</a>
   </p>
-  <p>Aloitusaika: {{round.start_time}}</p>
-  <p>Ilmoittautuneita pelaajia: {{round.num_participating}} / {{round.num_players}}</p>
-  <p>Väyliä: {{round.num_holes}}</p>
+  <p>{{ get_localization("round_item_start") }} {{round.start_time}}</p>
+  <p>{{ get_localization("round_item_players_participating") }} {{round.num_participating}} / {{round.num_players}}</p>
+  <p>{{ get_localization("course_item_num_holes") }} {{round.num_holes}}</p>
   {% for i in range(1, 1 + round.num_holes|int) %}
     <p>
-      Väylä {{i}}: <br />
-      Par: <br />
+      {{ get_localization("hole_header").format(i) }} <br />
+      {{ get_localization("par_header") }} <br />
       {{round.hole_data[i|string]["par"]}}<br />
-      Pituus (m): <br />
+      {{ get_localization("hole_length_header") }} <br />
       {{round.hole_data[i|string]["length"]}}<br />
     </p>
   {% endfor %}
   <p>
-    <a href="/">Palaa etusivulle</a>
+    <a href="/">{{ get_localization("return_to_index_button") }}</a>
   </p>
 </body>
 

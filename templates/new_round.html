@@ -2,24 +2,24 @@
 <html>
 
 <head>
-  <title>Uusi kierros</title>
+  <title>{{ get_localization("new_round_header") }}</title>
 </head>
 
 <body>
   {% if session.username %}
-  <h1>Uusi kierros</h1>
+  <h1>{{ get_localization("new_round_header") }}</h1>
   <form action="/create_round" method="post">
     <p>
-      Valitse rata: <br />
+      {{ get_localization("select_course_header") }} <br />
       <select name="course_select">
-        <option hidden selected value="">--Valitse rata--</option>
+        <option hidden selected value="">{{ get_localization("course_select_default") }}</option>
         {% for course in courses %}
           <option value="{{ course.id }}">{{ course.coursename }}</option>
         {% endfor %}
       </select>
     </p>
     <p>
-      Aloitusaika: <br />
+      {{ get_localization("start_time_header") }} <br />
       <input
         type="datetime-local"
         value="{{ date }}"
@@ -27,7 +27,7 @@
       />
     </p>
     <p>
-      Pelaajien määrä: <br />
+      {{ get_localization("amount_players_header") }} <br />
       <input
         type="number"
         name="num_players"
@@ -37,7 +37,7 @@
         oninput="this.value = Math.min('{{constants.round_max_players}}', Math.max(this.value|0, '{{constants.round_min_players}}'))"
       />
     </p>
-    <input type="submit" value="Lisää kierros" />
+    <input type="submit" value="{{ get_localization('create_round_button') }}" />
   </form>
   {% endif %}
 </body>

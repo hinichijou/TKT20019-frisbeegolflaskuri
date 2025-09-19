@@ -2,14 +2,14 @@
 <html>
 
 <head>
-  <title>Muokkaa kierrosta</title>
+  <title>{{ get_localization("modify_round_header") }}</title>
 </head>
 
 <body>
-  <h1>Muokkaa kierrosta</h1>
+  <h1>{{ get_localization("modify_round_header") }}</h1>
   <form method="post">
     <p>
-      Valitse rata: <br />
+      {{ get_localization("select_course_header") }} <br />
       <select name="course_select">
         <option value="">{{ round.coursename }}</option>
         {% for course in courses %}
@@ -18,7 +18,7 @@
       </select>
     </p>
     <p>
-      Aloitusaika: <br />
+      {{ get_localization("start_time_header") }} <br />
       <input
         type="datetime-local"
         value="{{ round.start_time }}"
@@ -26,7 +26,7 @@
       />
     </p>
     <p>
-      Pelaajien määrä: <br />
+      {{ get_localization("amount_players_header") }} <br />
       <input
         type="number"
         name="num_players"
@@ -36,8 +36,8 @@
         oninput="this.value = Math.min('{{constants.round_max_players}}', Math.max(this.value|0, '{{constants.round_min_players}}'))"
       />
     </p>
-    <input type="submit" formaction="/update_round_basic" value="Tallenna muutokset" />
-    <input type="submit" formaction="/edit_round_num_holes" value="Muokkaa väyliä" />
+    <input type="submit" formaction="/update_round_basic" value="{{ get_localization('submit_changes_button') }}" />
+    <input type="submit" formaction="/edit_round_num_holes" value="{{ get_localization('to_hole_modification_button') }}" />
     <input type="hidden" name="id" value="{{ round.id }}" />
     <input type="hidden" name="coursename" value="{{ round.coursename }}" />
     <input type="hidden" name="num_holes" value="{{ round.num_holes }}" />

@@ -2,30 +2,30 @@
 <html>
 
 <head>
-  <title>Käyttäjäsivu</title>
+  <title>{{ get_localization("user_page_header") }}</title>
 </head>
 
 <body>
   <h1>{{ user.username }}</h1>
   <p>
-    Käyttäjänimi: {{ user.username }}
+    {{ get_localization("username_header") }} {{ user.username }}
   </p>
   <p>
-    Käyttäjän ID: {{ user.id }}
+    {{ get_localization("user_id_header") }} {{ user.id }}
   </p>
   {% if rounds|length > 0 %}
     <p>
-      Käyttäjällä on yhteensä {{ rounds|length }} luotua kierrosta
+      {{ get_localization("user_amount_rounds_created").format(rounds|length) }}
     </p>
-    <h2>Käyttäjän lisäämät kierrokset:</h2>
+    <h2>{{ get_localization("rounds_created_by_user_header") }}</h2>
     {% for round in rounds %}
       <li>
-        <a href="/round/{{round.id}}">Aloitusaika: {{round.start_time}} Paikka: {{round.coursename}}, Lisännyt: {{round.username}}, Pelaajia: {{round.num_participating}} / {{round.num_players}}</a>
+        <a href="/round/{{round.id}}">{{ get_localization("round_item_start") }} {{round.start_time}} {{ get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }} {{round.username}}, {{ get_localization("round_item_players") }} {{round.num_participating}} / {{round.num_players}}</a>
       </li>
     {% endfor %}
   {% endif %}
   <p>
-    <a href="/">Palaa etusivulle</a>
+    <a href="/">{{ get_localization("return_to_index_button") }}</a>
   </p>
 </body>
 

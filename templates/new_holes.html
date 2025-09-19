@@ -2,12 +2,12 @@
 <html>
 
 <head>
-  <title>Lisää väylien tiedot</title>
+  <title>{{ get_localization("add_holes_header") }}</title>
 </head>
 
 <body>
   {% if session.username %}
-  <h1>Lisää väylien tiedot</h1>
+  <h1>{{ get_localization("add_holes_header") }}</h1>
   <form action="/create_holes" method="post">
     <p>
       {{ get_localization("course_name_header") }} <br />
@@ -31,8 +31,8 @@
     </p>
     {% for i in range(1, 1 + course.num_holes|int) %}
       <p>
-        Väylä {{i}}: <br />
-        Par: <br />
+        {{ get_localization("hole_header").format(i) }} <br />
+        {{ get_localization("par_header") }} <br />
         <input
           type="number"
           value="{{constants.hole_par_default}}"
@@ -41,7 +41,7 @@
           oninput="this.value = Math.min('{{constants.hole_par_max}}', Math.max(this.value|0, '{{constants.hole_par_min}}'))"
           name="par_{{i}}"
         /><br />
-        Pituus (m): <br />
+        {{ get_localization("hole_length_header") }} <br />
         <input
           type="number"
           value="{{constants.hole_length_default}}"
@@ -52,7 +52,7 @@
         /><br />
       </p>
     {% endfor %}
-    <input type="submit" value="Lisää rata" />
+    <input type="submit" value="{{ get_localization('create_course_button') }}" />
   </form>
   {% endif %}
 </body>

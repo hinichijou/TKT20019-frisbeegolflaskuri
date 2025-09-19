@@ -2,49 +2,49 @@
 <html>
 
 <head>
-  <title>Frisbeegolflaskuri</title>
+  <title>{{ get_localization("main_header") }}</title>
 </head>
 
 <body>
-  <h1>Frisbeegolflaskuri</h1>
+  <h1>{{ get_localization("main_header") }}</h1>
   {% if session.username %}
 
   <p>
-    Olet kirjautunut nimellä <a href="/user/{{ session.user_id }}">{{ session.username }}</a>
+    {{ get_localization("logged_in") }} <a href="/user/{{ session.user_id }}">{{ session.username }}</a>
   </p>
 
   <p>
-    <a href="/new_course">Lisää rata</a>
+    <a href="/new_course">{{ get_localization("create_course_button") }}</a>
   </p>
 
   <p>
-    <a href="/show_courses">Selaa ratoja</a>
+    <a href="/show_courses">{{ get_localization("browse_courses_button") }}</a>
   </p>
 
   <p>
-    <a href="/new_round">Lisää kierros</a>
+    <a href="/new_round">{{ get_localization("create_round_button") }}</a>
   </p>
 
   <p>
-    <a href="/find_round">Etsi kierros</a>
+    <a href="/find_round">{{ get_localization("find_round_button") }}</a>
   </p>
 
   <p>
-    <a href="/logout">Kirjaudu ulos</a>
+    <a href="/logout">{{ get_localization("log_out_button") }}</a>
   </p>
 
-  <h2>Kierrokset</h2>
+  <h2>{{ get_localization("all_rounds_header") }}</h2>
   <ul>
     {% for round in rounds %}
-      <li><a href="/round/{{round.id}}">Aloitusaika: {{round.start_time}} Paikka: {{round.coursename}}, Lisännyt: {{round.username}}, Pelaajia: {{round.num_participating}} / {{round.num_players}}</a></li>
+      <li><a href="/round/{{round.id}}">{{ get_localization("round_item_start") }} {{round.start_time}} {{ get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }} {{round.username}}, {{ get_localization("round_item_players") }} {{round.num_participating}} / {{round.num_players}}</a></li>
     {% endfor %}
   </ul>
 
   {% else %}
 
   <p>
-    <a href="/login">Kirjaudu sisään</a>
-    <a href="/register">Luo tunnus</a>
+    <a href="/login">{{ get_localization("log_in_button") }}</a>
+    <a href="/register">{{ get_localization("register_button") }}</a>
   </p>
 
   {% endif %}

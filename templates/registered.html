@@ -2,23 +2,23 @@
 <html>
 
 <head>
-  <title>Rekisteröityminen</title>
+  <title>{{ get_localization("register_header") }}</title>
 </head>
 
 <body>
   {% if session.username %}
     <p>
-      Olet kirjautunut nimellä {{ session.username }}
+      {{ get_localization("logged_in") }} {{ session.username }}
     </p>
     <p>
-      <a href="/logout">Kirjaudu ulos</a>
+      <a href="/logout">{{ get_localization("log_out_button") }}</a>
     </p>
   {% else %}
     <p>
-      Tunnus luotu
+      {{ get_localization("registered_message") }}
     </p>
     <p>
-      <a href="/">Palaa etusivulle</a>
+      <a href="/">{{ get_localization("return_to_index_button") }}</a>
     </p>
   {% endif %}
 </body>

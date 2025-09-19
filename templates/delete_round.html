@@ -2,18 +2,18 @@
 <html>
 
 <head>
-  <title>Poista kierros</title>
+  <title>{{ get_localization("delete_round_header") }}</title>
 </head>
 
 <body>
-  <h1>Poista kierros</h1>
+  <h1>{{ get_localization("delete_round_header") }}</h1>
   <form action="/delete_round/{{round.id}}"  method="post">
     <p>
-      Aloitusaika: {{round.start_time}} Paikka: {{round.coursename}}, Lisännyt: {{round.username}}, Pelaajia: {{round.num_participating}} / {{round.num_players}}
+      {{ get_localization("round_item_start") }} {{round.start_time}} {{ get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }} {{round.username}}, {{ get_localization("round_item_players") }} {{round.num_participating}} / {{round.num_players}}
     </p>
-    <p>Haluatko varmasti poistaa tämän kierroksen?</p>
-    <input type="submit" name="remove" value="Poista kierros" />
-    <input type="submit" name="return" value="Palaa takaisin" />
+    <p>{{ get_localization("delete_round_are_you_sure") }}</p>
+    <input type="submit" name="remove" value="{{ get_localization('delete_round_button') }}" />
+    <input type="submit" name="return" value="{{ get_localization('return_button') }}" />
   </form>
 </body>
 

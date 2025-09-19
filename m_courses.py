@@ -27,6 +27,7 @@ def get_courses():
 
 def get_course_data(id, format_options = default_format_options):
     sql = "SELECT courses.id, coursename, num_holes, hole_data, " \
+            "GROUP_CONCAT(course_selections.item_id) AS item_ids, " \
             "GROUP_CONCAT(selection_class_items.item_key) AS item_keys, " \
             "GROUP_CONCAT(selection_classes.class_key) AS item_class_keys " \
             "FROM courses " \
@@ -40,11 +41,12 @@ def get_course_data(id, format_options = default_format_options):
 
 def format_course_data(data, format_options):
     for row in data:
-        if "item_keys" in row and row["item_keys"] and "item_class_keys" in row and row["item_class_keys"]:
+        if  "item_ids" in row and row["item_ids"] and "item_keys" in row and row["item_keys"] and "item_class_keys" in row and row["item_class_keys"]:
+            item_ids = row["item_ids"].split(",")
             item_keys = row["item_keys"].split(",")
             item_class_keys = row["item_class_keys"].split(",")
-            if len(item_keys) == len(item_class_keys):
-                row["items"] = {item_class_keys[i]: item_keys[i] for i in range(len(item_keys))}
+            if len(item_ids) == len(item_keys) == len(item_class_keys):
+                row["items"] = {item_class_keys[i]: (int(item_ids[i]), item_keys[i]) for i in range(len(item_ids))}
 
         if format_options["hole_data"] and "hole_data" in row:
             row["hole_data"] = json.loads(row["hole_data"])

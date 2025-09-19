@@ -17,7 +17,7 @@
   <p>
     {% if "items" in course %}
       {% for k, v in course["items"].items() %}
-        {{ get_localization(k) }}: {{ get_localization(v) }} <br />
+        {{ get_localization(k) }}: {{ get_localization(v[1]) }} <br />
       {% endfor %}
     {% endif %}
   </p>

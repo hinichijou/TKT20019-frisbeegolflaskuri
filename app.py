@@ -224,26 +224,30 @@ def edit_course(course_id):
 
     abort_if_null(course, 404)
 
-    return render_template("edit_course_num_holes.html", constants = constants, course = course)
+    selections = m_selection_classes.get_selection_items([SelectionItemClass.COURSE_DIFFICULTY, SelectionItemClass.COURSE_TYPE])
+
+    #Delete the current selection from the possible selections before passing to the template. It will be the default choice based on course data.
+    if "items" in course:
+        for i in range(len(selections["course_difficulty"])):
+            if selections["course_difficulty"][i][0] == course["items"]["course_difficulty"][0]:
+                del selections["course_difficulty"][i]
+                break
+        for i in range(len(selections["course_type"])):
+            if selections["course_type"][i][0] == course["items"]["course_type"][0]:
+                del selections["course_type"][i]
+                break
+
+    return render_template("edit_course.html", constants = constants, course = course, selections = selections)
 
 def build_course_data(form):
-    hole_data = create_holes_dict(form)
+    course = get_basic_course_data(request.form)
+    course["id"] = form["id"]
+    course["hole_data"] = create_holes_dict(request.form)
 
-    test_inputs(
-        [
-            lambda: test_course_id(form["id"]),
-            lambda: test_coursename(form["coursename"]),
-            lambda: test_num_holes(form["num_holes"]),
-            lambda: test_hole_data(hole_data)
-        ]
-    )
-
-    course = {
-        "id": form["id"],
-        "coursename": form["coursename"],
-        "num_holes": form["num_holes"],
-        "hole_data": hole_data
-    }
+    input_tests = get_basic_course_data_input_tests(course)
+    input_tests.append(lambda: test_course_id(form["id"]))
+    input_tests.append(lambda: test_hole_data(course["hole_data"]))
+    test_inputs(input_tests)
 
     return course
 
@@ -382,6 +386,7 @@ def edit_round(round_id):
     if not courses:
         courses = []
 
+    #Delete the current selection from the possible selections before passing to the template. It will be the default choice based on round data.
     for i in range(len(courses)):
         if courses[i]["coursename"] == round["coursename"]:
             del courses[i]

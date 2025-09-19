@@ -30,6 +30,26 @@
         oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
       />
     </p>
+    <p>
+      {{ get_localization("course_difficulty_header") }} <br />
+      {% set course_diff_default = course["items"]["course_difficulty"] if "items" in course else ("", "course_diff_default") %}
+      <select required name="difficulty_select">
+        <option value="{{ course_diff_default[0] }},{{ course_diff_default[1] }}">{{ get_localization(course_diff_default[1]) }}</option>
+        {% for d in selections.course_difficulty %}
+          <option value="{{ d[0] }},{{ d[1] }}">{{ get_localization(d[1]) }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <p>
+      {{ get_localization("course_type_header") }} <br />
+      {% set course_type_default = course["items"]["course_type"] if "items" in course else ("", "course_type_default") %}
+      <select required name="type_select">
+        <option value="{{ course_type_default[0] }},{{ course_type_default[1] }}">{{ get_localization(course_type_default[1]) }}</option>
+        {% for t in selections.course_type %}
+          <option value="{{ t[0] }},{{ t[1] }}">{{ get_localization(t[1]) }}</option>
+        {% endfor %}
+      </select>
+    </p>
     <input type="submit" value="{{ get_localization('next_button') }}" />
     <input type="hidden" name="id" value="{{ course.id }}" />
     {% for i in range(1, 1 + course.num_holes|int) %}

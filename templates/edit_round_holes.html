@@ -10,11 +10,11 @@
   <form action="/update_round_full" method="post">
     <p>
       {{ get_localization("course_name_header") }} <br />
-      <input inert type="text" value={{round.coursename}} name="coursename" />
+      <input inert type="text" value="{{round.coursename}}" name="coursename" />
     </p>
     <p>
       {{ get_localization("course_holes_header") }} <br />
-      <input inert type="text" value={{round.num_holes}} name="num_holes" />
+      <input inert type="text" value="{{round.num_holes}}" name="num_holes" />
     </p>
     {% for i in range(1, 1 + round.num_holes|int) %}
       <p>

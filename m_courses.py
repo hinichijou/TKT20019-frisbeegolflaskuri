@@ -17,6 +17,8 @@ def add_course_selection(course_id, selection):
     db.execute(sql, [selection, course_id])
 
 def delete_course(course_id):
+    sql = "DELETE FROM course_selections WHERE course_id = ?"
+    db.execute(sql, [course_id])
     sql = "DELETE FROM courses WHERE id = ?"
     db.execute(sql, [course_id])
 

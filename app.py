@@ -33,6 +33,14 @@ def abort_if_null(obj, abortcode):
     if not obj:
         abort(abortcode)
 
+def abort_if_not_in_selections(course):
+    selections = m_selection_classes.get_selection_items([SelectionItemClass.COURSE_DIFFICULTY, SelectionItemClass.COURSE_TYPE])
+
+    #Test that the values from form exist in selections
+    if ((int(course["difficulty_select"][0]), course["difficulty_select"][1]) not in selections["course_difficulty"] or
+        (int(course["type_select"][0]), course["type_select"][1]) not in selections["course_type"]):
+        abort(403)
+
 def test_inputs(input_tests):
     for f in input_tests:
         if not f():
@@ -48,7 +56,7 @@ def test_num(input):
 
 def test_date(input):
     try:
-        datetime.date.fromisoformat(input)
+        datetime.datetime.fromisoformat(input)
     except ValueError:
         return False
 
@@ -103,6 +111,10 @@ def test_item_id(item, allow_empty_input):
 
     return len(item_split) == 2 and test_num(item_split[0]) if not allow_empty_input else (len(item_split) == 2 and test_num(item_split[0])) or item == ""
 
+def format_selections_to_list(course):
+    course["type_select"] = list_from_form_comma_string(course["type_select"])
+    course["difficulty_select"] = list_from_form_comma_string(course["difficulty_select"])
+
 @app.route("/")
 def index():
     return render_template("index.html", rounds = m_rounds.get_all_rounds())
@@ -141,8 +153,7 @@ def create_course():
 
     test_inputs(get_basic_course_data_input_tests(course))
 
-    course["type_select"] = list_from_form_comma_string(course["type_select"])
-    course["difficulty_select"] = list_from_form_comma_string(course["difficulty_select"])
+    format_selections_to_list(course)
 
     return render_template("new_holes.html", constants = constants, course = course)
 
@@ -169,6 +180,10 @@ def create_holes():
     input_tests = get_basic_course_data_input_tests(course)
     input_tests.append(lambda: test_hole_data(course["hole_data"]))
     test_inputs(input_tests)
+
+    format_selections_to_list(course)
+
+    abort_if_not_in_selections(course)
 
     m_courses.add_course(course)
 
@@ -249,8 +264,7 @@ def build_course_data(form):
     input_tests.append(lambda: test_hole_data(course["hole_data"]))
     test_inputs(input_tests)
 
-    course["type_select"] = list_from_form_comma_string(course["type_select"])
-    course["difficulty_select"] = list_from_form_comma_string(course["difficulty_select"])
+    format_selections_to_list(course)
 
     return course
 
@@ -267,6 +281,9 @@ def update_course():
     require_login()
 
     course = build_course_data(request.form)
+
+    abort_if_not_in_selections(course)
+
     m_courses.update_course(course)
 
     return redirect("/course/" + course["id"])

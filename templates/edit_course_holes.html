@@ -10,11 +10,11 @@
   <form action="/update_course" method="post">
     <p>
       {{ get_localization("course_name_header") }} <br />
-      <input inert type="text" value={{course.coursename}} name="coursename" />
+      <input inert type="text" value="{{course.coursename}}" name="coursename" />
     </p>
     <p>
       {{ get_localization("course_holes_header") }} <br />
-      <input inert type="text" value={{course.num_holes}} name="num_holes" />
+      <input inert type="text" value="{{course.num_holes}}" name="num_holes" />
     </p>
     {% if "difficulty_select" in course and course.difficulty_select[0] %}
       <p>

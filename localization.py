@@ -92,3 +92,4 @@ def get_localization(key):
         return localizations[s]
     else:
         print(f"Virhe: lokalisaatioavainta {s} ei löydy lokalisaatiotiedostosta.")
+        return s

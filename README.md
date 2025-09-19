@@ -29,7 +29,9 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 # Sovelluksen käyttöohje:
 * Sovellus tarvitsee toimiakseen tietokannan, jonka voi luoda ajamalla komennon `sqlite3 database.db < schema.sql` pääkansiossa.
 
-* Sovelluksen voi ajaa suorittamalla komennon `flask run` pääkansiossa.
+* Komennolla `sqlite3 database.db < init.sql` tietokantaan saa alustettua tarvittavat arvot.
+
+* Sovelluksen voi ajaa suorittamalla komennon `flask run` pääkansiossa. Sovellus on tämän jälkeen saatavilla osoitteessa `http://127.0.0.1:5000`
 
 * Klikkaamalla "Luo tunnus" linkkiä pääset tunnuksenluontinäkymään, jossa pyydetään käyttäjänimi ja salasana.
 

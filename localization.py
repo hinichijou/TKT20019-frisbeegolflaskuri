@@ -77,7 +77,11 @@ localizations_fin = {
     "return_button": "Palaa takaisin",
     "return_to_index_button": "Palaa takaisin etusivulle",
     "return_to_courses_button": "Palaa ratalistaukseen",
-    "str_no_courses_found": "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen."
+    "no_courses_found": "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen.",
+    "password_mismatch": "VIRHE: salasanat eivät ole samat",
+    "username_taken": "VIRHE: tunnus on jo varattu",
+    "user_does_not_exist": "VIRHE: käyttäjää ei ole olemassa",
+    "wrong_username_or_password": "VIRHE: väärä tunnus tai salasana"
 }
 
 localizations = localizations_fin

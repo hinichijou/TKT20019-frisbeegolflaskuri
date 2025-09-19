@@ -200,7 +200,7 @@ def show_courses():
 
     courses = m_courses.get_courses()
     if not courses:
-        return get_localization_key(LocalizationKeys.str_no_courses_found)
+        return get_localization_key(LocalizationKeys.no_courses_found)
 
     return render_template("show_courses.html", courses = courses)
 
@@ -270,7 +270,7 @@ def new_round():
 
     courses = m_courses.get_courses()
     if not courses:
-        return get_localization_key(LocalizationKeys.str_no_courses_found)
+        return get_localization_key(LocalizationKeys.no_courses_found)
 
     return render_template("new_round.html", constants = constants, courses = courses, date = datetime.datetime.now().isoformat(timespec="minutes"))
 
@@ -526,12 +526,12 @@ def create():
     password1 = request.form["password1"]
     password2 = request.form["password2"]
     if password1 != password2:
-        return "VIRHE: salasanat eivät ole samat"
+        return LocalizationKeys.password_mismatch
 
     try:
         m_users.create_user(username, generate_password_hash(password1))
     except sqlite3.IntegrityError:
-        return "VIRHE: tunnus on jo varattu"
+        return LocalizationKeys.username_taken
 
     return redirect("/registered")
 
@@ -556,14 +556,14 @@ def login():
             user_id = result["id"]
             password_hash = result["password_hash"]
         else:
-            return "VIRHE: käyttäjää ei ole olemassa"
+            return LocalizationKeys.user_does_not_exist
 
         if check_password_hash(password_hash, password):
             session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
         else:
-            return "VIRHE: väärä tunnus tai salasana"
+            return LocalizationKeys.wrong_username_or_password
 
 @app.route("/logout")
 def logout():

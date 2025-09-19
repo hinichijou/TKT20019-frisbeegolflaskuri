@@ -9,9 +9,12 @@ def add_course(data):
 
     course_id = db.last_insert_id()
 
+    add_course_selection(course_id, data["difficulty_select"][0])
+    add_course_selection(course_id, data["type_select"][0])
+
+def add_course_selection(course_id, selection):
     sql = "INSERT INTO course_selections (item_id, course_id) VALUES (?, ?)"
-    db.execute(sql, [data["difficulty_select"][0], course_id])
-    db.execute(sql, [data["type_select"][0], course_id])
+    db.execute(sql, [selection, course_id])
 
 def delete_course(course_id):
     sql = "DELETE FROM courses WHERE id = ?"
@@ -20,6 +23,16 @@ def delete_course(course_id):
 def update_course(data):
     sql = "UPDATE courses SET coursename = ?, num_holes = ?, hole_data = ? WHERE id = ?"
     db.execute(sql, [data["coursename"], data["num_holes"], json.dumps(data["hole_data"]), data["id"]])
+
+    sql = "DELETE FROM course_selections WHERE course_id = ?"
+    db.execute(sql, [data["id"]])
+
+    #Currently the classifications for the course are required in course creation and not in course modification
+    #This is mainly because I couldn't decide if I should require them or not
+    if data["difficulty_select"][0]:
+        add_course_selection(data["id"], data["difficulty_select"][0])
+    if data["type_select"][0]:
+        add_course_selection(data["id"], data["type_select"][0])
 
 def get_courses():
     sql = "SELECT id, coursename, num_holes FROM courses"

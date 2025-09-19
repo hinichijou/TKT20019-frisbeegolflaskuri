@@ -32,9 +32,10 @@
     </p>
     <p>
       {{ get_localization("course_difficulty_header") }} <br />
-      {% set course_diff_default = course["items"]["course_difficulty"] if "items" in course else ("", "course_diff_default") %}
-      <select required name="difficulty_select">
-        <option value="{{ course_diff_default[0] }},{{ course_diff_default[1] }}">{{ get_localization(course_diff_default[1]) }}</option>
+      {% set course_diff_value = "{},{}".format(*course["items"]["course_difficulty"]) if "items" in course else "" %}
+      {% set course_diff_text = course["items"]["course_difficulty"][1] if "items" in course else "course_diff_default" %}
+      <select name="difficulty_select">
+        <option value="{{ course_diff_value }}">{{ get_localization(course_diff_text) }}</option>
         {% for d in selections.course_difficulty %}
           <option value="{{ d[0] }},{{ d[1] }}">{{ get_localization(d[1]) }}</option>
         {% endfor %}
@@ -42,9 +43,10 @@
     </p>
     <p>
       {{ get_localization("course_type_header") }} <br />
-      {% set course_type_default = course["items"]["course_type"] if "items" in course else ("", "course_type_default") %}
-      <select required name="type_select">
-        <option value="{{ course_type_default[0] }},{{ course_type_default[1] }}">{{ get_localization(course_type_default[1]) }}</option>
+      {% set course_type_value = "{},{}".format(*course["items"]["course_type"]) if "items" in course else "" %}
+      {% set course_type_text = course["items"]["course_type"][1] if "items" in course else "course_type_default" %}
+      <select name="type_select">
+        <option value="{{ course_type_value }}">{{ get_localization(course_type_text) }}</option>
         {% for t in selections.course_type %}
           <option value="{{ t[0] }},{{ t[1] }}">{{ get_localization(t[1]) }}</option>
         {% endfor %}

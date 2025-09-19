@@ -16,18 +16,26 @@
       {{ get_localization("course_holes_header") }} <br />
       <input inert type="text" value={{course.num_holes}} name="num_holes" />
     </p>
-    <p>
-      {{ get_localization("course_difficulty_header") }} <br />
-      <select inert name="difficulty_select">
-        <option value="{{ course.difficulty_select[0] }},{{ course.difficulty_select[1] }}">{{ get_localization(course.difficulty_select[1]) }}</option>
-      </select>
-    </p>
-    <p>
-      {{ get_localization("course_type_header") }} <br />
-      <select inert name="type_select">
-        <option value="{{ course.type_select[0] }},{{ course.type_select[1] }}">{{ get_localization(course.type_select[1]) }}</option>
-      </select>
-    </p>
+    {% if "difficulty_select" in course and course.difficulty_select[0] %}
+      <p>
+        {{ get_localization("course_difficulty_header") }} <br />
+        <select inert name="difficulty_select">
+          <option value="{{ course.difficulty_select[0] }},{{ course.difficulty_select[1] }}">{{ get_localization(course.difficulty_select[1]) }}</option>
+        </select>
+      </p>
+    {% else %}
+      <input type="hidden" value="" name="difficulty_select" />
+    {% endif %}
+    {% if "type_select" in course  and course.type_select[0] %}
+      <p>
+        {{ get_localization("course_type_header") }} <br />
+        <select inert name="type_select">
+          <option value="{{ course.type_select[0] }},{{ course.type_select[1] }}">{{ get_localization(course.type_select[1]) }}</option>
+        </select>
+      </p>
+    {% else %}
+      <input type="hidden" value="" name="type_select" />
+    {% endif %}
     {% for i in range(1, 1 + course.num_holes|int) %}
       <p>
         {{ get_localization("hole_header").format(i) }} <br />

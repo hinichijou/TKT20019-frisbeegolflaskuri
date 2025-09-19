@@ -98,10 +98,10 @@ def test_num_players(num_players):
 def list_from_form_comma_string(t):
     return t.split(",")
 
-def test_item_id(item):
-    item = list_from_form_comma_string(item)
+def test_item_id(item, allow_empty_input):
+    item_split = list_from_form_comma_string(item)
 
-    return len(item) == 2 and test_num(item[0])
+    return len(item_split) == 2 and test_num(item_split[0]) if not allow_empty_input else (len(item_split) == 2 and test_num(item_split[0])) or item == ""
 
 @app.route("/")
 def index():
@@ -125,12 +125,12 @@ def get_basic_course_data(form):
 
     return course
 
-def get_basic_course_data_input_tests(course):
+def get_basic_course_data_input_tests(course, allow_empty_item_id = False):
     return [
         lambda: test_coursename(course["coursename"]),
         lambda: test_num_holes(course["num_holes"]),
-        lambda: test_item_id(course["type_select"]),
-        lambda: test_item_id(course["difficulty_select"])
+        lambda: test_item_id(course["type_select"], allow_empty_item_id),
+        lambda: test_item_id(course["difficulty_select"], allow_empty_item_id)
     ]
 
 @app.route("/create_course", methods=["POST"])
@@ -244,10 +244,13 @@ def build_course_data(form):
     course["id"] = form["id"]
     course["hole_data"] = create_holes_dict(request.form)
 
-    input_tests = get_basic_course_data_input_tests(course)
+    input_tests = get_basic_course_data_input_tests(course, True)
     input_tests.append(lambda: test_course_id(form["id"]))
     input_tests.append(lambda: test_hole_data(course["hole_data"]))
     test_inputs(input_tests)
+
+    course["type_select"] = list_from_form_comma_string(course["type_select"])
+    course["difficulty_select"] = list_from_form_comma_string(course["difficulty_select"])
 
     return course
 

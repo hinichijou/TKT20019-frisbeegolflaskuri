@@ -7,4 +7,6 @@ class LocalizationKeys(StrEnum):
     username_taken = auto(),
     user_does_not_exist = auto(),
     wrong_username_or_password = auto(),
-    return_to_index_button = auto()
+    return_to_index_button = auto(),
+    modify_button = auto(),
+    delete_button = auto(),

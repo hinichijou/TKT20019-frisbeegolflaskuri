@@ -8,10 +8,10 @@
 <body>
   <h1>{{ round.coursename }}</h1>
   {% if session.user_id == round.user_id %}
-  <p>
-    <a href="/edit_round/{{ round.id }}">{{ get_localization("modify_button") }}</a>
-    <a href="/delete_round/{{ round.id }}">{{ get_localization("delete_button") }}</a>
-  </p>
+    <p>
+      {{ components.edit_round_link(round.id) }}
+      {{ components.delete_round_link(round.id) }}
+    </p>
   {% endif %}
   <p>
     {{ get_localization("round_item_creator") }} <a href="/user/{{ round.user_id }}">{{round.username}}</a>

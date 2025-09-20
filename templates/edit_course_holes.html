@@ -41,7 +41,7 @@
       <p>
         {{ get_localization("hole_header").format(i) }} <br />
         {{ get_localization("par_header") }} <br />
-        {% set par_val = course.hole_data[i]["par"] if i <= course.hole_data|length else constants.hole_par_default %}
+        {% set par_val = course.hole_data[i|string]["par"] if i <= course.hole_data|length else constants.hole_par_default %}
         <input
           type="number"
           value="{{par_val}}"
@@ -51,7 +51,7 @@
           name="par_{{i}}"
         /><br />
         {{ get_localization("hole_length_header") }} <br />
-        {% set length_val = course.hole_data[i]["length"] if i <= course.hole_data|length else constants.hole_length_default %}
+        {% set length_val = course.hole_data[i|string]["length"] if i <= course.hole_data|length else constants.hole_length_default %}
         <input
           type="number"
           value="{{length_val}}"

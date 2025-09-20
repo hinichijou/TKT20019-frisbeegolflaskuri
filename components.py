@@ -29,3 +29,6 @@ def user_link(user_id, username):
 
 def course_link(course_id, text):
     return link_with_text(f"/course/{course_id}", text)
+
+def round_link(round_id, text):
+    return link_with_text(f"/round/{round_id}", text)

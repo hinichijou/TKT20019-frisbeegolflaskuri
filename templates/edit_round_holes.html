@@ -7,6 +7,7 @@
 
 <body>
   <h1>{{ get_localization("modify_holes_header") }}</h1>
+  {{ components.round_link(round.round_id, get_localization("return_to_round_page_button")) }}
   <form action="/update_round_full" method="post">
     <p>
       {{ get_localization("course_name_header") }} <br />
@@ -20,7 +21,7 @@
       <p>
         {{ get_localization("hole_header").format(i) }} <br />
         {{ get_localization("par_header") }} <br />
-        {% set par_val = round.hole_data[i]["par"] if i <= round.hole_data|length else constants.hole_par_default %}
+        {% set par_val = round.hole_data[i|string]["par"] if i <= round.hole_data|length else constants.hole_par_default %}
         <input
           type="number"
           value="{{par_val}}"
@@ -30,7 +31,7 @@
           name="par_{{i}}"
         /><br />
         {{ get_localization("hole_length_header") }} <br />
-        {% set length_val = round.hole_data[i]["length"] if i <= round.hole_data|length else constants.hole_length_default %}
+        {% set length_val = round.hole_data[i|string]["length"] if i <= round.hole_data|length else constants.hole_length_default %}
         <input
           type="number"
           value="{{length_val}}"

@@ -103,6 +103,10 @@ def test_num_holes(num_holes):
     return test_num_minmax(num_holes, constants.course_holes_min, constants.course_holes_max)
 
 def test_hole_data(hole_data):
+    for i in range(len(hole_data.keys())):
+        if str(i + 1) not in hole_data.keys():
+            return False
+
     for v in hole_data.values():
         if not (test_num_minmax(v["par"], constants.hole_par_min, constants.hole_par_max)
             and test_num_minmax(v["length"], constants.hole_length_min, constants.hole_length_max)):
@@ -174,7 +178,7 @@ def create_holes_dict(form):
         lengthkey = f"length_{i}"
         # If we are adding holes the data for new holes might not be in the form yet
         if parkey in form and lengthkey in form:
-            holes_dict[i] = {"par": form[parkey], "length": form[lengthkey]}
+            holes_dict[str(i)] = {"par": form[parkey], "length": form[lengthkey]}
         else:
             break
 

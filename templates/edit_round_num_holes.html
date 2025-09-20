@@ -7,6 +7,7 @@
 
 <body>
   <h1>{{ get_localization("modify_num_holes_header") }}</h1>
+  {{ components.round_link(round.round_id, get_localization("return_to_round_page_button")) }}
   <form action="/edit_round_holes" method="post">
     <p>
       {{ get_localization("course_name_header") }} <br />
@@ -28,8 +29,8 @@
     <input type="hidden" name="start_time" value="{{ round.start_time }}" />
     <input type="hidden" name="num_players" value="{{ round.num_players }}" />
     {% for i in range(1, 1 + round.num_holes|int) %}
-      <input type="hidden" value='{{round["hole_data"][i]["par"]}}' name="par_{{i}}" /><br />
-      <input type="hidden" value='{{round["hole_data"][i]["length"]}}' name="length_{{i}}" /><br />
+      <input type="hidden" value='{{round["hole_data"][i|string]["par"]}}' name="par_{{i}}" /><br />
+      <input type="hidden" value='{{round["hole_data"][i|string]["length"]}}' name="length_{{i}}" /><br />
     {% endfor %}
   </form>
 </body>

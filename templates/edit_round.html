@@ -7,6 +7,7 @@
 
 <body>
   <h1>{{ get_localization("modify_round_header") }}</h1>
+  {{ components.round_link(round.round_id, get_localization("return_to_round_page_button")) }}
   <form method="post">
     <p>
       {{ get_localization("select_course_header") }} <br />

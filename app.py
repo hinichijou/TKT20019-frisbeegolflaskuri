@@ -12,6 +12,8 @@ import m_users
 import m_rounds
 import m_courses
 import m_selection_classes
+from markupsafe import Markup
+
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -20,7 +22,13 @@ app.secret_key = config.secret_key
 def utility_processor():
     def get_localization(key):
         return localization.get_localization(key)
-    return dict(get_localization=get_localization)
+
+    # A test for creating and sharing some basic components between templates. Could build a library of basic components and call them with functions from the templates
+    # Other methods that Jinja seems to offer: template inheritance, include statement, macros
+    def get_return_to_index_button():
+        return Markup(f"<a href='/'> {get_localization(LocalizationKeys.return_to_index_button)} </a>")
+
+    return dict(get_localization=get_localization, get_return_to_index_button=get_return_to_index_button)
 
 def require_login():
     if "user_id" not in session:

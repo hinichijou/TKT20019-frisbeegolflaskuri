@@ -7,12 +7,5 @@ class LocalizationKeys(StrEnum):
     password_mismatch = auto(),
     username_taken = auto(),
     user_does_not_exist = auto(),
-    wrong_username_or_password = auto()
-
-def get_localization_key(s):
-    try:
-        key = LocalizationKeys(s)
-    except ValueError:
-        print(f"Virhe: lokalisaatioavainta {s} ei ole määritetty.")
-        return s
-    return key
+    wrong_username_or_password = auto(),
+    return_to_index_button = auto()

@@ -37,12 +37,18 @@ def abort_if_null(obj, abortcode):
     if not obj:
         abort(abortcode)
 
-def abort_if_not_in_selections(course):
+def abort_if_not_in_selections(course, allow_empty = False):
     selections = m_selection_classes.get_selection_items([SelectionItemClass.COURSE_DIFFICULTY, SelectionItemClass.COURSE_TYPE])
 
     #Test that the values from form exist in selections
-    if ((int(course["difficulty_select"][0]), course["difficulty_select"][1]) not in selections["course_difficulty"] or
-        (int(course["type_select"][0]), course["type_select"][1]) not in selections["course_type"]):
+    if (course["difficulty_select"][0] and (int(course["difficulty_select"][0]), course["difficulty_select"][1]) not in selections["course_difficulty"]):
+        abort(403)
+    elif not course["difficulty_select"][0] and not allow_empty:
+        abort(403)
+
+    if (course["type_select"][0] and (int(course["type_select"][0]), course["type_select"][1]) not in selections["course_type"]):
+        abort(403)
+    elif not course["type_select"][0] and not allow_empty:
         abort(403)
 
 def test_inputs(input_tests):
@@ -248,11 +254,11 @@ def edit_course(course_id):
     #Delete the current selection from the possible selections before passing to the template. It will be the default choice based on course data.
     if "items" in course:
         for i in range(len(selections["course_difficulty"])):
-            if selections["course_difficulty"][i][0] == course["items"]["course_difficulty"][0]:
+            if "course_difficulty" in course["items"] and selections["course_difficulty"][i][0] == course["items"]["course_difficulty"][0]:
                 del selections["course_difficulty"][i]
                 break
         for i in range(len(selections["course_type"])):
-            if selections["course_type"][i][0] == course["items"]["course_type"][0]:
+            if "course_type" in course["items"] and selections["course_type"][i][0] == course["items"]["course_type"][0]:
                 del selections["course_type"][i]
                 break
 
@@ -286,7 +292,7 @@ def update_course():
 
     course = build_course_data(request.form)
 
-    abort_if_not_in_selections(course)
+    abort_if_not_in_selections(course, True)
 
     m_courses.update_course(course)
 

@@ -11,6 +11,7 @@ localizations_fin = {
     "repeat_password_header": "Salasana uudestaan:",
     "user_page_header": "Käyttäjäsivu",
     "new_course_header": "Uusi rata",
+    "modify_course_header": "Muokkaa radan tietoja",
     "new_round_header": "Uusi kierros",
     "create_course_button": "Lisää rata",
     "browse_courses_button": "Selaa ratoja",

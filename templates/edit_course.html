@@ -2,11 +2,11 @@
 <html>
 
 <head>
-  <title>{{ get_localization("modify_num_holes_header") }}</title>
+  <title>{{ get_localization("modify_course_header") }}</title>
 </head>
 
 <body>
-  <h1>{{ get_localization("modify_num_holes_header") }}</h1>
+  <h1>{{ get_localization("modify_course_header") }}</h1>
   {{ components.course_link(course.id, get_localization("return_to_course_page_button")) }}
   <form action="/edit_course_holes" method="post">
     <p>
@@ -33,8 +33,8 @@
     </p>
     <p>
       {{ get_localization("course_difficulty_header") }} <br />
-      {% set course_diff_value = "{},{}".format(*course["items"]["course_difficulty"]) if "items" in course else "" %}
-      {% set course_diff_text = course["items"]["course_difficulty"][1] if "items" in course else "course_diff_default" %}
+      {% set course_diff_value = "{},{}".format(*course["items"]["course_difficulty"]) if "items" in course and "course_difficulty" in course["items"] else "" %}
+      {% set course_diff_text = course["items"]["course_difficulty"][1] if "items" in course and "course_difficulty" in course["items"] else "course_diff_default" %}
       <select name="difficulty_select">
         <option value="{{ course_diff_value }}">{{ get_localization(course_diff_text) }}</option>
         {% for d in selections.course_difficulty %}
@@ -44,8 +44,8 @@
     </p>
     <p>
       {{ get_localization("course_type_header") }} <br />
-      {% set course_type_value = "{},{}".format(*course["items"]["course_type"]) if "items" in course else "" %}
-      {% set course_type_text = course["items"]["course_type"][1] if "items" in course else "course_type_default" %}
+      {% set course_type_value = "{},{}".format(*course["items"]["course_type"]) if "items" in course and "course_type" in course["items"] else "" %}
+      {% set course_type_text = course["items"]["course_type"][1] if "items" in course and "course_type" in course["items"] else "course_type_default" %}
       <select name="type_select">
         <option value="{{ course_type_value }}">{{ get_localization(course_type_text) }}</option>
         {% for t in selections.course_type %}

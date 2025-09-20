@@ -7,6 +7,7 @@
 
 <body>
   <h1>{{ get_localization("modify_num_holes_header") }}</h1>
+  {{ components.course_link(course.id, get_localization("return_to_course_page_button")) }}
   <form action="/edit_course_holes" method="post">
     <p>
       {{ get_localization("course_name_header") }} <br />

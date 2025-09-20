@@ -34,6 +34,9 @@
         <li><a href="/round/{{result.id}}">{{ get_localization("round_item_start") }} {{result.start_time}} {{ get_localization("round_item_place") }} {{result.coursename}}, {{ get_localization("round_item_creator") }} {{result.username}}, {{ get_localization("round_item_players") }} {{result.num_participating}} / {{result.num_players}}</a></li>
       {% endfor %}
     {% endif %}
+    <p>
+      {{ components.return_to_index_link() }}
+    </p>
   {% endif %}
 </body>
 

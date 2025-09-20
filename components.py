@@ -26,3 +26,6 @@ def delete_round_link(round_id):
 
 def user_link(user_id, username):
     return link_with_text(f"/user/{user_id}", username)
+
+def course_link(course_id, text):
+    return link_with_text(f"/course/{course_id}", text)

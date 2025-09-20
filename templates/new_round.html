@@ -8,6 +8,7 @@
 <body>
   {% if session.username %}
   <h1>{{ get_localization("new_round_header") }}</h1>
+  {{ components.return_to_index_link() }}
   <form action="/create_round" method="post">
     <p>
       {{ get_localization("select_course_header") }} <br />

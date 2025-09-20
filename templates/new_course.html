@@ -7,51 +7,52 @@
 
 <body>
   {% if session.username %}
-  <h1>{{ get_localization("new_course_header") }}</h1>
-  <form action="/create_course" method="post">
-    <p>
-      {{ get_localization("course_name_header") }} <br />
-      <input
-        type="text"
-        required
-        value=""
-        name="coursename"
-        minlength="{{constants.coursename_minlength}}"
-        maxlength="{{constants.coursename_maxlength}}"
-      />
-    </p>
-    <p>
-      {{ get_localization("course_holes_header") }} <br />
-      <input
-        type="number"
-        required
-        value="{{constants.course_holes_default}}"
-        min="{{constants.course_holes_min}}"
-        max="{{constants.course_holes_max}}"
-        oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
-        name="num_holes"
-      />
-    </p>
-    <p>
-      {{ get_localization("course_difficulty_header") }} <br />
-      <select required name="difficulty_select">
-        <option value="">{{ get_localization("course_diff_default") }}</option>
-        {% for d in selections.course_difficulty %}
-          <option value="{{ d[0] }},{{ d[1] }}">{{ get_localization(d[1]) }}</option>
-        {% endfor %}
-      </select>
-    </p>
-    <p>
-      {{ get_localization("course_type_header") }} <br />
-      <select required name="type_select">
-        <option value="">{{ get_localization("course_type_default") }}</option>
-        {% for t in selections.course_type %}
-          <option value="{{ t[0] }},{{ t[1] }}">{{ get_localization(t[1]) }}</option>
-        {% endfor %}
-      </select>
-    </p>
-    <input type="submit" value="{{ get_localization('next_button') }}" />
-  </form>
+    <h1>{{ get_localization("new_course_header") }}</h1>
+    {{ components.return_to_index_link() }}
+    <form action="/create_course" method="post">
+      <p>
+        {{ get_localization("course_name_header") }} <br />
+        <input
+          type="text"
+          required
+          value=""
+          name="coursename"
+          minlength="{{constants.coursename_minlength}}"
+          maxlength="{{constants.coursename_maxlength}}"
+        />
+      </p>
+      <p>
+        {{ get_localization("course_holes_header") }} <br />
+        <input
+          type="number"
+          required
+          value="{{constants.course_holes_default}}"
+          min="{{constants.course_holes_min}}"
+          max="{{constants.course_holes_max}}"
+          oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
+          name="num_holes"
+        />
+      </p>
+      <p>
+        {{ get_localization("course_difficulty_header") }} <br />
+        <select required name="difficulty_select">
+          <option value="">{{ get_localization("course_diff_default") }}</option>
+          {% for d in selections.course_difficulty %}
+            <option value="{{ d[0] }},{{ d[1] }}">{{ get_localization(d[1]) }}</option>
+          {% endfor %}
+        </select>
+      </p>
+      <p>
+        {{ get_localization("course_type_header") }} <br />
+        <select required name="type_select">
+          <option value="">{{ get_localization("course_type_default") }}</option>
+          {% for t in selections.course_type %}
+            <option value="{{ t[0] }},{{ t[1] }}">{{ get_localization(t[1]) }}</option>
+          {% endfor %}
+        </select>
+      </p>
+      <input type="submit" value="{{ get_localization('next_button') }}" />
+    </form>
   {% endif %}
 </body>
 

@@ -29,7 +29,7 @@ def update_round(data):
 
 def get_all_rounds(format_options = default_format_options):
     sql = "SELECT rounds.id, coursename, username, start_time, num_players, " \
-            "IFNULL(SUM(participations.participator_id) + 1, 1) AS num_participating " \
+            "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating " \
             "FROM rounds " \
             "JOIN users ON users.id=rounds.creator_id " \
             "LEFT JOIN participations ON participations.round_id=rounds.id " \
@@ -82,7 +82,7 @@ def find_rounds(searchparams, format_options = default_format_options):
     types, params = zip(*searchparams)
     where = create_where_condition(types)
     sql = "SELECT rounds.id, coursename, username, start_time, num_players, " \
-            "IFNULL(SUM(participations.participator_id) + 1, 1) AS num_participating " \
+            "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating " \
             "FROM rounds " \
             "JOIN users ON users.id=rounds.creator_id " \
             "LEFT JOIN participations ON participations.round_id=rounds.id " \

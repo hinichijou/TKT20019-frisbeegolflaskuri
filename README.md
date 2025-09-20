@@ -24,7 +24,7 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 
 * Sovellus vastaa suunnilleen esimerkkisovellusta sulkapalloseura ollen hieman monimutkaisempi. Sovellus nähdäkseni täyttää tällä kuvauksella kaikki perusvaatimukset, mutta lisää yhden tietokohdetason (rata -> kierros -> ilmoittautuminen). Toinen lisäys on kierroksen aikainen tulosseuranta, jonka näkisin suunnilleen vastaavan sitä, jos sulkapallosovelluksessa olisi jonkunlainen tulostenmerkintämahdollisuus. Motivaationa tälle suunnitelmalle oli saada aikaan jotain mitä pystyisin toivottavasti kokeilemaan käytännössä.
 
-* Tietokannan rakenteesta: 4 taulua: käyttäjät, radat, kierrokset ja ilmoittautumiset. Radan tiedot periaatteessa kopioidaan kierrokseen luomishetkellä koska ratojen layoutit muuttuvat suhteellisen usein, toisaalta ajatuksena on että kierroksen tiedoissa valmista rataa voi muokata niin että esim. custom kierros missä heitetään vain osa väylistä on mahdollinen. Kierroksen ja käyttäjien väillä on relaatio. Kierroksen luojan id tallennetaan kierroksen tietoihin, kierrokselle ilmoittautumiset ovat omassa taulukossaan, joka toimii linkkinä kierroksen ja ilmoittautujien välillä.
+* Tietokannan rakenteesta: 7 taulua: käyttäjät, radat, kierrokset, ilmoittautumiset, luokitteluluokat, luokittelut ja luokittelut radoille. Radan tiedot periaatteessa kopioidaan kierrokseen luomishetkellä koska ratojen layoutit muuttuvat suhteellisen usein, toisaalta ajatuksena on että kierroksen tiedoissa valmista rataa voi muokata niin että esim. custom kierros missä heitetään vain osa väylistä on mahdollinen. Kierroksen ja käyttäjien väillä on relaatio. Kierroksen luojan id tallennetaan kierroksen tietoihin, kierrokselle ilmoittautumiset ovat omassa taulukossaan, joka toimii linkkinä kierroksen ja ilmoittautujien välillä. Luokitteluluokat sisältää kaikki luokittelut joita radoille voi antaa, luokittelut kaikki arvot joita luokitteluilla on, ja luokittelut radoille toimii linkkinä luokittelujen ja ratojen välillä.
 
 # Sovelluksen käyttöohje:
 * Sovellus tarvitsee toimiakseen tietokannan, jonka voi luoda ajamalla komennon `sqlite3 database.db < schema.sql` pääkansiossa.
@@ -36,3 +36,5 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 * Klikkaamalla "Luo tunnus" linkkiä pääset tunnuksenluontinäkymään, jossa pyydetään käyttäjänimi ja salasana.
 
 * Klikkaamalla "Kirjaudu sisään" linkkiä pääset kirjautumisnäkymään. Syöttämällä tietokannasta löytyvän tunnuksen ja salasanan pääset käsiksi sovelluksen kirjautuneen käyttäjän toimintoihin.
+
+* Sovelluksen käyttäjä voi pääsivulla kirjautuneena lisätä ratoja, selata ratoja, lisätä kierroksia (kunhan ainakin yksi rata on lisätty ensin) ja etsiä kierroksia radan tai alkamisajan perusteella

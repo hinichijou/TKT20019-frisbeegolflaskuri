@@ -6,7 +6,8 @@ import datetime
 import config
 from constants import constants, SelectionItemClass
 import localization
-from localizationkeys import get_localization_key, LocalizationKeys
+from localizationkeys import LocalizationKeys
+from localization import get_localization
 import m_users
 import m_rounds
 import m_courses
@@ -215,7 +216,7 @@ def show_courses():
 
     courses = m_courses.get_courses()
     if not courses:
-        return get_localization_key(LocalizationKeys.no_courses_found)
+        return get_localization(LocalizationKeys.no_courses_found)
 
     return render_template("show_courses.html", courses = courses)
 
@@ -294,7 +295,7 @@ def new_round():
 
     courses = m_courses.get_courses()
     if not courses:
-        return get_localization_key(LocalizationKeys.no_courses_found)
+        return get_localization(LocalizationKeys.no_courses_found)
 
     return render_template("new_round.html", constants = constants, courses = courses, date = datetime.datetime.now().isoformat(timespec="minutes"))
 
@@ -551,12 +552,12 @@ def create():
     password1 = request.form["password1"]
     password2 = request.form["password2"]
     if password1 != password2:
-        return LocalizationKeys.password_mismatch
+        return get_localization(LocalizationKeys.password_mismatch)
 
     try:
         m_users.create_user(username, generate_password_hash(password1))
     except sqlite3.IntegrityError:
-        return LocalizationKeys.username_taken
+        return get_localization(LocalizationKeys.username_taken)
 
     return redirect("/registered")
 
@@ -581,14 +582,14 @@ def login():
             user_id = result["id"]
             password_hash = result["password_hash"]
         else:
-            return LocalizationKeys.user_does_not_exist
+            return get_localization(LocalizationKeys.user_does_not_exist)
 
         if check_password_hash(password_hash, password):
             session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
         else:
-            return LocalizationKeys.wrong_username_or_password
+            return get_localization(LocalizationKeys.wrong_username_or_password)
 
 @app.route("/logout")
 def logout():

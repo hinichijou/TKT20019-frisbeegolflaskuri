@@ -64,6 +64,10 @@ def get_sql_for_param(param):
             return "coursename = ?"
         case FindRoundParam.CREATORID:
             return "creator_id = ?"
+        case FindRoundParam.ROUNDID:
+            return "rounds.id = ?"
+        case FindRoundParam.PARTICIPATORID:
+            return "participations.participator_id = ?"
         case _:
             return ""
 

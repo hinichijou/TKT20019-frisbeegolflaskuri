@@ -7,4 +7,6 @@ class SelectionItemClass(StrEnum):
 class FindRoundParam(Enum):
     DATE = 1,
     COURSENAME = 2,
-    CREATORID = 3
+    CREATORID = 3,
+    ROUNDID = 4,
+    PARTICIPATORID = 5

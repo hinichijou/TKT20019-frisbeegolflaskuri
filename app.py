@@ -532,11 +532,13 @@ def show_user(user_id):
     test_inputs([lambda: test_user_id(user_id)])
 
     user = m_users.get_user(user_id)
+    #The queries below could be combined to a single query but this is good enough for the time being
     rounds = m_rounds.find_rounds([(FindRoundParam.CREATORID, user_id)])
+    participating_rounds = m_rounds.find_rounds([(FindRoundParam.PARTICIPATORID, user_id)])
 
     abort_if_null(user, 404)
 
-    return render_template("show_user.html", user = user, rounds = rounds)
+    return render_template("show_user.html", user = user, rounds = rounds, participating_rounds = participating_rounds)
 
 @app.route("/round_sign_up", methods=["POST"])
 def round_sign_up():

@@ -33,8 +33,22 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 
 * Sovelluksen voi ajaa suorittamalla komennon `flask run` pääkansiossa. Sovellus on tämän jälkeen saatavilla osoitteessa `http://127.0.0.1:5000`
 
-* Klikkaamalla "Luo tunnus" linkkiä pääset tunnuksenluontinäkymään, jossa pyydetään käyttäjänimi ja salasana.
+* Klikkaamalla "Luo tunnus" linkkiä pääsee tunnuksenluontinäkymään, jossa pyydetään käyttäjänimi ja salasana.
 
-* Klikkaamalla "Kirjaudu sisään" linkkiä pääset kirjautumisnäkymään. Syöttämällä tietokannasta löytyvän tunnuksen ja salasanan pääset käsiksi sovelluksen kirjautuneen käyttäjän toimintoihin.
+* Klikkaamalla "Kirjaudu sisään" linkkiä pääsee kirjautumisnäkymään. Syöttämällä tietokannasta löytyvän tunnuksen ja salasanan pääsee käsiksi sovelluksen kirjautuneen käyttäjän toimintoihin.
 
 * Sovelluksen käyttäjä voi pääsivulla kirjautuneena lisätä ratoja, selata ratoja, lisätä kierroksia (kunhan ainakin yksi rata on lisätty ensin) ja etsiä kierroksia radan tai alkamisajan perusteella
+
+* Klikkaamalla "Lisää rata" linkkiä radalle kysytään ensin nimi, väylien lukumäärä, radan vaikeustaso ja radan tyyppi. Klikkaamalla "Seuraava" radan väylille kysytään par ja pituus jotka on mahdollista jättää vakioarvoihin. Klikkaamalla "Lisää rata" rata lisätään tietokantaan.
+
+* Klikkaamalla "Selaa ratoja" pääsee näkymään, joka listaa kaikki lisätyt radat. Klikkaamalla rataa listassa pääsee näkymään, joka listaa radan tiedot. Ratasivulla "Muokkaa" nappia painamalla pääsee radan muokkausnäkymään ja "Poista" nappia painamalla radan poistonäkymään
+
+* Klikkaamalla "Lisää kierros" pääsee näkymään, jossa voi luoda uuden kierroksen. Kierrokselle tarvitsee valita rata, antaa aloitusaika ja valita pelaajien määrä. Kaikki luodut kierrokset näkyvät listassa etusivulla.
+
+* Klikkaamalla "Etsi kierros" pääsee näkymään, jossa etsiä kierroksia radan nimellä tai päivämäärällä. Vakioarvoilla haku listaa kaikki kierrokset.
+
+* Klikkaamalla "Kirjaudu ulos" linkkiä pääsee kirjautumaan ulos sovelluksesta.
+
+* Klikkaamalla kierrosta pääsee kierrosnäkymään joka listaa kierroksen tietoja. Kierroksen lisännyt käyttäjä voi muokata kierrosta tai poistaa kierroksen. Muut käyttäjät pääsevät ilmoittautumaan kierrokselle kyseisessä näkymässä sivun alaosan painikkeesta. Kierroksen lisännyt käyttäjä on aina oletuksena myös osallistuja kierroksella. Kierroksen ratatietoja voi muokata vapaasti, sillä ei ole yhteyttä tallennettuihin ratoihin kierroksen luomisen jälkeen.
+
+* Klikkaamalla käyttäjän nimeä pääsee käyttäjäsivulle, jossa näkee käyttäjien tietoja, kierrokset jotka käyttäjä on lisännyt ja kierrokset, joilla käyttäjä on ilmoittautunut.

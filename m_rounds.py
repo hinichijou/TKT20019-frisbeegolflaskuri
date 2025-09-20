@@ -17,6 +17,8 @@ def add_round(course_id, creator, start_time, num_players):
         print(f"VIRHE: Rataa id:llä {course_id} ei löytynyt tietokannasta. Uutta kierrosta ei luotu")
 
 def delete_round(round_id):
+    delete_participation(round_id)
+
     sql = "DELETE FROM rounds WHERE id = ?"
     db.execute(sql, [round_id])
 
@@ -43,11 +45,12 @@ def get_all_rounds(format_options = default_format_options):
     return rounds
 
 def get_round(id, format_options = default_format_options):
-    sql = "SELECT rounds.id, coursename, num_holes, hole_data, username, users.id AS user_id, start_time, num_players, " \
-            "IFNULL(SUM(participations.participator_id) + 1, 1) AS num_participating " \
+    sql = "SELECT rounds.id as round_id, creator_id, coursename, num_holes, hole_data, start_time, num_players, " \
+            "GROUP_CONCAT(users.id) AS user_ids, " \
+            "GROUP_CONCAT(users.username) AS usernames " \
             "FROM rounds " \
-            "JOIN users ON users.id IN (rounds.creator_id, participations.participator_id) " \
             "LEFT JOIN participations ON participations.round_id=rounds.id " \
+            "JOIN users ON users.id IN (rounds.creator_id, participations.participator_id) " \
             "WHERE rounds.id = ? " \
             "GROUP BY rounds.id"
     result = db.query_db(sql, [id], db.RespType.DICT)
@@ -100,5 +103,23 @@ def format_rounds(rounds, format_options):
             row["start_time"] = format_date_from_iso(row["start_time"])
         if format_options["hole_data"] and "hole_data" in row:
             row["hole_data"] = json.loads(row["hole_data"])
+        if "user_ids" in row and "usernames" in row:
+            user_ids = row["user_ids"].split(",")
+            usernames = row["usernames"].split(",")
+            if len(user_ids) == len(usernames):
+                row["participators"] = {int(user_ids[i]): usernames[i] for i in range(len(user_ids))}
 
     return rounds
+
+def add_participation(round_id, user_id):
+    sql = "INSERT INTO participations (round_id, participator_id) VALUES (?, ?)"
+    db.execute(sql, [round_id, user_id])
+
+def delete_participation(round_id, user_id = ""):
+    sql = "DELETE FROM participations WHERE round_id = ?"
+    params = [round_id]
+    if user_id:
+        sql += "AND participator_id = ?"
+        params.append(user_id)
+
+    db.execute(sql, params)

@@ -14,7 +14,6 @@ import m_rounds
 import m_courses
 import m_selection_classes
 
-
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
@@ -28,6 +27,10 @@ def require_login():
 
 def abort_if_id_not_sid(user_id):
     if session["user_id"] != user_id:
+        abort(403)
+
+def abort_if_sid_not_in_list(id_list):
+    if session["user_id"] not in id_list:
         abort(403)
 
 def abort_if_null(obj, abortcode):
@@ -78,8 +81,8 @@ def test_password(password):
 def test_coursename(coursename):
     return test_minmax_limits(len(coursename), constants.coursename_minlength, constants.coursename_maxlength)
 
-def test_course_id(course_id):
-    return test_num(course_id)
+def test_course_id(course_id, allow_empty = False):
+    return test_num(course_id) or (allow_empty and course_id == "")
 
 def test_round_id(round_id):
     return test_num(round_id)
@@ -382,14 +385,19 @@ def find_round():
 
     return render_template("find_round.html", courses = courses, course_query = course_query, start_time = start_time, results = results, arginput = arginput)
 
-@app.route("/round/<int:round_id>")
-def show_round(round_id):
-    require_login()
+def round_id_input_handling(round_id):
     test_inputs([lambda: test_round_id(round_id)])
 
     round = m_rounds.get_round(round_id)
-
     abort_if_null(round, 404)
+
+    return round
+
+@app.route("/round/<int:round_id>")
+def show_round(round_id):
+    require_login()
+
+    round = round_id_input_handling(round_id)
 
     return render_template("show_round.html", round = round)
 
@@ -401,7 +409,7 @@ def edit_round(round_id):
     round = m_rounds.get_round(round_id, {"start_time": False, "hole_data": True})
 
     abort_if_null(round, 404)
-    abort_if_id_not_sid(m_rounds.get_user_id_for_round(round["id"]))
+    abort_if_id_not_sid(round["creator_id"])
 
     courses = m_courses.get_courses()
     if not courses:
@@ -419,7 +427,7 @@ def build_round_data_course_select(form):
     test_inputs(
         [
             lambda: test_round_id(form["id"]),
-            lambda: test_course_id(form["course_select"]),
+            lambda: test_course_id(form["course_select"], True),
             lambda: test_start_time(form["start_time"]),
             lambda: test_num_players(form["num_players"])
         ]
@@ -529,6 +537,33 @@ def show_user(user_id):
     abort_if_null(user, 404)
 
     return render_template("show_user.html", user = user, rounds = rounds)
+
+@app.route("/round_sign_up", methods=["POST"])
+def round_sign_up():
+    require_login()
+
+    round = round_id_input_handling(request.form["round_id"])
+
+    #Creator is always participating to the round by default. Also check that the participation doesn't exceed the amount set for the round.
+    if round["creator_id"] == session["user_id"] or len(round["participators"].keys()) >= round["num_players"]:
+        abort(403)
+
+    m_rounds.add_participation(round["round_id"], session["user_id"])
+
+    return redirect(f"/round/{round["round_id"]}")
+
+@app.route("/round_unparticipate", methods=["POST"])
+def round_unparticipate():
+    require_login()
+
+    round = round_id_input_handling(request.form["round_id"])
+
+    abort_if_sid_not_in_list(round["participators"].keys())
+
+    m_rounds.delete_participation(round["round_id"], session["user_id"])
+
+    return redirect(f"/round/{round["round_id"]}")
+
 
 @app.route("/register")
 def register():

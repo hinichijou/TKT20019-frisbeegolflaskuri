@@ -36,6 +36,7 @@ localizations_fin = {
     "courses_header": "Radat",
     "course_information_header": "Väylien tiedot",
     "round_information_header": "Kierroksen tiedot",
+    "sign_ups_header": "Kierrokselle ilmoittautuneet pelaajat",
     "user_amount_rounds_created": "Käyttäjällä on yhteensä {} luotua kierrosta",
     "rounds_created_by_user_header": "Käyttäjän lisäämät kierrokset:",
     "hole_header": "Väylä {}:",
@@ -74,6 +75,8 @@ localizations_fin = {
     "submit_changes_button": "Tallenna muutokset",
     "submit_search_button": "Lähetä",
     "to_hole_modification_button": "Muokkaa väyliä",
+    "round_sign_up_button": "Ilmoittaudu kierrokselle",
+    "round_unparticipate_button": "Peru ilmoittautuminen",
     "return_button": "Palaa takaisin",
     "return_to_index_button": "Palaa takaisin etusivulle",
     "return_to_courses_button": "Palaa ratalistaukseen",
@@ -81,7 +84,7 @@ localizations_fin = {
     "password_mismatch": "VIRHE: salasanat eivät ole samat",
     "username_taken": "VIRHE: tunnus on jo varattu",
     "user_does_not_exist": "VIRHE: käyttäjää ei ole olemassa",
-    "wrong_username_or_password": "VIRHE: väärä tunnus tai salasana"
+    "wrong_username_or_password": "VIRHE: väärä tunnus tai salasana",
 }
 
 localizations = localizations_fin

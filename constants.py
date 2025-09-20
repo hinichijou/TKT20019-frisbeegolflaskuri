@@ -1,4 +1,3 @@
-from enum import StrEnum, auto
 from utilities import Singleton
 
 class Constants(Singleton):
@@ -21,7 +20,3 @@ class Constants(Singleton):
     round_max_players = 10
 
 constants = Constants()
-
-class SelectionItemClass(StrEnum):
-    COURSE_DIFFICULTY = auto(),
-    COURSE_TYPE = auto()

@@ -1,7 +1,7 @@
-from enum import Enum
 import json
 import db
 import m_courses
+from enums import FindRoundParam
 from utilities import format_date_from_iso
 
 default_format_options = {"start_time": True, "hole_data": True}
@@ -52,11 +52,6 @@ def get_round(id, format_options = default_format_options):
             "GROUP BY rounds.id"
     result = db.query_db(sql, [id], db.RespType.DICT)
     return format_rounds(result, format_options)[0] if result else result
-
-class FindRoundParam(Enum):
-    DATE = 1,
-    COURSENAME = 2,
-    CREATORID = 3
 
 def get_sql_for_param(param):
     match(param):

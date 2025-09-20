@@ -4,15 +4,15 @@ from flask import abort, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 import config
-from constants import constants, SelectionItemClass
-import localization
+from constants import constants
+from enums import SelectionItemClass, FindRoundParam
 from localizationkeys import LocalizationKeys
 from localization import get_localization
+import components
 import m_users
 import m_rounds
 import m_courses
 import m_selection_classes
-from markupsafe import Markup
 
 
 app = Flask(__name__)
@@ -20,15 +20,7 @@ app.secret_key = config.secret_key
 
 @app.context_processor
 def utility_processor():
-    def get_localization(key):
-        return localization.get_localization(key)
-
-    # A test for creating and sharing some basic components between templates. Could build a library of basic components and call them with functions from the templates
-    # Other methods that Jinja seems to offer: template inheritance, include statement, macros
-    def get_return_to_index_button():
-        return Markup(f"<a href='/'> {get_localization(LocalizationKeys.return_to_index_button)} </a>")
-
-    return dict(get_localization=get_localization, get_return_to_index_button=get_return_to_index_button)
+    return dict(get_localization=get_localization, components=components)
 
 def require_login():
     if "user_id" not in session:
@@ -373,13 +365,13 @@ def find_round():
         course_query = ""
     else:
         #Search course name only if something is set
-        searchparams.append((m_rounds.FindRoundParam.COURSENAME, course_query))
+        searchparams.append((FindRoundParam.COURSENAME, course_query))
 
     if not start_time:
         start_time = "" # datetime.date.today().isoformat() would set to today
     else:
         #Search date only if something is set
-        searchparams.append((m_rounds.FindRoundParam.DATE, start_time + "%"))
+        searchparams.append((FindRoundParam.DATE, start_time + "%"))
 
     #With default parameters returns all rounds if they are sent in the query
     results = m_rounds.find_rounds(searchparams) if len(searchparams) > 0 else m_rounds.get_all_rounds() if arginput else []
@@ -532,7 +524,7 @@ def show_user(user_id):
     test_inputs([lambda: test_user_id(user_id)])
 
     user = m_users.get_user(user_id)
-    rounds = m_rounds.find_rounds([(m_rounds.FindRoundParam.CREATORID, user_id)])
+    rounds = m_rounds.find_rounds([(FindRoundParam.CREATORID, user_id)])
 
     abort_if_null(user, 404)
 

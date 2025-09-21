@@ -27,7 +27,9 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 * Tietokannan rakenteesta: 7 taulua: käyttäjät, radat, kierrokset, ilmoittautumiset, luokitteluluokat, luokittelut ja luokittelut radoille. Radan tiedot periaatteessa kopioidaan kierrokseen luomishetkellä koska ratojen layoutit muuttuvat suhteellisen usein, toisaalta ajatuksena on että kierroksen tiedoissa valmista rataa voi muokata niin että esim. custom kierros missä heitetään vain osa väylistä on mahdollinen. Kierroksen ja käyttäjien väillä on relaatio. Kierroksen luojan id tallennetaan kierroksen tietoihin, kierrokselle ilmoittautumiset ovat omassa taulukossaan, joka toimii linkkinä kierroksen ja ilmoittautujien välillä. Luokitteluluokat sisältää kaikki luokittelut joita radoille voi antaa, luokittelut kaikki arvot joita luokitteluilla on, ja luokittelut radoille toimii linkkinä luokittelujen ja ratojen välillä.
 
 # Sovelluksen käyttöohje:
-* Sovellus vaatii toimiakseen [SQLite](https://www.sqlite.org/download.html) asennuksen sekä [Flask](https://flask.palletsprojects.com/en/stable/) kirjaston asennuksen.
+* Sovellus vaatii toimiakseen [Python](https://www.python.org/downloads/)asennuksen, [SQLite](https://www.sqlite.org/download.html) asennuksen sekä [Flask](https://flask.palletsprojects.com/en/stable/) kirjaston asennuksen.
+
+* Pythonille on suositeltavaa luoda virtuaaliympäristö ajamalla komento `python -m venv venv` projektikansiossa. Virtuaaliympäristö aktivoidaan komennolla `venv\Scripts\activate.bat` (komennot Windowsille, komennoissa mahdollisesti pieniä eroja käyttöjärjestelmästä riippuen).
 
 * Sovellus tarvitsee toimiakseen tietokannan, jonka voi luoda ajamalla komennon `sqlite3 database.db < schema.sql` pääkansiossa.
 

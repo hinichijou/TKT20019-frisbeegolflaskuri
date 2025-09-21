@@ -19,6 +19,7 @@
       {{ get_localization("account_name_header") }} <br />
       <input
         type="text"
+        required
         name="username"
         minlength="{{constants.username_minlength}}"
         maxlength="{{constants.username_maxlength}}"
@@ -28,6 +29,7 @@
       {{ get_localization("password_header") }} <br />
       <input
         type="password"
+        required
         name="password"
         minlength="{{constants.password_minlength}}"
         maxlength="{{constants.password_maxlength}}"

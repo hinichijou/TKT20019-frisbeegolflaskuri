@@ -6,7 +6,7 @@
 </head>
 
 <body>
-  {% if session.username %}
+  {% if session.user_id %}
   <h1>{{ get_localization("new_round_header") }}</h1>
   {{ components.return_to_index_link() }}
   <form action="/create_round" method="post">

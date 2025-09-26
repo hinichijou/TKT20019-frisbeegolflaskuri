@@ -1,20 +1,12 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("courses_header") }}</title>
-</head>
+{% block title %}{{ get_localization("courses_header") }}{% endblock %}
 
-<body>
-  <h1>{{ get_localization("courses_header") }}</h1>
-  {% for course in courses %}
-    <li>
-      <a href="/course/{{course.id}}">{{course.coursename}}, {{ get_localization("course_item_num_holes") }} {{course.num_holes}}</a>
-    </li>
-  {% endfor %}
-  <p>
-    {{ components.return_to_index_link() }}
-  </p>
-</body>
-
-</html>
+{% block content %}
+    <h2>{{ get_localization("courses_header") }}</h2>
+    {% for course in courses %}
+        <li>
+        <a href="/course/{{course.id}}">{{course.coursename}}, {{ get_localization("course_item_num_holes") }} {{course.num_holes}}</a>
+        </li>
+    {% endfor %}
+{% endblock %}

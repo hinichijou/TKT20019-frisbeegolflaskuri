@@ -590,19 +590,19 @@ def create():
     test_inputs(
         [
             lambda: test_username(request.form["username"]),
-            lambda: test_password(request.form["password1"]),
-            lambda: test_password(request.form["password2"]),
+            lambda: test_password(request.form["password"]),
+            lambda: test_password(request.form["repeat_password"]),
         ]
     )
 
     username = request.form["username"]
-    password1 = request.form["password1"]
-    password2 = request.form["password2"]
-    if password1 != password2:
+    password = request.form["password"]
+    repeat_password = request.form["repeat_password"]
+    if password != repeat_password:
         return get_localization(LocalizationKeys.password_mismatch)
 
     try:
-        m_users.create_user(username, generate_password_hash(password1))
+        m_users.create_user(username, generate_password_hash(password))
     except sqlite3.IntegrityError:
         return get_localization(LocalizationKeys.username_taken)
 

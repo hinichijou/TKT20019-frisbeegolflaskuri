@@ -1,26 +1,11 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("register_header") }}</title>
-</head>
+{% block title %}{{ get_localization("register_header") }}{% endblock %}
 
-<body>
-  {% if session.user_id %}
-    <p>
-      {{ get_localization("logged_in") }} {{ session.username }}
-    </p>
-    <p>
-      <a href="/logout">{{ get_localization("log_out_button") }}</a>
-    </p>
-  {% else %}
-    <p>
-      {{ get_localization("registered_message") }}
-    </p>
-    <p>
-      {{ components.return_to_index_link() }}
-    </p>
-  {% endif %}
-</body>
-
-</html>
+{% block content %}
+    {% if not session.user_id %}
+        <p>
+            {{ get_localization("registered_message") }}
+        </p>
+    {% endif %}
+{% endblock %}

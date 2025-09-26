@@ -81,7 +81,7 @@ localizations_fin = {
     "round_sign_up_button": "Ilmoittaudu kierrokselle",
     "round_unparticipate_button": "Peru ilmoittautuminen",
     "return_button": "Palaa takaisin",
-    "return_to_index_button": "Palaa takaisin etusivulle",
+    "return_to_index_button": "Etusivu",
     "return_to_courses_button": "Palaa ratalistaukseen",
     "return_to_course_page_button": "Palaa ratasivulle",
     "return_to_round_page_button": "Palaa kierrossivulle",

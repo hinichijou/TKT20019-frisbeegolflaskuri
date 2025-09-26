@@ -1,43 +1,17 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("log_in_header") }}</title>
-</head>
+{% block title %}{{ get_localization("log_in_header") }}{% endblock %}
 
-<body>
-  {% if session.user_id %}
-  <p>
-    {{ get_localization("logged_in") }} {{ session.username }}
-  </p>
-  <p>
-    <a href="/logout">{{ get_localization("log_out_button") }}</a>
-  </p>
-  {% else %}
-  <form action="/login" method="post">
-    <p>
-      {{ get_localization("account_name_header") }} <br />
-      <input
-        type="text"
-        required
-        name="username"
-        minlength="{{constants.username_minlength}}"
-        maxlength="{{constants.username_maxlength}}"
-      />
-    </p>
-    <p>
-      {{ get_localization("password_header") }} <br />
-      <input
-        type="password"
-        required
-        name="password"
-        minlength="{{constants.password_minlength}}"
-        maxlength="{{constants.password_maxlength}}"
-      />
-    </p>
-    <input type="submit" value="{{ get_localization('log_in_button') }}" />
-  </form>
-  {% endif %}
-</body>
-
-</html>
+{% block content %}
+    {% if not session.user_id %}
+        <form action="/login" method="post">
+            <p>
+                {{ components.account_name_input() }}
+            </p>
+            <p>
+                {{ components.password_input() }}
+            </p>
+            {{ components.submit_button_with_text(get_localization("log_in_button")) }}
+        </form>
+    {% endif %}
+{% endblock %}

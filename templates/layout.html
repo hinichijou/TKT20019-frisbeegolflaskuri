@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/main.css">
+</head>
+
+<body>
+    <h1>{{ get_localization("main_header") }}</h1>
+    {% if session.user_id %}
+
+        <p>
+            {{ get_localization("logged_in") }} {{ components.user_link(session.user_id, session.username) }}
+        </p>
+
+        <p>
+            {{ components.return_to_index_link() }} |
+            {{ components.new_course_link() }} |
+            {{ components.show_courses_link() }} |
+            {{ components.new_round_link() }} |
+            {{ components.find_round_link() }} |
+            {{ components.logout_link() }}
+        </p>
+
+    {% else %}
+
+        <p>
+            {{ components.return_to_index_link() }} |
+            {{ components.login_link() }} |
+            {{ components.register_link() }}
+        </p>
+
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+</body>
+
+</html>

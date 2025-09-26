@@ -1,43 +1,41 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("user_page_header") }}</title>
-</head>
+{% block title %}{{ get_localization("user_page_header") }}{% endblock %}
 
-<body>
-  <h1>{{ user.username }}</h1>
-  <p>
-    {{ get_localization("username_header") }} {{ user.username }}
-  </p>
-  <p>
-    {{ get_localization("user_id_header") }} {{ user.id }}
-  </p>
-  {% if rounds|length > 0 %}
+{% block content %}
+    <h2>{{ user.username }}</h2>
     <p>
-      {{ get_localization("user_amount_rounds_created").format(rounds|length) }}
+        {{ get_localization("username_header") }} {{ user.username }}
     </p>
-    <h2>{{ get_localization("rounds_created_by_user_header") }}</h2>
-    {% for round in rounds %}
-      <li>
-        <a href="/round/{{round.id}}">{{ get_localization("round_item_start") }} {{round.start_time}} {{ get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }} {{round.username}}, {{ get_localization("round_item_players") }} {{round.num_participating}} / {{round.num_players}}</a>
-      </li>
-    {% endfor %}
-  {% endif %}
-  {% if participating_rounds|length > 0 %}
     <p>
-      {{ get_localization("user_amount_rounds_participating").format(participating_rounds|length) }}
+        {{ get_localization("user_id_header") }} {{ user.id }}
     </p>
-    <h2>{{ get_localization("rounds_user_participating_header") }}</h2>
-    {% for round in participating_rounds %}
-      <li>
-        <a href="/round/{{round.id}}">{{ get_localization("round_item_start") }} {{round.start_time}} {{ get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }} {{round.username}}, {{ get_localization("round_item_players") }} {{round.num_participating}} / {{round.num_players}}</a>
-      </li>
-    {% endfor %}
-  {% endif %}
-  <p>
-    {{ components.return_to_index_link() }}
-  </p>
-</body>
-
-</html>
+    {% if rounds|length > 0 %}
+        <p>
+            {{ get_localization("user_amount_rounds_created").format(rounds|length) }}
+        </p>
+        <h3>{{ get_localization("rounds_created_by_user_header") }}</h3>
+        {% for round in rounds %}
+            <li>
+                <a href="/round/{{round.id}}">{{ get_localization("round_item_start") }} {{round.start_time}} {{
+                    get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }}
+                    {{round.username}}, {{ get_localization("round_item_players") }} {{round.num_participating}} /
+                    {{round.num_players}}</a>
+            </li>
+        {% endfor %}
+    {% endif %}
+    {% if participating_rounds|length > 0 %}
+        <p>
+            {{ get_localization("user_amount_rounds_participating").format(participating_rounds|length) }}
+        </p>
+        <h3>{{ get_localization("rounds_user_participating_header") }}</h3>
+        {% for round in participating_rounds %}
+            <li>
+                <a href="/round/{{round.id}}">{{ get_localization("round_item_start") }} {{round.start_time}} {{
+                    get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }}
+                    {{round.username}}, {{ get_localization("round_item_players") }} {{round.num_participating}} /
+                    {{round.num_players}}</a>
+            </li>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

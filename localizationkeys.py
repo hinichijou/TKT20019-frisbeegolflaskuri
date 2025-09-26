@@ -10,3 +10,17 @@ class LocalizationKeys(StrEnum):
     return_to_index_button = auto(),
     modify_button = auto(),
     delete_button = auto(),
+    round_item_start = auto(),
+    round_item_place = auto(),
+    round_item_creator = auto(),
+    round_item_players = auto(),
+    create_course_button = auto(),
+    browse_courses_button = auto(),
+    create_round_button = auto(),
+    find_round_button = auto(),
+    log_out_button = auto(),
+    log_in_button = auto(),
+    register_button = auto()
+    account_name_header = auto(),
+    password_header = auto(),
+    repeat_password_header = auto()

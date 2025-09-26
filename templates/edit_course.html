@@ -1,65 +1,59 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("modify_course_header") }}</title>
-</head>
+{% block title %}{{ get_localization("modify_course_header") }}{% endblock %}
 
-<body>
-  <h1>{{ get_localization("modify_course_header") }}</h1>
-  {{ components.course_link(course.id, get_localization("return_to_course_page_button")) }}
-  <form action="/edit_course_holes" method="post">
-    <p>
-      {{ get_localization("course_name_header") }} <br />
-      <input
-        type="text"
-        required
-        value="{{course.coursename}}"
-        name="coursename"
-        minlength="{{constants.coursename_minlength}}"
-        maxlength="{{constants.coursename_maxlength}}"
-      />
-    </p>
-    <p>
-      {{ get_localization("course_holes_header") }} <br />
-      <input
-        type="number"
-        name="num_holes"
-        value="{{course.num_holes}}"
-        min="{{constants.course_holes_min}}"
-        max="{{constants.course_holes_max}}"
-        oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
-      />
-    </p>
-    <p>
-      {{ get_localization("course_difficulty_header") }} <br />
-      {% set course_diff_value = "{},{}".format(*course["items"]["course_difficulty"]) if "items" in course and "course_difficulty" in course["items"] else "" %}
-      {% set course_diff_text = course["items"]["course_difficulty"][1] if "items" in course and "course_difficulty" in course["items"] else "course_diff_default" %}
-      <select name="difficulty_select">
-        <option value="{{ course_diff_value }}">{{ get_localization(course_diff_text) }}</option>
-        {% for d in selections.course_difficulty %}
-          <option value="{{ d[0] }},{{ d[1] }}">{{ get_localization(d[1]) }}</option>
+{% block content %}
+    <h2>{{ get_localization("modify_course_header") }}</h2>
+    <form action="/edit_course_holes" method="post">
+        <p>
+        {{ get_localization("course_name_header") }} <br />
+        <input
+            type="text"
+            required
+            value="{{course.coursename}}"
+            name="coursename"
+            minlength="{{constants.coursename_minlength}}"
+            maxlength="{{constants.coursename_maxlength}}"
+        />
+        </p>
+        <p>
+        {{ get_localization("course_holes_header") }} <br />
+        <input
+            type="number"
+            name="num_holes"
+            value="{{course.num_holes}}"
+            min="{{constants.course_holes_min}}"
+            max="{{constants.course_holes_max}}"
+            oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
+        />
+        </p>
+        <p>
+        {{ get_localization("course_difficulty_header") }} <br />
+        {% set course_diff_value = "{},{}".format(*course["items"]["course_difficulty"]) if "items" in course and "course_difficulty" in course["items"] else "" %}
+        {% set course_diff_text = course["items"]["course_difficulty"][1] if "items" in course and "course_difficulty" in course["items"] else "course_diff_default" %}
+        <select name="difficulty_select">
+            <option value="{{ course_diff_value }}">{{ get_localization(course_diff_text) }}</option>
+            {% for d in selections.course_difficulty %}
+            <option value="{{ d[0] }},{{ d[1] }}">{{ get_localization(d[1]) }}</option>
+            {% endfor %}
+        </select>
+        </p>
+        <p>
+        {{ get_localization("course_type_header") }} <br />
+        {% set course_type_value = "{},{}".format(*course["items"]["course_type"]) if "items" in course and "course_type" in course["items"] else "" %}
+        {% set course_type_text = course["items"]["course_type"][1] if "items" in course and "course_type" in course["items"] else "course_type_default" %}
+        <select name="type_select">
+            <option value="{{ course_type_value }}">{{ get_localization(course_type_text) }}</option>
+            {% for t in selections.course_type %}
+            <option value="{{ t[0] }},{{ t[1] }}">{{ get_localization(t[1]) }}</option>
+            {% endfor %}
+        </select>
+        </p>
+        <input type="submit" value="{{ get_localization('next_button') }}" />
+        <input type="hidden" name="id" value="{{ course.id }}" />
+        {% for i in range(1, 1 + course.num_holes|int) %}
+        <input type="hidden" value='{{course["hole_data"][i|string]["par"]}}' name="par_{{i}}" /><br />
+        <input type="hidden" value='{{course["hole_data"][i|string]["length"]}}' name="length_{{i}}" /><br />
         {% endfor %}
-      </select>
-    </p>
-    <p>
-      {{ get_localization("course_type_header") }} <br />
-      {% set course_type_value = "{},{}".format(*course["items"]["course_type"]) if "items" in course and "course_type" in course["items"] else "" %}
-      {% set course_type_text = course["items"]["course_type"][1] if "items" in course and "course_type" in course["items"] else "course_type_default" %}
-      <select name="type_select">
-        <option value="{{ course_type_value }}">{{ get_localization(course_type_text) }}</option>
-        {% for t in selections.course_type %}
-          <option value="{{ t[0] }},{{ t[1] }}">{{ get_localization(t[1]) }}</option>
-        {% endfor %}
-      </select>
-    </p>
-    <input type="submit" value="{{ get_localization('next_button') }}" />
-    <input type="hidden" name="id" value="{{ course.id }}" />
-    {% for i in range(1, 1 + course.num_holes|int) %}
-      <input type="hidden" value='{{course["hole_data"][i|string]["par"]}}' name="par_{{i}}" /><br />
-      <input type="hidden" value='{{course["hole_data"][i|string]["length"]}}' name="length_{{i}}" /><br />
-    {% endfor %}
-  </form>
-</body>
-
-</html>
+    </form>
+{% endblock %}

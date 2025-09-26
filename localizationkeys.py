@@ -23,4 +23,16 @@ class LocalizationKeys(StrEnum):
     register_button = auto()
     account_name_header = auto(),
     password_header = auto(),
-    repeat_password_header = auto()
+    repeat_password_header = auto(),
+    amount_players_header = auto(),
+    start_time_header = auto(),
+    select_course_header = auto(),
+    course_select_default = auto(),
+    par_header = auto(),
+    hole_length_header = auto(),
+    course_type_header = auto(),
+    course_difficulty_header = auto(),
+    course_type_default = auto(),
+    course_diff_default = auto(),
+    course_holes_header = auto(),
+    course_name_header = auto()

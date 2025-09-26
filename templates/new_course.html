@@ -1,59 +1,23 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("new_course_header") }}</title>
-</head>
+{% block title %}{{ get_localization("new_course_header") }}{% endblock %}
 
-<body>
-  {% if session.user_id %}
-    <h1>{{ get_localization("new_course_header") }}</h1>
-    {{ components.return_to_index_link() }}
-    <form action="/create_course" method="post">
-      <p>
-        {{ get_localization("course_name_header") }} <br />
-        <input
-          type="text"
-          required
-          value=""
-          name="coursename"
-          minlength="{{constants.coursename_minlength}}"
-          maxlength="{{constants.coursename_maxlength}}"
-        />
-      </p>
-      <p>
-        {{ get_localization("course_holes_header") }} <br />
-        <input
-          type="number"
-          required
-          value="{{constants.course_holes_default}}"
-          min="{{constants.course_holes_min}}"
-          max="{{constants.course_holes_max}}"
-          oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
-          name="num_holes"
-        />
-      </p>
-      <p>
-        {{ get_localization("course_difficulty_header") }} <br />
-        <select required name="difficulty_select">
-          <option value="">{{ get_localization("course_diff_default") }}</option>
-          {% for d in selections.course_difficulty %}
-            <option value="{{ d[0] }},{{ d[1] }}">{{ get_localization(d[1]) }}</option>
-          {% endfor %}
-        </select>
-      </p>
-      <p>
-        {{ get_localization("course_type_header") }} <br />
-        <select required name="type_select">
-          <option value="">{{ get_localization("course_type_default") }}</option>
-          {% for t in selections.course_type %}
-            <option value="{{ t[0] }},{{ t[1] }}">{{ get_localization(t[1]) }}</option>
-          {% endfor %}
-        </select>
-      </p>
-      <input type="submit" value="{{ get_localization('next_button') }}" />
-    </form>
-  {% endif %}
-</body>
-
-</html>
+{% block content %}
+    {% if session.user_id %}
+        <h2>{{ get_localization("new_course_header") }}</h2>
+        <form action="/create_course" method="post">
+            <p>
+                {{ components.course_name_input() }}
+            </p>
+            <p>
+                {{ components.course_holes_input() }}
+            <p>
+                {{ components.course_difficulty_select(selections.course_difficulty, True) }}
+            </p>
+            <p>
+                {{ components.course_type_select(selections.course_type, True) }}
+            </p>
+            {{ components.submit_button_with_text(get_localization("next_button")) }}
+        </form>
+    {% endif %}
+{% endblock %}

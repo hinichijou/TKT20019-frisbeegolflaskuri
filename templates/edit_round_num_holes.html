@@ -1,38 +1,32 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("modify_num_holes_header") }}</title>
-</head>
+{% block title %}{{ get_localization("modify_num_holes_header") }}{% endblock %}
 
-<body>
-  <h1>{{ get_localization("modify_num_holes_header") }}</h1>
-  {{ components.round_link(round.round_id, get_localization("return_to_round_page_button")) }}
-  <form action="/edit_round_holes" method="post">
-    <p>
-      {{ get_localization("course_name_header") }} <br />
-      <input inert type="text" value="{{round.coursename}}" name="coursename" />
-    </p>
-    <p>
-      {{ get_localization("course_holes_header") }} <br />
-      <input
-        type="number"
-        name="num_holes"
-        value="{{round.num_holes}}"
-        min="{{constants.course_holes_min}}"
-        max="{{constants.course_holes_max}}"
-        oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
-      />
-    </p>
-    <input type="submit" value="{{ get_localization('submit_changes_button') }}" />
-    <input type="hidden" name="id" value="{{ round.id }}" />
-    <input type="hidden" name="start_time" value="{{ round.start_time }}" />
-    <input type="hidden" name="num_players" value="{{ round.num_players }}" />
-    {% for i in range(1, 1 + round.num_holes|int) %}
-      <input type="hidden" value='{{round["hole_data"][i|string]["par"]}}' name="par_{{i}}" /><br />
-      <input type="hidden" value='{{round["hole_data"][i|string]["length"]}}' name="length_{{i}}" /><br />
-    {% endfor %}
-  </form>
-</body>
-
-</html>
+{% block content %}
+    <h2>{{ get_localization("modify_num_holes_header") }}</h2>
+    <form action="/edit_round_holes" method="post">
+        <p>
+        {{ get_localization("course_name_header") }} <br />
+        <input inert type="text" value="{{round.coursename}}" name="coursename" />
+        </p>
+        <p>
+        {{ get_localization("course_holes_header") }} <br />
+        <input
+            type="number"
+            name="num_holes"
+            value="{{round.num_holes}}"
+            min="{{constants.course_holes_min}}"
+            max="{{constants.course_holes_max}}"
+            oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
+        />
+        </p>
+        <input type="submit" value="{{ get_localization('submit_changes_button') }}" />
+        <input type="hidden" name="id" value="{{ round.id }}" />
+        <input type="hidden" name="start_time" value="{{ round.start_time }}" />
+        <input type="hidden" name="num_players" value="{{ round.num_players }}" />
+        {% for i in range(1, 1 + round.num_holes|int) %}
+            <input type="hidden" value='{{round["hole_data"][i|string]["par"]}}' name="par_{{i}}" /><br />
+            <input type="hidden" value='{{round["hole_data"][i|string]["length"]}}' name="length_{{i}}" /><br />
+        {% endfor %}
+    </form>
+{% endblock %}

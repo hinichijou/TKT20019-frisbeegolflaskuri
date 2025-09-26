@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("delete_course_header") }}</title>
-</head>
+{% block title %}{{ get_localization("delete_course_header") }}{% endblock %}
 
-<body>
-  <h1>{{ get_localization("delete_course_header") }}</h1>
-  <form action="/delete_course/{{course.id}}"  method="post">
-    <p>
-      {{ get_localization("course_name_header") }} {{ course.coursename }} {{ get_localization("course_holes_header") }} {{ course.num_holes }}
-    </p>
-    <p>{{ get_localization("delete_course_are_you_sure") }}</p>
-    <input type="submit" name="remove" value="{{ get_localization('delete_course_button') }}" />
-    <input type="submit" name="return" value="{{ get_localization('return_button') }}" />
-  </form>
-</body>
-
-</html>
+{% block content %}
+    <h2>{{ get_localization("delete_course_header") }}</h2>
+    <form action="/delete_course/{{course.id}}"  method="post">
+        <p>
+        {{ get_localization("course_name_header") }} {{ course.coursename }} {{ get_localization("course_holes_header") }} {{ course.num_holes }}
+        </p>
+        <p>{{ get_localization("delete_course_are_you_sure") }}</p>
+        <input type="submit" name="remove" value="{{ get_localization('delete_course_button') }}" />
+        <input type="submit" name="return" value="{{ get_localization('return_button') }}" />
+    </form>
+{% endblock %}

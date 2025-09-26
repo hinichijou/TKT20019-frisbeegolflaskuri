@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("delete_round_header") }}</title>
-</head>
+{% block title %}{{ get_localization("delete_round_header") }}{% endblock %}
 
-<body>
-  <h1>{{ get_localization("delete_round_header") }}</h1>
-  <form action="/delete_round/{{round.round_id}}"  method="post">
-    <p>
-      {{ get_localization("round_item_start") }} {{ round.start_time }} {{ get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }} {{round.username}}, {{ get_localization("round_item_players") }} {{ round.participators.keys()|length }} / {{ round.num_players }}
-    </p>
-    <p>{{ get_localization("delete_round_are_you_sure") }}</p>
-    <input type="submit" name="remove" value="{{ get_localization('delete_round_button') }}" />
-    <input type="submit" name="return" value="{{ get_localization('return_button') }}" />
-  </form>
-</body>
-
-</html>
+{% block content %}
+    <h2>{{ get_localization("delete_round_header") }}</h2>
+    <form action="/delete_round/{{round.round_id}}"  method="post">
+        <p>
+        {{ get_localization("round_item_start") }} {{ round.start_time }} {{ get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }} {{round.username}}, {{ get_localization("round_item_players") }} {{ round.participators.keys()|length }} / {{ round.num_players }}
+        </p>
+        <p>{{ get_localization("delete_round_are_you_sure") }}</p>
+        <input type="submit" name="remove" value="{{ get_localization('delete_round_button') }}" />
+        <input type="submit" name="return" value="{{ get_localization('return_button') }}" />
+    </form>
+{% endblock %}

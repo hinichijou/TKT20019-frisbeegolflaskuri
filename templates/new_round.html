@@ -1,46 +1,19 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("new_round_header") }}</title>
-</head>
+{% block title %}{{ get_localization("new_round_header") }}{% endblock %}
 
-<body>
-  {% if session.user_id %}
-  <h1>{{ get_localization("new_round_header") }}</h1>
-  {{ components.return_to_index_link() }}
-  <form action="/create_round" method="post">
-    <p>
-      {{ get_localization("select_course_header") }} <br />
-      <select name="course_select">
-        <option hidden selected value="">{{ get_localization("course_select_default") }}</option>
-        {% for course in courses %}
-          <option value="{{ course.id }}">{{ course.coursename }}</option>
-        {% endfor %}
-      </select>
-    </p>
-    <p>
-      {{ get_localization("start_time_header") }} <br />
-      <input
-        type="datetime-local"
-        value="{{ date }}"
-        name="start_time"
-      />
-    </p>
-    <p>
-      {{ get_localization("amount_players_header") }} <br />
-      <input
-        type="number"
-        name="num_players"
-        value="{{constants.round_min_players}}"
-        min="{{constants.round_min_players}}"
-        max="{{constants.round_max_players}}"
-        oninput="this.value = Math.min('{{constants.round_max_players}}', Math.max(this.value|0, '{{constants.round_min_players}}'))"
-      />
-    </p>
-    <input type="submit" value="{{ get_localization('create_round_button') }}" />
-  </form>
-  {% endif %}
-</body>
-
-</html>
+{% block content %}
+    <h2>{{ get_localization("new_round_header") }}</h2>
+    <form action="/create_round" method="post">
+        <p>
+            {{ components.course_select(courses, True) }}
+        </p>
+        <p>
+            {{ components.start_date_input(date) }}
+        </p>
+        <p>
+            {{ components.amount_players_input() }}
+        </p>
+        {{ components.submit_button_with_text(get_localization("create_round_button")) }}
+    </form>
+{% endblock %}

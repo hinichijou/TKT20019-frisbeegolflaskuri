@@ -1,43 +1,35 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("find_round_header") }}</title>
-</head>
+{% block title %}{{ get_localization("find_round_header") }}{% endblock %}
 
-<body>
-  {% if session.user_id %}
-    <h1>{{ get_localization("find_round_header") }}</h1>
-    <form action="/find_round"  method="get">
-      <p>
-        {{ get_localization("find_by_course_name_header") }} <br />
-        <select name="course_select">
-          <option value="">{{ get_localization("course_select_default") }}</option>
-          {% for course in courses %}
-            {% if course_query == course.coursename %}
-              <option selected value="{{ course.coursename  }}">{{ course.coursename }}</option>
-            {% else %}
-              <option value="{{ course.coursename  }}">{{ course.coursename }}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
-      </p>
-      <p>
-        {{ get_localization("find_by_date_header") }} <br />
-        <input type="date" value="{{ start_time }}" name="start_time" />
-      </p>
-      <input type="submit" value="{{ get_localization('submit_search_button') }}" />
-    </form>
-    {% if arginput %}
-      <h2>{{ get_localization("search_results_header") }}</h2>
-      {% for result in results %}
-        <li><a href="/round/{{result.id}}">{{ get_localization("round_item_start") }} {{result.start_time}} {{ get_localization("round_item_place") }} {{result.coursename}}, {{ get_localization("round_item_creator") }} {{result.username}}, {{ get_localization("round_item_players") }} {{result.num_participating}} / {{result.num_players}}</a></li>
-      {% endfor %}
+{% block content %}
+    {% if session.user_id %}
+        <h2>{{ get_localization("find_round_header") }}</h2>
+        <form action="/find_round"  method="get">
+            <p>
+                {{ get_localization("find_by_course_name_header") }} <br />
+                <select name="course_select">
+                <option value="">{{ get_localization("course_select_default") }}</option>
+                {% for course in courses %}
+                    {% if course_query == course.coursename %}
+                    <option selected value="{{ course.coursename  }}">{{ course.coursename }}</option>
+                    {% else %}
+                    <option value="{{ course.coursename  }}">{{ course.coursename }}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </p>
+            <p>
+                {{ get_localization("find_by_date_header") }} <br />
+                <input type="date" value="{{ start_time }}" name="start_time" />
+            </p>
+            <input type="submit" value="{{ get_localization('submit_search_button') }}" />
+        </form>
+        {% if arginput %}
+            <h3>{{ get_localization("search_results_header") }}</h3>
+            {% for result in results %}
+                <li><a href="/round/{{result.id}}">{{ get_localization("round_item_start") }} {{result.start_time}} {{ get_localization("round_item_place") }} {{result.coursename}}, {{ get_localization("round_item_creator") }} {{result.username}}, {{ get_localization("round_item_players") }} {{result.num_participating}} / {{result.num_players}}</a></li>
+            {% endfor %}
+        {% endif %}
     {% endif %}
-    <p>
-      {{ components.return_to_index_link() }}
-    </p>
-  {% endif %}
-</body>
-
-</html>
+{% endblock %}

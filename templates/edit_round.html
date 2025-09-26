@@ -1,53 +1,47 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("modify_round_header") }}</title>
-</head>
+{% block title %}{{ get_localization("modify_round_header") }}{% endblock %}
 
-<body>
-  <h1>{{ get_localization("modify_round_header") }}</h1>
-  {{ components.round_link(round.round_id, get_localization("return_to_round_page_button")) }}
-  <form method="post">
-    <p>
-      {{ get_localization("select_course_header") }} <br />
-      <select name="course_select">
-        <option value="">{{ round.coursename }}</option>
-        {% for course in courses %}
-          <option value="{{ course.id }}">{{ course.coursename }}</option>
+{% block content %}
+    <h2>{{ get_localization("modify_round_header") }}</h2>
+    <form method="post">
+        <p>
+        {{ get_localization("select_course_header") }} <br />
+        <select name="course_select">
+            <option value="">{{ round.coursename }}</option>
+            {% for course in courses %}
+            <option value="{{ course.id }}">{{ course.coursename }}</option>
+            {% endfor %}
+        </select>
+        </p>
+        <p>
+        {{ get_localization("start_time_header") }} <br />
+        <input
+            type="datetime-local"
+            value="{{ round.start_time }}"
+            name="start_time"
+        />
+        </p>
+        <p>
+        {{ get_localization("amount_players_header") }} <br />
+        <input
+            type="number"
+            name="num_players"
+            value="{{round.num_players}}"
+            min="{{constants.round_min_players}}"
+            max="{{constants.round_max_players}}"
+            oninput="this.value = Math.min('{{constants.round_max_players}}', Math.max(this.value|0, '{{constants.round_min_players}}'))"
+        />
+        </p>
+        <input type="submit" formaction="/update_round_basic" value="{{ get_localization('submit_changes_button') }}" />
+        <input type="submit" formaction="/edit_round_num_holes" value="{{ get_localization('to_hole_modification_button') }}" />
+        <input type="hidden" name="id" value="{{ round.round_id }}" />
+        <input type="hidden" name="coursename" value="{{ round.coursename }}" />
+        <input type="hidden" name="num_holes" value="{{ round.num_holes }}" />
+        <input type="hidden" name="hole_data" value="{{ round.hole_data }}" />
+        {% for i in range(1, 1 + round.num_holes|int) %}
+            <input type="hidden" value='{{round.hole_data[i|string]["par"]}}' name="par_{{i}}" /><br />
+            <input type="hidden" value='{{round.hole_data[i|string]["length"]}}' name="length_{{i}}" /><br />
         {% endfor %}
-      </select>
-    </p>
-    <p>
-      {{ get_localization("start_time_header") }} <br />
-      <input
-        type="datetime-local"
-        value="{{ round.start_time }}"
-        name="start_time"
-      />
-    </p>
-    <p>
-      {{ get_localization("amount_players_header") }} <br />
-      <input
-        type="number"
-        name="num_players"
-        value="{{round.num_players}}"
-        min="{{constants.round_min_players}}"
-        max="{{constants.round_max_players}}"
-        oninput="this.value = Math.min('{{constants.round_max_players}}', Math.max(this.value|0, '{{constants.round_min_players}}'))"
-      />
-    </p>
-    <input type="submit" formaction="/update_round_basic" value="{{ get_localization('submit_changes_button') }}" />
-    <input type="submit" formaction="/edit_round_num_holes" value="{{ get_localization('to_hole_modification_button') }}" />
-    <input type="hidden" name="id" value="{{ round.round_id }}" />
-    <input type="hidden" name="coursename" value="{{ round.coursename }}" />
-    <input type="hidden" name="num_holes" value="{{ round.num_holes }}" />
-    <input type="hidden" name="hole_data" value="{{ round.hole_data }}" />
-    {% for i in range(1, 1 + round.num_holes|int) %}
-      <input type="hidden" value='{{round.hole_data[i|string]["par"]}}' name="par_{{i}}" /><br />
-      <input type="hidden" value='{{round.hole_data[i|string]["length"]}}' name="length_{{i}}" /><br />
-    {% endfor %}
-  </form>
-</body>
-
-</html>
+    </form>
+{% endblock %}

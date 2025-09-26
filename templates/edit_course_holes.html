@@ -1,70 +1,64 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ get_localization("modify_holes_header") }}</title>
-</head>
+{% block title %}{{ get_localization("modify_holes_header") }}{% endblock %}
 
-<body>
-  <h1>{{ get_localization("modify_holes_header") }}</h1>
-  {{ components.course_link(course.id, get_localization("return_to_course_page_button")) }}
-  <form action="/update_course" method="post">
-    <p>
-      {{ get_localization("course_name_header") }} <br />
-      <input inert type="text" value="{{course.coursename}}" name="coursename" />
-    </p>
-    <p>
-      {{ get_localization("course_holes_header") }} <br />
-      <input inert type="text" value="{{course.num_holes}}" name="num_holes" />
-    </p>
-    {% if "difficulty_select" in course and course.difficulty_select[0] %}
-      <p>
-        {{ get_localization("course_difficulty_header") }} <br />
-        <select inert name="difficulty_select">
-          <option value="{{ course.difficulty_select[0] }},{{ course.difficulty_select[1] }}">{{ get_localization(course.difficulty_select[1]) }}</option>
-        </select>
-      </p>
-    {% else %}
-      <input type="hidden" value="" name="difficulty_select" />
-    {% endif %}
-    {% if "type_select" in course  and course.type_select[0] %}
-      <p>
-        {{ get_localization("course_type_header") }} <br />
-        <select inert name="type_select">
-          <option value="{{ course.type_select[0] }},{{ course.type_select[1] }}">{{ get_localization(course.type_select[1]) }}</option>
-        </select>
-      </p>
-    {% else %}
-      <input type="hidden" value="" name="type_select" />
-    {% endif %}
-    {% for i in range(1, 1 + course.num_holes|int) %}
-      <p>
-        {{ get_localization("hole_header").format(i) }} <br />
-        {{ get_localization("par_header") }} <br />
-        {% set par_val = course.hole_data[i|string]["par"] if i <= course.hole_data|length else constants.hole_par_default %}
-        <input
-          type="number"
-          value="{{par_val}}"
-          min="{{constants.hole_par_min}}"
-          max="{{constants.hole_par_max}}"
-          oninput="this.value = Math.min('{{constants.hole_par_max}}', Math.max(this.value|0, '{{constants.hole_par_min}}'))"
-          name="par_{{i}}"
-        /><br />
-        {{ get_localization("hole_length_header") }} <br />
-        {% set length_val = course.hole_data[i|string]["length"] if i <= course.hole_data|length else constants.hole_length_default %}
-        <input
-          type="number"
-          value="{{length_val}}"
-          min="{{constants.hole_length_min}}"
-          max="{{constants.hole_length_max}}"
-          oninput="this.value = Math.min('{{constants.hole_length_max}}', Math.max(this.value|0, '{{constants.hole_length_min}}'))"
-          name="length_{{i}}"
-        /><br />
-      </p>
-    {% endfor %}
-    <input type="submit" value="{{ get_localization('submit_changes_button') }}" />
-    <input type="hidden" name="id" value="{{ course.id }}" />
-  </form>
-</body>
-
-</html>
+{% block content %}
+    <h2>{{ get_localization("modify_holes_header") }}</h2>
+    <form action="/update_course" method="post">
+        <p>
+        {{ get_localization("course_name_header") }} <br />
+        <input inert type="text" value="{{course.coursename}}" name="coursename" />
+        </p>
+        <p>
+        {{ get_localization("course_holes_header") }} <br />
+        <input inert type="text" value="{{course.num_holes}}" name="num_holes" />
+        </p>
+        {% if "difficulty_select" in course and course.difficulty_select[0] %}
+        <p>
+            {{ get_localization("course_difficulty_header") }} <br />
+            <select inert name="difficulty_select">
+            <option value="{{ course.difficulty_select[0] }},{{ course.difficulty_select[1] }}">{{ get_localization(course.difficulty_select[1]) }}</option>
+            </select>
+        </p>
+        {% else %}
+        <input type="hidden" value="" name="difficulty_select" />
+        {% endif %}
+        {% if "type_select" in course  and course.type_select[0] %}
+        <p>
+            {{ get_localization("course_type_header") }} <br />
+            <select inert name="type_select">
+            <option value="{{ course.type_select[0] }},{{ course.type_select[1] }}">{{ get_localization(course.type_select[1]) }}</option>
+            </select>
+        </p>
+        {% else %}
+        <input type="hidden" value="" name="type_select" />
+        {% endif %}
+        {% for i in range(1, 1 + course.num_holes|int) %}
+        <p>
+            {{ get_localization("hole_header").format(i) }} <br />
+            {{ get_localization("par_header") }} <br />
+            {% set par_val = course.hole_data[i|string]["par"] if i <= course.hole_data|length else constants.hole_par_default %}
+            <input
+            type="number"
+            value="{{par_val}}"
+            min="{{constants.hole_par_min}}"
+            max="{{constants.hole_par_max}}"
+            oninput="this.value = Math.min('{{constants.hole_par_max}}', Math.max(this.value|0, '{{constants.hole_par_min}}'))"
+            name="par_{{i}}"
+            /><br />
+            {{ get_localization("hole_length_header") }} <br />
+            {% set length_val = course.hole_data[i|string]["length"] if i <= course.hole_data|length else constants.hole_length_default %}
+            <input
+            type="number"
+            value="{{length_val}}"
+            min="{{constants.hole_length_min}}"
+            max="{{constants.hole_length_max}}"
+            oninput="this.value = Math.min('{{constants.hole_length_max}}', Math.max(this.value|0, '{{constants.hole_length_min}}'))"
+            name="length_{{i}}"
+            /><br />
+        </p>
+        {% endfor %}
+        <input type="submit" value="{{ get_localization('submit_changes_button') }}" />
+        <input type="hidden" name="id" value="{{ course.id }}" />
+    </form>
+{% endblock %}

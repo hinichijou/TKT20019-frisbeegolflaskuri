@@ -6,12 +6,10 @@
 <h2>{{ get_localization("add_holes_header") }}</h2>
     <form action="/create_holes" method="post">
         <p>
-            {{ get_localization("course_name_header") }} <br />
-            {{ components.inert_text_input("coursename", course.coursename) }}
+            {{ components.inert_text_input("course_name_header", "coursename", course.coursename) }}
         </p>
         <p>
-            {{ get_localization("course_holes_header") }} <br />
-            {{ components.inert_text_input("num_holes", course.num_holes) }}
+            {{ components.inert_text_input("course_holes_header", "num_holes", course.num_holes) }}
         </p>
         <p>
             {{ components.course_difficulty_inert_select(course.difficulty_select) }}

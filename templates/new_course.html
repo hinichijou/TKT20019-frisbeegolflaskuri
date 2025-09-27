@@ -12,10 +12,10 @@
             <p>
                 {{ components.course_holes_input() }}
             <p>
-                {{ components.course_difficulty_select(selections.course_difficulty, True) }}
+                {{ components.course_difficulty_select(selections.course_difficulty, "required") }}
             </p>
             <p>
-                {{ components.course_type_select(selections.course_type, True) }}
+                {{ components.course_type_select(selections.course_type, "required") }}
             </p>
             {{ components.submit_button_with_text(get_localization("next_button")) }}
         </form>

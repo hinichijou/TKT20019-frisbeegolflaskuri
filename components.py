@@ -10,17 +10,26 @@ import utilities
 
 def argsToParamString(*args):
     s = ""
-    for v in args:
-        s += v
+    for i, v in enumerate(args):
+        if i == len(args) - 1:
+            s += v
+        else:
+            s += f"{v} "
 
     return s
 
 def kwargsToParamString(**kwargs):
     s = ""
-    for key, value in kwargs.items():
-        s += f"{key}={value} "
+    for i, (key, value) in enumerate(kwargs.items()):
+        if i == len(kwargs.items()) - 1:
+            s += f"{key}={value}"
+        else:
+            s += f"{key}={value} "
 
     return s
+
+def format_value(value):
+    return f"'{value}'"
 
 def submit_button_with_text(text, *args, **kwargs):
     return Markup(f"<input type='submit' value='{text}' {argsToParamString(*args)} {kwargsToParamString(**kwargs)}/>")
@@ -88,10 +97,10 @@ def inert_select(headerkey, name, selection):
     return select_with_header(headerkey, name, options, "required", "inert")
 
 def hidden_input(n, v):
-    return user_input('hidden', n, value=v)
+    return user_input('hidden', n, value=format_value(v))
 
 def inert_text_input(headerkey, name, value):
-    return user_input_with_header(headerkey, "text", name, "inert", value=value)
+    return user_input_with_header(headerkey, "text", name, "inert", value=format_value(value))
 
 def link_with_text(l, t):
     return Markup(f"<a href='{l}'> {t} </a>")
@@ -148,7 +157,7 @@ def course_holes_input():
                         )
 
 def start_date_input(value):
-     return date_input(LocalizationKeys.start_time_header, "start_time", "required", value=value)
+     return date_input(LocalizationKeys.start_time_header, "start_time", "required", value=format_value(value))
 
 
 def course_select(courses, *args):

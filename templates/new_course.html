@@ -17,7 +17,7 @@
             <p>
                 {{ components.course_type_select(selections.course_type, "required") }}
             </p>
-            {{ components.submit_button_with_text(get_localization("next_button")) }}
+            {{ components.submit_button_with_localized_text("next_button") }}
         </form>
     {% endif %}
 {% endblock %}

@@ -22,8 +22,11 @@ def kwargsToParamString(**kwargs):
 
     return s
 
-def submit_button_with_text(t):
-    return Markup(f"<input type='submit' value='{t}' />")
+def submit_button_with_text(text, *args, **kwargs):
+    return Markup(f"<input type='submit' value='{text}' {argsToParamString(*args)} {kwargsToParamString(**kwargs)}/>")
+
+def submit_button_with_localized_text(text, *args, **kwargs):
+    return submit_button_with_text(get_localization(text), *args, **kwargs)
 
 def user_input(type, name, *args, **kwargs):
     return Markup(f"<input \
@@ -230,22 +233,53 @@ def user_link(user_id, username):
 def course_link(course_id, text):
     return link_with_text(f"/course/{course_id}", text)
 
-def return_to_course_view_link(course_id, text):
-    return Markup(f"{get_localization(LocalizationKeys.course_link_header)} {course_link(course_id, text)}")
+def return_to_course_view_link(course_id):
+    return course_link(course_id, get_localization(LocalizationKeys.return_to_course_page_button))
+
+def course_list_item(course):
+    return Markup(f"<div class='course_item'>\
+                    <a href='/course/{course["id"]}' class='nounderline'>\
+                        { course["coursename"] }<br /> \
+                        { get_localization(LocalizationKeys.course_item_num_holes) } {course["num_holes"]}\
+                    </a>\
+                </div>")
+
+def course_info(course):
+    return Markup(f"{ course["coursename"] }, \
+                    { get_localization(LocalizationKeys.course_item_num_holes) } {course["num_holes"]}\
+                ")
 
 def round_link(round_id, text):
     return link_with_text(f"/round/{round_id}", text)
 
-def return_to_round_view_link(round_id, start_time, location):
-    text = "{} {}".format(utilities.format_date_from_iso(start_time), location)
-    return Markup(f"{get_localization(LocalizationKeys.round_link_header)} {round_link(round_id, text)}")
+def return_to_round_view_link(round_id):
+    return round_link(round_id, get_localization(LocalizationKeys.return_to_round_page_button))
+
+def round_start_with_header(start_time):
+    return Markup(f"{ get_localization(LocalizationKeys.round_item_start) } {utilities.format_date_from_iso(start_time)}")
+
+def round_course_with_header(coursename):
+    return Markup(f"{ get_localization(LocalizationKeys.round_item_place) } {coursename}")
+
+def round_username_with_header(username):
+    return Markup(f"{ get_localization(LocalizationKeys.round_item_creator) } {username}")
+
+def round_num_participating_with_header(num_participating, num_players):
+    return Markup(f"{ get_localization(LocalizationKeys.round_item_players) } {f"{num_participating} / {num_players}"}")
 
 def round_list_item(round):
     return Markup(f"<div class='round_item'>\
                     <a href='/round/{round["id"]}' class='nounderline'>\
-                        { get_localization(LocalizationKeys.round_item_start) } {round["start_time"]}<br /> \
-                        { get_localization(LocalizationKeys.round_item_place) } {round["coursename"]}<br /> \
-                        { get_localization(LocalizationKeys.round_item_creator) } {round["username"]}<br /> \
-                        { get_localization(LocalizationKeys.round_item_players) } {round["num_participating"]} / {round["num_players"]}<br />\
+                        { round_start_with_header(round["start_time"]) }<br /> \
+                        { round_course_with_header(round["coursename"]) }<br /> \
+                        { round_username_with_header(round["username"]) }<br /> \
+                        { round_num_participating_with_header(round["num_participating"], round["num_players"]) }<br />\
                     </a>\
                 </div>")
+
+def round_info(round):
+    return Markup(f"{ round_start_with_header(round["start_time"]) } \
+                    { round_course_with_header(round["coursename"]) } \
+                    { round_username_with_header(round["participators"][round["creator_id"]]) } \
+                    { round_num_participating_with_header(len(round["participators"].keys()), round["num_players"]) }\
+                ")

@@ -4,7 +4,6 @@
 
 {% block content %}
     <h2>{{ get_localization("modify_round_header") }}</h2>
-    {{ components.return_to_round_view_link(round.round_id, round.start_time, round.coursename) }}
     <form method="post">
         <p>
         {{ get_localization("select_course_header") }} <br />
@@ -36,7 +35,10 @@
         </p>
         <input type="submit" formaction="/update_round_basic" value="{{ get_localization('submit_changes_button') }}" />
         <input type="submit" formaction="/edit_round_num_holes" value="{{ get_localization('to_hole_modification_button') }}" />
-        <input type="hidden" name="id" value="{{ round.round_id }}" />
+        <p>
+            {{ components.return_to_round_view_link(round.id) }}
+        </p>
+        <input type="hidden" name="id" value="{{ round.id }}" />
         <input type="hidden" name="coursename" value="{{ round.coursename }}" />
         <input type="hidden" name="num_holes" value="{{ round.num_holes }}" />
         <input type="hidden" name="hole_data" value="{{ round.hole_data }}" />

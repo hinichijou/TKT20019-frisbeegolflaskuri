@@ -5,8 +5,6 @@
 {% block content %}
     <h2>{{ get_localization("courses_header") }}</h2>
     {% for course in courses %}
-        <li>
-        <a href="/course/{{course.id}}">{{course.coursename}}, {{ get_localization("course_item_num_holes") }} {{course.num_holes}}</a>
-        </li>
+        {{ components.course_list_item(course) }}
     {% endfor %}
 {% endblock %}

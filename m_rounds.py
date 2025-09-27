@@ -2,9 +2,8 @@ import json
 import db
 import m_courses
 from enums import FindRoundParam
-from utilities import format_date_from_iso
 
-default_format_options = {"start_time": True, "hole_data": True}
+default_format_options = {"hole_data": True}
 
 def add_round(course_id, creator, start_time, num_players):
     course_data = m_courses.get_course_data(course_id, format_options={"hole_data": False})
@@ -29,7 +28,7 @@ def update_round(data):
     db.execute(sql, [data["coursename"], data["num_holes"], json.dumps(data["hole_data"]), data["user_id"], data["start_time"], data["num_players"], data["id"]])
 
 
-def get_all_rounds(format_options = default_format_options):
+def get_all_rounds():
     sql = "SELECT rounds.id, coursename, username, start_time, num_players, " \
             "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating " \
             "FROM rounds " \
@@ -42,11 +41,11 @@ def get_all_rounds(format_options = default_format_options):
     if not rounds:
         rounds = []
     else:
-        format_rounds(rounds, format_options)
+        format_rounds(rounds)
 
     return rounds
 
-def get_round(id, format_options = default_format_options):
+def get_round(id):
     sql = "SELECT rounds.id as round_id, creator_id, coursename, num_holes, hole_data, start_time, num_players, " \
             "GROUP_CONCAT(users.id) AS user_ids, " \
             "GROUP_CONCAT(users.username) AS usernames " \
@@ -56,7 +55,7 @@ def get_round(id, format_options = default_format_options):
             "WHERE rounds.id = ? " \
             "GROUP BY rounds.id"
     result = db.query_db(sql, [id], db.RespType.DICT)
-    return format_rounds(result, format_options)[0] if result else result
+    return format_rounds(result)[0] if result else result
 
 def get_sql_for_param(param):
     match(param):
@@ -84,7 +83,7 @@ def create_where_condition(params):
 
     return where
 
-def find_rounds(searchparams, format_options = default_format_options):
+def find_rounds(searchparams):
     types, params = zip(*searchparams)
     where = create_where_condition(types)
     sql = "SELECT rounds.id, coursename, username, start_time, num_players, " \
@@ -96,19 +95,21 @@ def find_rounds(searchparams, format_options = default_format_options):
             "GROUP BY rounds.id " \
             "ORDER BY start_time DESC"
     result = db.query_db(sql, params, resp_type = db.RespType.DICT)
-    return format_rounds(result, format_options) if result else result
+    return format_rounds(result) if result else result
 
 def get_user_id_for_round(round_id):
     sql = "SELECT rounds.id, users.id AS user_id FROM rounds JOIN users ON users.id=rounds.creator_id WHERE rounds.id = ?"
     result = db.query_db(sql, [round_id])
     return result[0]["user_id"] if result else result
 
-def format_rounds(rounds, format_options):
+#Format options is a bad choice in retrospect, better to have the data always in consistent format and handle in component logic. Think about refactoring.
+def format_rounds(rounds, format_options = default_format_options):
     for row in rounds:
-        if format_options["start_time"] and "start_time" in row:
-            row["start_time"] = format_date_from_iso(row["start_time"])
         if format_options["hole_data"] and "hole_data" in row:
             row["hole_data"] = json.loads(row["hole_data"])
+        # The join in SQL query made id to be ambiguous, but its better that id can be found consistently from all round query responses. And round.id makes sense in terms of naming.
+        if "round_id" in row:
+            row["id"] = row["round_id"]
         if "user_ids" in row and "usernames" in row:
             user_ids = row["user_ids"].split(",")
             usernames = row["usernames"].split(",")

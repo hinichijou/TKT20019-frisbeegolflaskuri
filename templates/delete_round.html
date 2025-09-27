@@ -3,13 +3,11 @@
 {% block title %}{{ get_localization("delete_round_header") }}{% endblock %}
 
 {% block content %}
-    <h2>{{ get_localization("delete_round_header") }}</h2>
-    <form action="/delete_round/{{round.round_id}}"  method="post">
-        <p>
-        {{ get_localization("round_item_start") }} {{ round.start_time }} {{ get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }} {{round.username}}, {{ get_localization("round_item_players") }} {{ round.participators.keys()|length }} / {{ round.num_players }}
-        </p>
+    <h2>{{ components.round_info(round) }}</h2>
+    <h3>{{ get_localization("delete_round_header") }}</h3>
+    <form action="/delete_round/{{round.id}}"  method="post">
         <p>{{ get_localization("delete_round_are_you_sure") }}</p>
-        <input type="submit" name="remove" value="{{ get_localization('delete_round_button') }}" />
-        <input type="submit" name="return" value="{{ get_localization('return_button') }}" />
+        {{ components.submit_button_with_localized_text("delete_round_button", name="remove") }}
+        {{ components.submit_button_with_localized_text("return_button", name="return") }}
     </form>
 {% endblock %}

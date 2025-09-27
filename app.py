@@ -416,7 +416,7 @@ def edit_round(round_id):
     require_login()
     test_inputs([lambda: test_round_id(round_id)])
 
-    round = m_rounds.get_round(round_id, {"start_time": False, "hole_data": True})
+    round = m_rounds.get_round(round_id)
 
     abort_if_null(round, 404)
     abort_if_id_not_sid(round["creator_id"])

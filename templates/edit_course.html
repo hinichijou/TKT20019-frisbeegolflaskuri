@@ -4,7 +4,6 @@
 
 {% block content %}
     <h2>{{ get_localization("modify_course_header") }}</h2>
-    {{ components.return_to_course_view_link(course.id, course.coursename) }}
     <form action="/edit_course_holes" method="post">
         <p>
         {{ get_localization("course_name_header") }} <br />
@@ -51,6 +50,9 @@
         </select>
         </p>
         <input type="submit" value="{{ get_localization('next_button') }}" />
+        <p>
+            {{ components.return_to_course_view_link(course.id) }}
+        </p>
         <input type="hidden" name="id" value="{{ course.id }}" />
         {% for i in range(1, 1 + course.num_holes|int) %}
         <input type="hidden" value='{{course["hole_data"][i|string]["par"]}}' name="par_{{i}}" /><br />

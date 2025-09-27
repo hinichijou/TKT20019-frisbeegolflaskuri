@@ -20,7 +20,7 @@
             oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
         />
         </p>
-        <input type="submit" value="{{ get_localization('submit_changes_button') }}" />
+        <input type="submit" value="{{ get_localization('next_button') }}" />
         <input type="hidden" name="id" value="{{ round.id }}" />
         <input type="hidden" name="start_time" value="{{ round.start_time }}" />
         <input type="hidden" name="num_players" value="{{ round.num_players }}" />

@@ -4,7 +4,6 @@
 
 {% block content %}
     <h2>{{ get_localization("modify_holes_header") }}</h2>
-    {{ components.round_link(round.id, get_localization("return_to_round_page_button")) }}
     <form action="/update_round_full" method="post">
         <p>
             {{ get_localization("course_name_header") }} <br />

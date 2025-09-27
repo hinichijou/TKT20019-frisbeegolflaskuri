@@ -5,10 +5,8 @@
 {% block content %}
     {% if session.user_id %}
         <h2>{{ get_localization("all_rounds_header") }}</h2>
-        <ul>
-            {% for round in rounds %}
-                {{ components.round_list_item(round) }}
-            {% endfor %}
-        </ul>
+        {% for round in rounds %}
+            {{ components.round_list_item(round) }}
+        {% endfor %}
     {% endif %}
 {% endblock %}

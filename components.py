@@ -233,9 +233,11 @@ def round_link(round_id, text):
     return link_with_text(f"/round/{round_id}", text)
 
 def round_list_item(round):
-    return Markup(f"<li><a href='/round/{round["id"]}'>\
-                    { get_localization(LocalizationKeys.round_item_start) } {round["start_time"]} \
-                    { get_localization(LocalizationKeys.round_item_place) } {round["coursename"]}, \
-                    { get_localization(LocalizationKeys.round_item_creator) } {round["username"]}, \
-                    { get_localization(LocalizationKeys.round_item_players) } {round["num_participating"]} / {round["num_players"]}\
-                </a></li>")
+    return Markup(f"<div class='round_item'>\
+                    <a href='/round/{round["id"]}' class='nounderline'>\
+                        { get_localization(LocalizationKeys.round_item_start) } {round["start_time"]}<br /> \
+                        { get_localization(LocalizationKeys.round_item_place) } {round["coursename"]}<br /> \
+                        { get_localization(LocalizationKeys.round_item_creator) } {round["username"]}<br /> \
+                        { get_localization(LocalizationKeys.round_item_players) } {round["num_participating"]} / {round["num_players"]}<br />\
+                    </a>\
+                </div>")

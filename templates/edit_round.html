@@ -4,6 +4,7 @@
 
 {% block content %}
     <h2>{{ get_localization("modify_round_header") }}</h2>
+    {{ components.return_to_round_view_link(round.round_id, round.start_time, round.coursename) }}
     <form method="post">
         <p>
         {{ get_localization("select_course_header") }} <br />

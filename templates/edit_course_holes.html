@@ -4,6 +4,7 @@
 
 {% block content %}
     <h2>{{ get_localization("modify_holes_header") }}</h2>
+    {{ components.return_to_course_view_link(course.id, course.coursename) }}
     <form action="/update_course" method="post">
         <p>
         {{ get_localization("course_name_header") }} <br />

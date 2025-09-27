@@ -35,4 +35,6 @@ class LocalizationKeys(StrEnum):
     course_type_default = auto(),
     course_diff_default = auto(),
     course_holes_header = auto(),
-    course_name_header = auto()
+    course_name_header = auto(),
+    course_link_header = auto(),
+    round_link_header = auto()

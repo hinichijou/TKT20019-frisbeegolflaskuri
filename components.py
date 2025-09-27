@@ -2,6 +2,7 @@ from markupsafe import Markup
 from localizationkeys import LocalizationKeys
 from localization import get_localization
 from constants import constants
+import utilities
 
 
 # A test for creating and sharing some basic components between templates. Could build a library of basic components and call them with functions from the templates
@@ -229,8 +230,15 @@ def user_link(user_id, username):
 def course_link(course_id, text):
     return link_with_text(f"/course/{course_id}", text)
 
+def return_to_course_view_link(course_id, text):
+    return Markup(f"{get_localization(LocalizationKeys.course_link_header)} {course_link(course_id, text)}")
+
 def round_link(round_id, text):
     return link_with_text(f"/round/{round_id}", text)
+
+def return_to_round_view_link(round_id, start_time, location):
+    text = "{} {}".format(utilities.format_date_from_iso(start_time), location)
+    return Markup(f"{get_localization(LocalizationKeys.round_link_header)} {round_link(round_id, text)}")
 
 def round_list_item(round):
     return Markup(f"<div class='round_item'>\

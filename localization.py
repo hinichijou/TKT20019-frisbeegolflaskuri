@@ -85,11 +85,20 @@ localizations_fin = {
     "return_to_courses_button": "Palaa ratalistaukseen",
     "return_to_course_page_button": "Palaa ratanäkymään",
     "return_to_round_page_button": "Palaa kierrosnäkymään",
+    "registration_success": "Tunnuksen luonti onnistui!",
+    "login_success": "Sisäänkirjautuminen onnistui!",
+    "logout_success": "Kirjauduttu ulos onnistuneesti!",
+    "create_course_success": "Rata luotu onnistuneesti!",
+    "create_round_success": "Kierros luotu onnistuneesti!",
+    "delete_course_success": "Rata poistettu onnistuneesti!",
+    "delete_round_success": "Kierros poistettu onnistuneesti!",
+    "create_course_unsuccessful": "Rata ei onnistuttu lisäämään tietokantaan. Yritä uudelleen.",
     "no_courses_found": "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen.",
     "password_mismatch": "VIRHE: salasanat eivät ole samat",
     "username_taken": "VIRHE: tunnus on jo varattu",
     "user_does_not_exist": "VIRHE: käyttäjää ei ole olemassa",
     "wrong_username_or_password": "VIRHE: väärä tunnus tai salasana",
+    "create_round_course_does_not_exist": "VIRHE: Rataa ei löytynyt tietokannasta. Uutta kierrosta ei luotu. Varmista että rata on tietokannassa ja yritä uudelleen."
 }
 
 localizations = localizations_fin

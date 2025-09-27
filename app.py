@@ -1,11 +1,11 @@
 import sqlite3
 from flask import Flask
-from flask import abort, redirect, render_template, request, session
+from flask import abort, redirect, render_template, flash, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 import config
 from constants import constants
-from enums import SelectionItemClass, FindRoundParam
+from enums import SelectionItemClass, FindRoundParam, FlashCategory
 from localizationkeys import LocalizationKeys
 from localization import get_localization
 import components
@@ -20,6 +20,16 @@ app.secret_key = config.secret_key
 @app.context_processor
 def utility_processor():
     return dict(get_localization=get_localization, components=components)
+
+def showMessageAndRedirect(key, category, route):
+    flash(get_localization(key), category)
+    return redirect(route)
+
+def showSuccessAndRedirect(key, route):
+    return showMessageAndRedirect(key, FlashCategory.MESSAGE, route)
+
+def showErrorAndRedirect(key, route):
+    return showMessageAndRedirect(key, FlashCategory.ERROR, route)
 
 def require_login():
     if "user_id" not in session:
@@ -201,7 +211,10 @@ def create_holes():
 
     course_id = m_courses.add_course(course)
 
-    return redirect("/course/" + str(course_id) if course_id else "/")
+    if course_id:
+        return showSuccessAndRedirect(LocalizationKeys.create_course_success, "/course/" + str(course_id))
+    else:
+        return showErrorAndRedirect(LocalizationKeys.create_course_unsuccessful, "/")
 
 @app.route("/delete_course/<int:course_id>", methods=["GET", "POST"])
 def delete_course(course_id):
@@ -219,7 +232,7 @@ def delete_course(course_id):
     if request.method == "POST":
         if "remove" in request.form:
             m_courses.delete_course(course_id)
-            return redirect("/")
+            return showSuccessAndRedirect(LocalizationKeys.delete_course_success, "/")
 
         return redirect("/course/" + str(course_id))
 
@@ -229,7 +242,7 @@ def show_courses():
 
     courses = m_courses.get_courses()
     if not courses:
-        return get_localization(LocalizationKeys.no_courses_found)
+        return showErrorAndRedirect(LocalizationKeys.no_courses_found, "/")
 
     return render_template("show_courses.html", courses = courses)
 
@@ -308,7 +321,7 @@ def new_round():
 
     courses = m_courses.get_courses()
     if not courses:
-        return get_localization(LocalizationKeys.no_courses_found)
+        return showErrorAndRedirect(LocalizationKeys.no_courses_found, "/")
 
     return render_template("new_round.html", constants = constants, courses = courses, date = datetime.datetime.now().isoformat(timespec="minutes"))
 
@@ -330,7 +343,11 @@ def create_round():
 
     round_id = m_rounds.add_round(course_id, session["user_id"], start_time, num_players)
 
-    return redirect("/round/" + str(round_id) if round_id else "/")
+    if round_id:
+        return showSuccessAndRedirect(LocalizationKeys.create_round_success, "/round/" + str(round_id))
+    else:
+        return showErrorAndRedirect(LocalizationKeys.create_round_course_does_not_exist, "/")
+
 
 @app.route("/delete_round/<int:round_id>", methods=["GET", "POST"])
 def delete_round(round_id):
@@ -350,7 +367,7 @@ def delete_round(round_id):
     if request.method == "POST":
         if "remove" in request.form:
             m_rounds.delete_round(round_id)
-            return redirect("/")
+            return showSuccessAndRedirect(LocalizationKeys.delete_round_success, "/")
 
         return redirect("/round/" + str(round_id))
 
@@ -599,14 +616,14 @@ def create():
     password = request.form["password"]
     repeat_password = request.form["repeat_password"]
     if password != repeat_password:
-        return get_localization(LocalizationKeys.password_mismatch)
+        return showErrorAndRedirect(LocalizationKeys.password_mismatch, "/register")
 
     try:
         m_users.create_user(username, generate_password_hash(password))
     except sqlite3.IntegrityError:
-        return get_localization(LocalizationKeys.username_taken)
+        return showErrorAndRedirect(LocalizationKeys.username_taken, "/register")
 
-    return redirect("/registered")
+    return showSuccessAndRedirect(LocalizationKeys.registration_success, "/login")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -629,14 +646,14 @@ def login():
             user_id = result["id"]
             password_hash = result["password_hash"]
         else:
-            return get_localization(LocalizationKeys.user_does_not_exist)
+            return showErrorAndRedirect(LocalizationKeys.user_does_not_exist, "/login")
 
         if check_password_hash(password_hash, password):
             session["user_id"] = user_id
             session["username"] = username
-            return redirect("/")
+            return showSuccessAndRedirect(LocalizationKeys.login_success, "/")
         else:
-            return get_localization(LocalizationKeys.wrong_username_or_password)
+            return showErrorAndRedirect(LocalizationKeys.wrong_username_or_password, "/login")
 
 @app.route("/logout")
 def logout():
@@ -644,4 +661,4 @@ def logout():
 
     del session["username"]
     del session["user_id"]
-    return redirect("/")
+    return showSuccessAndRedirect(LocalizationKeys.logout_success, "/")

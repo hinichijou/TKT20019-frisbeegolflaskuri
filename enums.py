@@ -4,6 +4,12 @@ class SelectionItemClass(StrEnum):
     COURSE_DIFFICULTY = auto(),
     COURSE_TYPE = auto()
 
+class FlashCategory(StrEnum):
+    MESSAGE = auto(),
+    ERROR = auto(),
+    INFO = auto(),
+    WARNING = auto()
+
 class FindRoundParam(Enum):
     DATE = 1,
     COURSENAME = 2,

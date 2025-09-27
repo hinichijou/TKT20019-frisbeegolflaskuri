@@ -38,4 +38,13 @@ class LocalizationKeys(StrEnum):
     course_name_header = auto(),
     course_item_num_holes = auto(),
     return_to_round_page_button = auto(),
-    return_to_course_page_button = auto()
+    return_to_course_page_button = auto(),
+    create_round_course_does_not_exist = auto(),
+    create_course_success = auto(),
+    create_round_success = auto(),
+    create_course_unsuccessful = auto(),
+    delete_round_success = auto(),
+    delete_course_success = auto(),
+    registration_success = auto(),
+    login_success = auto(),
+    logout_success = auto()

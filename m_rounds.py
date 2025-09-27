@@ -13,8 +13,6 @@ def add_round(course_id, creator, start_time, num_players):
         db.execute(sql, [course_data["coursename"], course_data["num_holes"], course_data["hole_data"], creator, start_time, num_players])
         return db.last_insert_id()
     else:
-        #TODO: Virheilmoitus
-        print(f"VIRHE: Rataa id:llä {course_id} ei löytynyt tietokannasta. Uutta kierrosta ei luotu")
         return None
 
 def delete_round(round_id):

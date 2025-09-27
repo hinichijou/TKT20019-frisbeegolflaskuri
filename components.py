@@ -32,7 +32,7 @@ def format_value(value):
     return f"'{value}'"
 
 def submit_button_with_text(text, *args, **kwargs):
-    return Markup(f"<input type='submit' value='{text}' {argsToParamString(*args)} {kwargsToParamString(**kwargs)}/>")
+    return Markup(f"<input type='submit' value='{text}' {argsToParamString(*args)} {kwargsToParamString(**kwargs)} />")
 
 def submit_button_with_localized_text(text, *args, **kwargs):
     return submit_button_with_text(get_localization(text), *args, **kwargs)

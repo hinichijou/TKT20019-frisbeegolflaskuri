@@ -12,6 +12,8 @@ def add_course(data):
     add_course_selection(course_id, data["difficulty_select"][0])
     add_course_selection(course_id, data["type_select"][0])
 
+    return course_id
+
 def add_course_selection(course_id, selection):
     sql = "INSERT INTO course_selections (item_id, course_id) VALUES (?, ?)"
     db.execute(sql, [selection, course_id])

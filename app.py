@@ -199,9 +199,9 @@ def create_holes():
 
     abort_if_not_in_selections(course)
 
-    m_courses.add_course(course)
+    course_id = m_courses.add_course(course)
 
-    return redirect("/")
+    return redirect("/course/" + str(course_id) if course_id else "/")
 
 @app.route("/delete_course/<int:course_id>", methods=["GET", "POST"])
 def delete_course(course_id):
@@ -328,9 +328,9 @@ def create_round():
         ]
     )
 
-    m_rounds.add_round(course_id, session["user_id"], start_time, num_players)
+    round_id = m_rounds.add_round(course_id, session["user_id"], start_time, num_players)
 
-    return redirect("/")
+    return redirect("/round/" + str(round_id) if round_id else "/")
 
 @app.route("/delete_round/<int:round_id>", methods=["GET", "POST"])
 def delete_round(round_id):

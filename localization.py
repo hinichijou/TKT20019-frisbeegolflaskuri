@@ -2,8 +2,8 @@
 
 localizations_fin = {
     "main_header": "Frisbeegolflaskuri",
-    "register_header": "Rekisteröityminen",
-    "log_in_header": "Kirjautuminen",
+    "register_header": "Rekisteröidy",
+    "log_in_header": "Kirjaudu sisään",
     "account_name_header": "Tunnus:",
     "username_header": "Käyttäjänimi:",
     "user_id_header": "Käyttäjän ID:",

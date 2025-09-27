@@ -4,6 +4,7 @@
 
 {% block content %}
     {% if not session.user_id %}
+        <h2>{{ get_localization("register_header") }}</h2>
         <form action="/create" method="post">
             <p>
                 {{ components.account_name_input() }}

@@ -13,7 +13,9 @@
 {%- endmacro %}
 
 {% macro hidden_input(name, value) -%}
-    {{user_input("hidden", name, {"value":value})}}
+    <div class='hidden'>
+        {{user_input("hidden", name, {"value":value})}}
+    </div>
 {%- endmacro %}
 
 {% macro submit_button_with_text(text, name = "submit") -%}
@@ -50,24 +52,32 @@
     {{text_input("account_name_header", "text", "username", constants.username_minlength, constants.username_maxlength, {"required":""})}}
 {%- endmacro %}
 
-{% macro course_name_input() -%}
-    {{text_input("course_name_header", "text", "coursename", constants.coursename_minlength, constants.coursename_maxlength, {"required":""})}}
+{% macro course_name_input(value = "") -%}
+    {{text_input("course_name_header", "text", "coursename", constants.coursename_minlength, constants.coursename_maxlength, {"value":value, "required":""})}}
 {%- endmacro %}
 
 {% macro amount_players_input() -%}
     {{number_input("amount_players_header", "num_players", constants.round_min_players, constants.round_max_players, {"required":"", "value":constants.round_min_players})}}
 {%- endmacro %}
 
-{% macro par_input(index) -%}
-    {{number_input("par_header", "par_{}".format(index), constants.hole_par_min, constants.hole_par_max, {"required":"", "value":constants.hole_par_default})}}
+{% macro par_input(index, value) -%}
+    {{number_input("par_header", "par_{}".format(index), constants.hole_par_min, constants.hole_par_max, {"required":"", "value":value})}}
 {%- endmacro %}
 
-{% macro length_input(index) -%}
-    {{number_input("hole_length_header", "length_{}".format(index), constants.hole_length_min, constants.hole_length_max, {"required":"", "value":constants.hole_length_default})}}
+{% macro length_input(index, value) -%}
+    {{number_input("hole_length_header", "length_{}".format(index), constants.hole_length_min, constants.hole_length_max, {"required":"", "value":value})}}
 {%- endmacro %}
 
-{% macro course_holes_input() -%}
-    {{number_input("course_holes_header", "num_holes", constants.course_holes_min, constants.course_holes_max, {"required":"", "value":constants.course_holes_default})}}
+{% macro par_input_default(index) -%}
+    {{par_input(index, constants.hole_par_default)}}
+{%- endmacro %}
+
+{% macro length_input_default(index) -%}
+    {{length_input(index, constants.hole_length_default)}}
+{%- endmacro %}
+
+{% macro course_holes_input(value = constants.course_holes_default) -%}
+    {{number_input("course_holes_header", "num_holes", constants.course_holes_min, constants.course_holes_max, {"required":"", "value":value})}}
 {%- endmacro %}
 
 {% macro base_password_input(headerkey, name) -%}
@@ -117,8 +127,8 @@
     {{select_with_header("select_course_header", "course_select", options, arg_dict)}}
 {%- endmacro %}
 
-{% macro select_from_option_tuple(name, headerkey, defaultkey, selection, required) -%}
-    {% set options = [("", get_localization(defaultkey))] %}
+{% macro select_from_option_tuple(name, headerkey, defaultoption, selection, required) -%}
+    {% set options = [(defaultoption[0], get_localization(defaultoption[1]))] %}
     {% for s in selection %}
         {% set dummy = options.append(("{},{}".format(s[0], s[1]), get_localization(s[1]))) %}
     {% endfor %}
@@ -126,12 +136,12 @@
     {{select_with_header(headerkey, name, options, arg_dict)}}
 {%- endmacro %}
 
-{% macro course_type_select(ctypes, required) -%}
-    {{select_from_option_tuple("type_select", "course_type_header", "course_type_default", ctypes, required)}}
+{% macro course_type_select(ctypes, required, defaultvalue=("","course_type_default")) -%}
+    {{select_from_option_tuple("type_select", "course_type_header", defaultvalue, ctypes, required)}}
 {%- endmacro %}
 
-{% macro course_difficulty_select(cds, required) -%}
-    {{select_from_option_tuple("difficulty_select", "course_difficulty_header", "course_diff_default", cds, required)}}
+{% macro course_difficulty_select(cds, required, defaultvalue=("","course_diff_default")) -%}
+    {{select_from_option_tuple("difficulty_select", "course_difficulty_header", defaultvalue, cds, required)}}
 {%- endmacro %}
 
 {% macro course_type_inert_select(selection) -%}

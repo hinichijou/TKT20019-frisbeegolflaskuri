@@ -6,62 +6,40 @@
     <h2>{{ get_localization("modify_holes_header") }}</h2>
     <form action="/update_course" method="post">
         <p>
-        {{ get_localization("course_name_header") }} <br />
-        <input inert type="text" value="{{course.coursename}}" name="coursename" />
+            {{ components.inert_text_input("course_name_header", "coursename", course.coursename) }}
         </p>
         <p>
-        {{ get_localization("course_holes_header") }} <br />
-        <input inert type="text" value="{{course.num_holes}}" name="num_holes" />
+            {{ components.inert_text_input("course_holes_header", "num_holes", course.num_holes) }}
         </p>
         {% if "difficulty_select" in course and course.difficulty_select[0] %}
-        <p>
-            {{ get_localization("course_difficulty_header") }} <br />
-            <select inert name="difficulty_select">
-            <option value="{{ course.difficulty_select[0] }},{{ course.difficulty_select[1] }}">{{ get_localization(course.difficulty_select[1]) }}</option>
-            </select>
-        </p>
+            <p>
+                {{ components.course_difficulty_inert_select(course.difficulty_select) }}
+            </p>
         {% else %}
-        <input type="hidden" value="" name="difficulty_select" />
+            {{ components.hidden_input("difficulty_select", "") }}
         {% endif %}
         {% if "type_select" in course  and course.type_select[0] %}
-        <p>
-            {{ get_localization("course_type_header") }} <br />
-            <select inert name="type_select">
-            <option value="{{ course.type_select[0] }},{{ course.type_select[1] }}">{{ get_localization(course.type_select[1]) }}</option>
-            </select>
-        </p>
+            <p>
+                {{ components.course_type_inert_select(course.type_select) }}
+            </p>
         {% else %}
-        <input type="hidden" value="" name="type_select" />
+            {{ components.hidden_input("type_select", "") }}
         {% endif %}
         {% for i in range(1, 1 + course.num_holes|int) %}
-        <p>
-            {{ get_localization("hole_header").format(i) }} <br />
-            {{ get_localization("par_header") }} <br />
-            {% set par_val = course.hole_data[i|string]["par"] if i <= course.hole_data|length else constants.hole_par_default %}
-            <input
-            type="number"
-            value="{{par_val}}"
-            min="{{constants.hole_par_min}}"
-            max="{{constants.hole_par_max}}"
-            oninput="this.value = Math.min('{{constants.hole_par_max}}', Math.max(this.value|0, '{{constants.hole_par_min}}'))"
-            name="par_{{i}}"
-            /><br />
-            {{ get_localization("hole_length_header") }} <br />
-            {% set length_val = course.hole_data[i|string]["length"] if i <= course.hole_data|length else constants.hole_length_default %}
-            <input
-            type="number"
-            value="{{length_val}}"
-            min="{{constants.hole_length_min}}"
-            max="{{constants.hole_length_max}}"
-            oninput="this.value = Math.min('{{constants.hole_length_max}}', Math.max(this.value|0, '{{constants.hole_length_min}}'))"
-            name="length_{{i}}"
-            /><br />
-        </p>
+            <p>
+                {{ get_localization("hole_header").format(i) }} <br />
+
+                {% set par_val = course.hole_data[i|string]["par"] if i <= course.hole_data|length else constants.hole_par_default %}
+                {{ components.par_input(i, par_val) }} <br />
+
+                {% set length_val = course.hole_data[i|string]["length"] if i <= course.hole_data|length else constants.hole_length_default %}
+                {{ components.length_input(i, length_val) }}
+            </p>
         {% endfor %}
-        <input type="submit" value="{{ get_localization('submit_changes_button') }}" />
+        {{ components.submit_button_with_localized_text("submit_changes_button") }}
         <p>
             {{ components.return_to_course_view_link(course.id) }}
         </p>
-        <input type="hidden" name="id" value="{{ course.id }}" />
+        {{ components.hidden_input("id", course.id) }}
     </form>
 {% endblock %}

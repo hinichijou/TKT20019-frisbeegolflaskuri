@@ -20,8 +20,8 @@
         {% for i in range(1, 1 + course.num_holes|int) %}
             <p>
                 {{ get_localization("hole_header").format(i) }} <br />
-                {{ components.par_input(i) }} <br />
-                {{ components.length_input(i) }}
+                {{ components.default_par_input(i) }} <br />
+                {{ components.default_length_input(i) }}
             </p>
         {% endfor %}
         {{ components.submit_button_with_localized_text("create_course_button") }}

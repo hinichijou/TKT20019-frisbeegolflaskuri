@@ -16,12 +16,7 @@
         </p>
         <h3>{{ get_localization("rounds_created_by_user_header") }}</h3>
         {% for round in rounds %}
-            <li>
-                <a href="/round/{{round.id}}">{{ get_localization("round_item_start") }} {{round.start_time}} {{
-                    get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }}
-                    {{round.username}}, {{ get_localization("round_item_players") }} {{round.num_participating}} /
-                    {{round.num_players}}</a>
-            </li>
+            {{ components.round_list_item(round) }}
         {% endfor %}
     {% endif %}
     {% if participating_rounds|length > 0 %}
@@ -30,12 +25,7 @@
         </p>
         <h3>{{ get_localization("rounds_user_participating_header") }}</h3>
         {% for round in participating_rounds %}
-            <li>
-                <a href="/round/{{round.id}}">{{ get_localization("round_item_start") }} {{round.start_time}} {{
-                    get_localization("round_item_place") }} {{round.coursename}}, {{ get_localization("round_item_creator") }}
-                    {{round.username}}, {{ get_localization("round_item_players") }} {{round.num_participating}} /
-                    {{round.num_players}}</a>
-            </li>
+            {{ components.round_list_item(round) }}
         {% endfor %}
     {% endif %}
 {% endblock %}

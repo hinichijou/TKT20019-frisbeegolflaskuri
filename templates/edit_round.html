@@ -6,45 +6,26 @@
     <h2>{{ get_localization("modify_round_header") }}</h2>
     <form method="post">
         <p>
-        {{ get_localization("select_course_header") }} <br />
-        <select name="course_select">
-            <option value="">{{ round.coursename }}</option>
-            {% for course in courses %}
-            <option value="{{ course.id }}">{{ course.coursename }}</option>
-            {% endfor %}
-        </select>
+            {{ components.course_select(courses, False, defaultoption = ("", round.coursename)) }}
         </p>
         <p>
-        {{ get_localization("start_time_header") }} <br />
-        <input
-            type="datetime-local"
-            value="{{ round.start_time }}"
-            name="start_time"
-        />
+            {{ components.start_date_input(round.start_time, "datetime-local", True) }}
         </p>
         <p>
-        {{ get_localization("amount_players_header") }} <br />
-        <input
-            type="number"
-            name="num_players"
-            value="{{round.num_players}}"
-            min="{{constants.round_min_players}}"
-            max="{{constants.round_max_players}}"
-            oninput="this.value = Math.min('{{constants.round_max_players}}', Math.max(this.value|0, '{{constants.round_min_players}}'))"
-        />
+            {{ components.amount_players_input(value=round.num_players) }}
         </p>
-        <input type="submit" formaction="/update_round_basic" value="{{ get_localization('submit_changes_button') }}" />
-        <input type="submit" formaction="/edit_round_num_holes" value="{{ get_localization('to_hole_modification_button') }}" />
+        {{ components.localized_formaction_button("submit_changes_button", "/update_round_basic") }}
+        {{ components.localized_formaction_button("to_hole_modification_button", "/edit_round_num_holes") }}
         <p>
             {{ components.return_to_round_view_link(round.id) }}
         </p>
-        <input type="hidden" name="id" value="{{ round.id }}" />
-        <input type="hidden" name="coursename" value="{{ round.coursename }}" />
-        <input type="hidden" name="num_holes" value="{{ round.num_holes }}" />
-        <input type="hidden" name="hole_data" value="{{ round.hole_data }}" />
+        {{ components.hidden_input("id", round.id) }}
+        {{ components.hidden_input("coursename", round.coursename) }}
+        {{ components.hidden_input("num_holes", round.num_holes) }}
+        {{ components.hidden_input("hole_data", round.hole_data) }}
         {% for i in range(1, 1 + round.num_holes|int) %}
-            <input type="hidden" value='{{round.hole_data[i|string]["par"]}}' name="par_{{i}}" /><br />
-            <input type="hidden" value='{{round.hole_data[i|string]["length"]}}' name="length_{{i}}" /><br />
+            {{ components.hidden_input("par_{}".format(i), round["hole_data"][i|string]["par"]) }}
+            {{ components.hidden_input("length_{}".format(i), round["hole_data"][i|string]["length"]) }}
         {% endfor %}
     </form>
 {% endblock %}

@@ -6,9 +6,11 @@
 
 {% macro user_input(type, name, arg_dict) -%}
     <input type="{{ type }}" name="{{ name }}"
-        {% for k, v in arg_dict.items() %}
-            {{k}}="{{ v }}"
-        {% endfor %}
+        {% if arg_dict %}
+            {% for k, v in arg_dict.items() %}
+                {{k}}="{{ v }}"
+            {% endfor %}
+        {% endif %}
      >
 {%- endmacro %}
 
@@ -18,12 +20,17 @@
     </div>
 {%- endmacro %}
 
-{% macro submit_button_with_text(text, name = "submit") -%}
-    {{user_input("submit", name, {"value":text})}}
+{% macro submit_button_with_text(text, arg_dict, name = "submit") -%}
+    {% set arg_dict = dict(arg_dict, **{"value":text}) if arg_dict else {"value":text} -%}
+    {{user_input("submit", name, arg_dict)}}
 {%- endmacro %}
 
-{% macro submit_button_with_localized_text(text, name = "submit") -%}
-    {{submit_button_with_text(get_localization(text), name)}}
+{% macro submit_button_with_localized_text(text, arg_dict, name = "submit") -%}
+    {{submit_button_with_text(get_localization(text), arg_dict, name)}}
+{%- endmacro %}
+
+{% macro localized_formaction_button(text, action, name = "submit") -%}
+    {{submit_button_with_localized_text(text, {"formaction":action}, name)}}
 {%- endmacro %}
 
 {% macro user_input_with_header(headerkey, type, name, arg_dict) -%}
@@ -56,8 +63,8 @@
     {{text_input("course_name_header", "text", "coursename", constants.coursename_minlength, constants.coursename_maxlength, {"value":value, "required":""})}}
 {%- endmacro %}
 
-{% macro amount_players_input() -%}
-    {{number_input("amount_players_header", "num_players", constants.round_min_players, constants.round_max_players, {"required":"", "value":constants.round_min_players})}}
+{% macro amount_players_input(value=constants.round_min_players) -%}
+    {{number_input("amount_players_header", "num_players", constants.round_min_players, constants.round_max_players, {"required":"", "value":value})}}
 {%- endmacro %}
 
 {% macro par_input(index, value) -%}

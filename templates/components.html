@@ -44,8 +44,8 @@
     {{user_input_with_header(headerkey, "number", name, arg_dict)}}
 {%- endmacro %}
 
-{% macro date_input(headerkey, name, arg_dict) -%}
-    {{user_input_with_header(headerkey, "datetime-local", name, arg_dict)}}
+{% macro date_input(headerkey, type, name, arg_dict) -%}
+    {{user_input_with_header(headerkey, type, name, arg_dict)}}
 {%- endmacro %}
 
 {% macro account_name_input() -%}
@@ -92,8 +92,9 @@
     {{base_password_input("repeat_password_header", "repeat_password")}}
 {%- endmacro %}
 
-{% macro start_date_input(value) -%}
-    {{date_input("start_time_header", "start_time", {"required":"", "value":value})}}
+{% macro start_date_input(value, type, required, headerkey = "start_time_header") -%}
+    {% set arg_dict = {"required":"", "value":value} if required else {"value":value} %}
+    {{date_input(headerkey, type, "start_time", arg_dict)}}
 {%- endmacro %}
 
 {% macro select(name, options, arg_dict) -%}
@@ -118,13 +119,32 @@
     {{select_with_header(headerkey, name, options, {"required":"", "inert":""})}}
 {%- endmacro %}
 
-{% macro course_select(courses, required) -%}
-    {% set options = [("", get_localization("course_select_default"))] %}
+{% macro course_select(courses, required, headerkey = "select_course_header", defaultoption = ("", get_localization("course_select_default"))) -%}
+    {% set options = [defaultoption] %}
     {% for course in courses %}
         {% set dummy = options.append((course["id"], course["coursename"])) %}
     {% endfor %}
     {% set arg_dict = {"required":""} if required else {} %}
-    {{select_with_header("select_course_header", "course_select", options, arg_dict)}}
+    {{select_with_header(headerkey, "course_select", options, arg_dict)}}
+{%- endmacro %}
+
+{#  The difference between the find select and the course select is in how the options are constructed.
+    If we would like to share code, the sensible solution would be to have the child return the whole
+    options construction. The only reasonable way to do this seems to be template inheritance, which means macros
+    are not good option for this kind of use.
+#}
+{% macro find_course_select(courses, query) -%}
+    {{get_localization("find_by_course_name_header")}} <br />
+    <select name="course_select">
+        <option value="">{{ get_localization("course_select_default") }}</option>
+        {% for course in courses %}
+            {% if query == course.coursename %}
+                <option selected value="{{ course.coursename }}">{{ course.coursename }}</option>
+            {% else %}
+                <option value="{{ course.coursename }}">{{ course.coursename }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
 {%- endmacro %}
 
 {% macro select_from_option_tuple(name, headerkey, defaultoption, selection, required) -%}

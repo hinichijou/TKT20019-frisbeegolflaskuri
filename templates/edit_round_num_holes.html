@@ -6,30 +6,21 @@
     <h2>{{ get_localization("modify_num_holes_header") }}</h2>
     <form action="/edit_round_holes" method="post">
         <p>
-        {{ get_localization("course_name_header") }} <br />
-        <input inert type="text" value="{{round.coursename}}" name="coursename" />
+            {{ components.inert_text_input("course_name_header", "coursename", round.coursename) }}
         </p>
         <p>
-        {{ get_localization("course_holes_header") }} <br />
-        <input
-            type="number"
-            name="num_holes"
-            value="{{round.num_holes}}"
-            min="{{constants.course_holes_min}}"
-            max="{{constants.course_holes_max}}"
-            oninput="this.value = Math.min('{{constants.course_holes_max}}', Math.max(this.value|0, '{{constants.course_holes_min}}'))"
-        />
+            {{ components.course_holes_input(round.num_holes) }}
         </p>
-        <input type="submit" value="{{ get_localization('next_button') }}" />
+        {{ components.submit_button_with_localized_text("next_button") }}
         <p>
             {{ components.return_to_round_view_link(round.id) }}
         </p>
-        <input type="hidden" name="id" value="{{ round.id }}" />
-        <input type="hidden" name="start_time" value="{{ round.start_time }}" />
-        <input type="hidden" name="num_players" value="{{ round.num_players }}" />
+        {{ components.hidden_input("id", round.id) }}
+        {{ components.hidden_input("start_time", round.start_time) }}
+        {{ components.hidden_input("num_players", round.num_players) }}
         {% for i in range(1, 1 + round.num_holes|int) %}
-            <input type="hidden" value='{{round["hole_data"][i|string]["par"]}}' name="par_{{i}}" /><br />
-            <input type="hidden" value='{{round["hole_data"][i|string]["length"]}}' name="length_{{i}}" /><br />
+            {{ components.hidden_input("par_{}".format(i), round["hole_data"][i|string]["par"]) }}
+            {{ components.hidden_input("length_{}".format(i), round["hole_data"][i|string]["length"]) }}
         {% endfor %}
     </form>
 {% endblock %}

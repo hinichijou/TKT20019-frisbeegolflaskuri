@@ -87,7 +87,7 @@ localizations_fin = {
     "return_to_round_page_button": "Palaa kierrosnäkymään",
     "registration_success": "Tunnuksen luonti onnistui!",
     "login_success": "Sisäänkirjautuminen onnistui!",
-    "logout_success": "Kirjauduttu ulos onnistuneesti!",
+    "logout_success": "Uloskirjautuminen onnistui!",
     "create_course_success": "Rata luotu onnistuneesti!",
     "create_round_success": "Kierros luotu onnistuneesti!",
     "delete_course_success": "Rata poistettu onnistuneesti!",

@@ -8,7 +8,7 @@ from constants import constants
 from enums import SelectionItemClass, FindRoundParam, FlashCategory
 from localizationkeys import LocalizationKeys
 from localization import get_localization
-import components
+import utilities
 import m_users
 import m_rounds
 import m_courses
@@ -19,7 +19,7 @@ app.secret_key = config.secret_key
 
 @app.context_processor
 def utility_processor():
-    return dict(get_localization=get_localization, components=components)
+    return dict(get_localization=get_localization, utilities=utilities)
 
 def showMessageAndRedirect(key, category, route):
     flash(get_localization(key), category)

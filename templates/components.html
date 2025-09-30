@@ -20,6 +20,10 @@
     </div>
 {%- endmacro %}
 
+{% macro csrf_token_input() -%}
+    {{hidden_input("csrf_token", session.csrf_token)}}
+{%- endmacro %}
+
 {% macro submit_button_with_text(text, arg_dict, name = "submit") -%}
     {% set arg_dict = dict(arg_dict, **{"value":text}) if arg_dict else {"value":text} -%}
     {{user_input("submit", name, arg_dict)}}
@@ -283,5 +287,5 @@
     {{ round_start_with_header(round.start_time) }}
     {{ round_course_with_header(round.coursename) }}
     {{ round_username_with_header(round.participators[round.creator_id]) }}
-    {{ round_num_participating_with_header(len(round.participators.keys()), round.num_players) }}
+    {{ round_num_participating_with_header(round.participators.keys()|length, round.num_players) }}
 {%- endmacro %}

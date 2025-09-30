@@ -19,6 +19,7 @@
                 {{ components.course_type_select(selections.course_type, True) }}
             </p>
             {{ components.submit_button_with_localized_text("next_button") }}
+            {{ components.csrf_token_input() }}
         </form>
     {% endif %}
 {% endblock %}

@@ -41,5 +41,6 @@
             {{ components.return_to_course_view_link(course.id) }}
         </p>
         {{ components.hidden_input("id", course.id) }}
+        {{ components.csrf_token_input() }}
     </form>
 {% endblock %}

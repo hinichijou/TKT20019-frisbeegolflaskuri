@@ -15,5 +15,6 @@
             {{ components.amount_players_input() }}
         </p>
         {{ components.submit_button_with_localized_text("create_round_button") }}
+        {{ components.csrf_token_input() }}
     </form>
 {% endblock %}

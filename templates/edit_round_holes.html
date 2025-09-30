@@ -29,5 +29,6 @@
         {{ components.hidden_input("id", round.id) }}
         {{ components.hidden_input("start_time", round.start_time) }}
         {{ components.hidden_input("num_players", round.num_players) }}
+        {{ components.csrf_token_input() }}
     </form>
 {% endblock %}

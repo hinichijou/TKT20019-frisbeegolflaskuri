@@ -1,3 +1,4 @@
+import secrets
 import sqlite3
 from flask import Flask
 from flask import abort, redirect, render_template, flash, request, session
@@ -33,6 +34,10 @@ def showErrorAndRedirect(key, route):
 
 def require_login():
     if "user_id" not in session:
+        abort(403)
+
+def check_csrf(form):
+    if "csrf_token" not in form or form["csrf_token"] != session["csrf_token"]:
         abort(403)
 
 def abort_if_id_not_sid(user_id):
@@ -172,6 +177,7 @@ def get_basic_course_data_input_tests(course, allow_empty_item_id = False):
 @app.route("/create_course", methods=["POST"])
 def create_course():
     require_login()
+    check_csrf(request.form)
 
     course = get_basic_course_data(request.form)
 
@@ -197,6 +203,7 @@ def create_holes_dict(form):
 @app.route("/create_holes", methods=["POST"])
 def create_holes():
     require_login()
+    check_csrf(request.form)
 
     course = get_basic_course_data(request.form)
     course["hole_data"] = create_holes_dict(request.form)
@@ -231,6 +238,7 @@ def delete_course(course_id):
 
     if request.method == "POST":
         if "remove" in request.form:
+            check_csrf(request.form)
             m_courses.delete_course(course_id)
             return showSuccessAndRedirect(LocalizationKeys.delete_course_success, "/")
 
@@ -298,6 +306,7 @@ def build_course_data(form):
 @app.route("/edit_course_holes", methods=["POST"])
 def edit_course_holes():
     require_login()
+    check_csrf(request.form)
 
     course = build_course_data(request.form)
 
@@ -306,6 +315,7 @@ def edit_course_holes():
 @app.route("/update_course", methods=["POST"])
 def update_course():
     require_login()
+    check_csrf(request.form)
 
     course = build_course_data(request.form)
 
@@ -328,6 +338,7 @@ def new_round():
 @app.route("/create_round", methods=["POST"])
 def create_round():
     require_login()
+    check_csrf(request.form)
 
     course_id = request.form["course_select"]
     start_time = request.form["start_time"]
@@ -366,6 +377,7 @@ def delete_round(round_id):
 
     if request.method == "POST":
         if "remove" in request.form:
+            check_csrf(request.form)
             m_rounds.delete_round(round_id)
             return showSuccessAndRedirect(LocalizationKeys.delete_round_success, "/")
 
@@ -496,6 +508,7 @@ def get_round_user_id(round):
 @app.route("/update_round_basic", methods=["POST"])
 def update_round_basic():
     require_login()
+    check_csrf(request.form)
 
     round = build_round_data_course_select(request.form)
     get_round_user_id(round)
@@ -505,6 +518,7 @@ def update_round_basic():
 @app.route("/edit_round_num_holes", methods=["POST"])
 def edit_round_num_holes():
     require_login()
+    check_csrf(request.form)
 
     round = build_round_data_course_select(request.form)
     get_round_user_id(round)
@@ -538,6 +552,7 @@ def build_round_data(form):
 @app.route("/edit_round_holes", methods=["POST"])
 def edit_round_holes():
     require_login()
+    check_csrf(request.form)
 
     round = build_round_data(request.form)
     get_round_user_id(round)
@@ -546,6 +561,7 @@ def edit_round_holes():
 @app.route("/update_round_full", methods=["POST"])
 def update_round_full():
     require_login()
+    check_csrf(request.form)
 
     round = build_round_data(request.form)
     get_round_user_id(round)
@@ -570,6 +586,7 @@ def show_user(user_id):
 @app.route("/round_sign_up", methods=["POST"])
 def round_sign_up():
     require_login()
+    check_csrf(request.form)
 
     round = round_id_input_handling(request.form["round_id"])
 
@@ -584,6 +601,7 @@ def round_sign_up():
 @app.route("/round_unparticipate", methods=["POST"])
 def round_unparticipate():
     require_login()
+    check_csrf(request.form)
 
     round = round_id_input_handling(request.form["round_id"])
 
@@ -651,6 +669,7 @@ def login():
         if check_password_hash(password_hash, password):
             session["user_id"] = user_id
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return showSuccessAndRedirect(LocalizationKeys.login_success, "/")
         else:
             return showErrorAndRedirect(LocalizationKeys.wrong_username_or_password, "/login")

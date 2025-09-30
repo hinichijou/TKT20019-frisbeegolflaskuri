@@ -30,5 +30,6 @@
             {{ components.hidden_input("par_{}".format(i), course["hole_data"][i|string]["par"]) }}
             {{ components.hidden_input("length_{}".format(i), course["hole_data"][i|string]["length"]) }}
         {% endfor %}
+        {{ components.csrf_token_input() }}
     </form>
 {% endblock %}

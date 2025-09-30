@@ -1,0 +1,9 @@
+{# Add course id that exists in database to test.
+ Could add a test form for each post route in app that checks the csrf to confirm it is correctly checked everywhere #}
+
+<form action="http://127.0.0.1:5000/delete_course/1" method="post">
+  <p>
+    Haluatko mukaan uuden iPhonen arvontaan?
+  </p>
+  <input type="submit" value="Jatka" />
+</form>

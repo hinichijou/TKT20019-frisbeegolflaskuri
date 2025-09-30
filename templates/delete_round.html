@@ -9,5 +9,6 @@
         <p>{{ get_localization("delete_round_are_you_sure") }}</p>
         {{ components.submit_button_with_localized_text("delete_round_button", name="remove") }}
         {{ components.submit_button_with_localized_text("return_button", name="return") }}
+        {{ components.csrf_token_input() }}
     </form>
 {% endblock %}

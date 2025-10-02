@@ -21,4 +21,6 @@ def format_date_from_iso(isodate, format_="%d/%m/%Y %H:%M"):
 # The options are to suppress the linter error or use None combined with this as default.
 def use_default_if_list_none(list_, default=None):
     if list_ is None:
-        list_ = [] if default is None else default
+        return [] if default is None else default
+
+    return list_

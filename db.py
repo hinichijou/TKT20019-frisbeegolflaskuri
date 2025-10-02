@@ -14,7 +14,7 @@ def get_connection():
 
 
 def execute(sql, params=None):
-    use_default_if_list_none(params)
+    params = use_default_if_list_none(params)
 
     con = get_connection()
     result = con.execute(sql, params)
@@ -28,7 +28,7 @@ def last_insert_id():
 
 
 def query(sql, params=None):
-    use_default_if_list_none(params)
+    params = use_default_if_list_none(params)
 
     con = get_connection()
     result = con.execute(sql, params).fetchall()
@@ -37,7 +37,7 @@ def query(sql, params=None):
 
 
 def query_dict(sql, params=None):
-    use_default_if_list_none(params)
+    params = use_default_if_list_none(params)
 
     result = query(sql, params)
 

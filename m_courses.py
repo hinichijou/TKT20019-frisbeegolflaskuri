@@ -50,7 +50,7 @@ def get_courses():
 
 
 def get_course_data(course_id, format_options=None):
-    use_default_if_list_none(format_options, default = default_format_options)
+    format_options = use_default_if_list_none(format_options, default=default_format_options)
 
     sql = (
         "SELECT courses.id, coursename, num_holes, hole_data, "
@@ -67,7 +67,10 @@ def get_course_data(course_id, format_options=None):
     result = db.query_db(sql, [course_id], resp_type=db.RespType.DICT)
     return format_course_data(result, format_options)[0] if result else result
 
+
 item_fields = ["item_ids", "item_keys", "item_class_keys"]
+
+
 def format_course_data(data, format_options):
     for row in data:
         if all(f in row and row[f] for f in item_fields):

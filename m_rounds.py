@@ -147,7 +147,7 @@ def get_user_id_for_round(round_id):
 # Format options is a bad choice in retrospect, better to have the data always in consistent
 # format and handle in component logic. Think about refactoring.
 def format_rounds(rounds, format_options=None):
-    use_default_if_list_none(format_options, default=default_format_options)
+    format_options = use_default_if_list_none(format_options, default=default_format_options)
 
     for row in rounds:
         if format_options["hole_data"] and "hole_data" in row:

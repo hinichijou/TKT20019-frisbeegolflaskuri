@@ -1,14 +1,15 @@
 {% extends "layout.html" %}
-
-{% block title %}{{ get_localization("delete_course_header") }}{% endblock %}
-
+{% block title %}
+    {{ get_localization("delete_course_header") }}
+{% endblock title %}
 {% block content %}
     <h2>{{ components.course_info(course) }}</h2>
     <h3>{{ get_localization("delete_course_header") }}</h3>
-    <form action="/delete_course/{{course.id}}"  method="post">
+    <form action="{{ url_for('delete_course', course_id=course.id) }}"
+          method="post">
         <p>{{ get_localization("delete_course_are_you_sure") }}</p>
         {{ components.submit_button_with_localized_text("delete_course_button", name="remove") }}
         {{ components.submit_button_with_localized_text("return_button", name="return") }}
         {{ components.csrf_token_input() }}
     </form>
-{% endblock %}
+{% endblock content %}

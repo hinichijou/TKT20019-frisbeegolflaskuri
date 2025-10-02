@@ -25,4 +25,5 @@ indent-style = "space"
 line-ending = "auto"
 
 [tool.djlint]
+profile="jinja"
 ignore="H005,H030,H031"

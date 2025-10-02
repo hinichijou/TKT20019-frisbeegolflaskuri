@@ -1,30 +1,32 @@
 {% extends "layout.html" %}
-
-{% block title %}{{ get_localization("modify_course_header") }}{% endblock %}
-
+{% block title %}
+    {{ get_localization("modify_course_header") }}
+{% endblock title %}
 {% block content %}
     <h2>{{ get_localization("modify_course_header") }}</h2>
-    <form action="/edit_course_holes" method="post">
+    <form action="{{ url_for('edit_course_holes') }}" method="post">
+        <p>{{ components.course_name_input(course.coursename) }}</p>
+        <p>{{ components.course_holes_input(course.num_holes) }}</p>
         <p>
-            {{ components.course_name_input(course.coursename) }}
+            {% set course_diff_value = "{},{}".format(*course["items"]["course_difficulty"])
+                            if "items" in course and "course_difficulty" in course["items"]
+                            else "" %}
+            {% set course_diff_text = course["items"]["course_difficulty"][1]
+                            if "items" in course and "course_difficulty" in course["items"]
+                            else "course_diff_default" %}
+            {{ components.course_difficulty_select(selections.course_difficulty, True, defaultvalue=(course_diff_value, course_diff_text) ) }}
         </p>
         <p>
-            {{ components.course_holes_input(course.num_holes) }}
-        </p>
-        <p>
-            {% set course_diff_value = "{},{}".format(*course["items"]["course_difficulty"]) if "items" in course and "course_difficulty" in course["items"] else "" %}
-            {% set course_diff_text = course["items"]["course_difficulty"][1] if "items" in course and "course_difficulty" in course["items"] else "course_diff_default" %}
-            {{ components.course_difficulty_select(selections.course_difficulty, True, defaultvalue=(course_diff_value, course_diff_text)) }}
-        </p>
-        <p>
-            {% set course_type_value = "{},{}".format(*course["items"]["course_type"]) if "items" in course and "course_type" in course["items"] else "" %}
-            {% set course_type_text = course["items"]["course_type"][1] if "items" in course and "course_type" in course["items"] else "course_type_default" %}
-            {{ components.course_type_select(selections.course_type, True, defaultvalue=(course_type_value, course_type_text)) }}
+            {% set course_type_value = "{},{}".format(*course["items"]["course_type"])
+                            if "items" in course and "course_type" in course["items"]
+                            else "" %}
+            {% set course_type_text = course["items"]["course_type"][1]
+                            if "items" in course and "course_type" in course["items"]
+                            else "course_type_default" %}
+            {{ components.course_type_select(selections.course_type, True, defaultvalue=(course_type_value, course_type_text) ) }}
         </p>
         {{ components.submit_button_with_localized_text("next_button") }}
-        <p>
-            {{ components.return_to_course_view_link(course.id) }}
-        </p>
+        <p>{{ components.return_to_course_view_link(course.id) }}</p>
         {{ components.hidden_input("id", course.id) }}
         {% for i in range(1, 1 + course.num_holes|int) %}
             {{ components.hidden_input("par_{}".format(i), course["hole_data"][i|string]["par"]) }}
@@ -32,4 +34,4 @@
         {% endfor %}
         {{ components.csrf_token_input() }}
     </form>
-{% endblock %}
+{% endblock content %}

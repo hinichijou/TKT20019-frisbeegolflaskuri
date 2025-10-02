@@ -1,145 +1,148 @@
 {# jinja kwargs have to be accessed at least once in any macro that should accept them. Means they are basically useless for this usecase. #}
 
 {% macro link_with_text(link, text) -%}
-    <a href="{{ link }}"> {{text}} </a>
+  <a href="{{ link }}">{{ text }}</a>
 {%- endmacro %}
 
 {% macro user_input(type, name, arg_dict) -%}
-    {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
-    <input type="{{ type }}" name="{{ name }}" id="{{ name }}"
-        {% if arg_dict %}
-            {% for k, v in arg_dict.items() %}
-                {{k}}="{{ v }}"
-            {% endfor %}
-        {% endif %}
-     >
+  {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
+  <input type="{{ type }}"
+         name="{{ name }}"
+         id="{{ name }}"
+         {% if arg_dict %}
+          {% for k, v in arg_dict.items() %}
+            {{ k }}="{{ v }}"
+          {% endfor %}
+         {% endif %}>
 {%- endmacro %}
 
 {% macro hidden_input(name, value) -%}
-    <div class='hidden'>
-        {{user_input("hidden", name, {"value":value})}}
-    </div>
+  <div class="hidden">{{ user_input("hidden", name, {"value":value}) }}</div>
 {%- endmacro %}
 
 {% macro csrf_token_input() -%}
-    {{hidden_input("csrf_token", session.csrf_token)}}
+  {{ hidden_input("csrf_token", session.csrf_token) }}
 {%- endmacro %}
 
 {% macro submit_button_with_text(text, arg_dict, name = "submit") -%}
-    {% set arg_dict = dict(arg_dict, **{"value":text}) if arg_dict else {"value":text} -%}
-    {{user_input("submit", name, arg_dict)}}
+  {% set arg_dict = dict(arg_dict, **{"value":text}) if arg_dict else {"value":text} -%}
+  {{ user_input("submit", name, arg_dict) }}
 {%- endmacro %}
 
 {% macro submit_button_with_localized_text(text, arg_dict, name = "submit") -%}
-    {{submit_button_with_text(get_localization(text), arg_dict, name)}}
+  {{ submit_button_with_text(get_localization(text) , arg_dict, name) }}
 {%- endmacro %}
 
 {% macro localized_formaction_button(text, action, name = "submit") -%}
-    {{submit_button_with_localized_text(text, {"formaction":action}, name)}}
+  {{ submit_button_with_localized_text(text, {"formaction":action}, name) }}
 {%- endmacro %}
 
 {% macro user_input_with_header(headerkey, type, name, arg_dict) -%}
-    {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
-    <label for="{{ name }}"> {{get_localization(headerkey)}} </label><br />{{user_input(type, name, arg_dict)}}
+  {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
+  <label for="{{ name }}">{{ get_localization(headerkey) }}</label>
+  <br />
+  {{ user_input(type, name, arg_dict) }}
 {%- endmacro %}
 
 {% macro inert_text_input(headerkey, name, value) -%}
-    {{user_input_with_header(headerkey, "text", name, {"value":value, "required":"", "inert":""})}}
+  {{ user_input_with_header(headerkey, "text", name, {"value":value, "required":"", "inert":""}) }}
 {%- endmacro %}
 
 {% macro text_input(headerkey, type, name, minlength, maxlength, arg_dict) -%}
-    {% set arg_dict = dict(arg_dict, **{"minlength":minlength,"maxlength":maxlength}) -%}
-    {{user_input_with_header(headerkey, type, name, arg_dict)}}
+  {% set arg_dict = dict(arg_dict, **{"minlength":minlength,"maxlength":maxlength}) -%}
+  {{ user_input_with_header(headerkey, type, name, arg_dict) }}
 {%- endmacro %}
 
 {% macro number_input(headerkey, name, min, max, arg_dict) -%}
-    {% set arg_dict = dict(arg_dict, **{"min":min,"max":max, "oninput":"this.value = Math.min('{}', Math.max(this.value|0, '{}'))".format(max, min)}) -%}
-    {{user_input_with_header(headerkey, "number", name, arg_dict)}}
+  {% set arg_dict = dict(arg_dict, **{"min":min,"max":max, "oninput":"this.value = Math.min('{}', Math.max(this.value|0, '{}'))".format(max, min)}) -%}
+  {{ user_input_with_header(headerkey, "number", name, arg_dict) }}
 {%- endmacro %}
 
 {% macro date_input(headerkey, type, name, arg_dict) -%}
-    {{user_input_with_header(headerkey, type, name, arg_dict)}}
+  {{ user_input_with_header(headerkey, type, name, arg_dict) }}
 {%- endmacro %}
 
 {% macro account_name_input() -%}
-    {{text_input("account_name_header", "text", "username", constants.username_minlength, constants.username_maxlength, {"required":""})}}
+  {{ text_input("account_name_header", "text", "username", constants.username_minlength, constants.username_maxlength, {"required":""}) }}
 {%- endmacro %}
 
 {% macro course_name_input(value = "") -%}
-    {{text_input("course_name_header", "text", "coursename", constants.coursename_minlength, constants.coursename_maxlength, {"value":value, "required":""})}}
+  {{ text_input("course_name_header", "text", "coursename", constants.coursename_minlength, constants.coursename_maxlength, {"value":value, "required":""}) }}
 {%- endmacro %}
 
 {% macro amount_players_input(value=constants.round_min_players) -%}
-    {{number_input("amount_players_header", "num_players", constants.round_min_players, constants.round_max_players, {"required":"", "value":value})}}
+  {{ number_input("amount_players_header", "num_players", constants.round_min_players, constants.round_max_players, {"required":"", "value":value}) }}
 {%- endmacro %}
 
 {% macro par_input(index, value) -%}
-    {{number_input("par_header", "par_{}".format(index), constants.hole_par_min, constants.hole_par_max, {"required":"", "value":value})}}
+  {{ number_input("par_header", "par_{}".format(index) , constants.hole_par_min, constants.hole_par_max, {"required":"", "value":value}) }}
 {%- endmacro %}
 
 {% macro length_input(index, value) -%}
-    {{number_input("hole_length_header", "length_{}".format(index), constants.hole_length_min, constants.hole_length_max, {"required":"", "value":value})}}
+  {{ number_input("hole_length_header", "length_{}".format(index) , constants.hole_length_min, constants.hole_length_max, {"required":"", "value":value}) }}
 {%- endmacro %}
 
 {% macro par_input_default(index) -%}
-    {{par_input(index, constants.hole_par_default)}}
+  {{ par_input(index, constants.hole_par_default) }}
 {%- endmacro %}
 
 {% macro length_input_default(index) -%}
-    {{length_input(index, constants.hole_length_default)}}
+  {{ length_input(index, constants.hole_length_default) }}
 {%- endmacro %}
 
 {% macro course_holes_input(value = constants.course_holes_default) -%}
-    {{number_input("course_holes_header", "num_holes", constants.course_holes_min, constants.course_holes_max, {"required":"", "value":value})}}
+  {{ number_input("course_holes_header", "num_holes", constants.course_holes_min, constants.course_holes_max, {"required":"", "value":value}) }}
 {%- endmacro %}
 
 {% macro base_password_input(headerkey, name) -%}
-    {{text_input(headerkey, "password", name, constants.password_minlength, constants.password_maxlength, {"required":""})}}
+  {{ text_input(headerkey, "password", name, constants.password_minlength, constants.password_maxlength, {"required":""}) }}
 {%- endmacro %}
 
 {% macro password_input() -%}
-    {{base_password_input("password_header", "password")}}
+  {{ base_password_input('password_header', 'password') }}
 {%- endmacro %}
 
 {% macro repeat_password_input() -%}
-    {{base_password_input("repeat_password_header", "repeat_password")}}
+  {{ base_password_input('repeat_password_header', 'repeat_password') }}
 {%- endmacro %}
 
 {% macro start_date_input(value, type, required, headerkey = "start_time_header") -%}
-    {% set arg_dict = {"required":"", "value":value} if required else {"value":value} %}
-    {{date_input(headerkey, type, "start_time", arg_dict)}}
+  {% set arg_dict = {"required":"", "value":value} if required else {"value":value} %}
+  {{ date_input(headerkey, type, "start_time", arg_dict) }}
 {%- endmacro %}
 
 {% macro select(name, options, arg_dict) -%}
-     {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
-    <select name="{{ name }}" id="{{ name }}"
-        {% for k, v in arg_dict.items() -%}
-            {{k}}="{{ v }}"
-        {%- endfor %}
-    >
-        <option hidden selected value="{{options[0][0]}}">{{options[0][1]}}</option>
-        {% for i in range(1, options|length) %}
-            <option value="{{options[i][0]}}">{{options[i][1]}}</option>
-        {% endfor %}
-    </select>
+  {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
+  <select name="{{ name }}"
+          id="{{ name }}"
+          {% for k, v in arg_dict.items() -%}
+            {{ k }}="{{ v }}"
+          {%- endfor %}>
+    <option hidden selected value="{{ options[0][0] }}">{{ options[0][1] }}</option>
+    {% for i in range(1, options|length) %}
+      <option value="{{ options[i][0] }}">{{ options[i][1] }}</option>
+    {% endfor %}
+  </select>
 {%- endmacro %}
 
 {% macro select_with_header(headerkey, name, options, arg_dict) -%}
-    <label for="{{ name }}"> {{get_localization(headerkey)}} </label><br />{{select(name, options, arg_dict)}}
+  <label for="{{ name }}">{{ get_localization(headerkey) }}</label>
+  <br />
+  {{ select(name, options, arg_dict) }}
 {%- endmacro %}
 
 {% macro inert_select(headerkey, name, selection) -%}
-    {% set options = [("{},{}".format(selection[0], selection[1]), get_localization(selection[1]))] %}
-    {{select_with_header(headerkey, name, options, {"required":"", "inert":""})}}
+  {% set options = [("{},{}".format(selection[0], selection[1]), get_localization(selection[1]))] %}
+  {{ select_with_header(headerkey, name, options, {"required":"", "inert":""}) }}
 {%- endmacro %}
 
 {% macro course_select(courses, required, headerkey = "select_course_header", defaultoption = ("", get_localization("course_select_default"))) -%}
-    {% set options = [defaultoption] %}
-    {% for course in courses %}
-        {% set dummy = options.append((course["id"], course["coursename"])) %}
-    {% endfor %}
-    {% set arg_dict = {"required":""} if required else {} %}
-    {{select_with_header(headerkey, "course_select", options, arg_dict)}}
+  {% set options = [defaultoption] %}
+  {% for course in courses %}
+    {% set dummy = options.append((course["id"], course["coursename"])) %}
+  {% endfor %}
+  {% set arg_dict = {"required":""} if required else {} %}
+  {{ select_with_header(headerkey, "course_select", options, arg_dict) }}
 {%- endmacro %}
 
 {#  The difference between the find select and the course select is in how the options are constructed.
@@ -148,147 +151,153 @@
     are not good option for this kind of use.
 #}
 {% macro find_course_select(courses, query) -%}
-    {{get_localization("find_by_course_name_header")}} <br />
-    <select name="course_select">
-        <option value="">{{ get_localization("course_select_default") }}</option>
-        {% for course in courses %}
-            {% if query == course.coursename %}
-                <option selected value="{{ course.coursename }}">{{ course.coursename }}</option>
-            {% else %}
-                <option value="{{ course.coursename }}">{{ course.coursename }}</option>
-            {% endif %}
-        {% endfor %}
-    </select>
+  {{ get_localization("find_by_course_name_header") }}
+  <br />
+  <select name="course_select">
+    <option value="">{{ get_localization("course_select_default") }}</option>
+    {% for course in courses %}
+      {% if query == course.coursename %}
+        <option selected value="{{ course.coursename }}">{{ course.coursename }}</option>
+      {% else %}
+        <option value="{{ course.coursename }}">{{ course.coursename }}</option>
+      {% endif %}
+    {% endfor %}
+  </select>
 {%- endmacro %}
 
 {% macro select_from_option_tuple(name, headerkey, defaultoption, selection, required) -%}
-    {% set options = [(defaultoption[0], get_localization(defaultoption[1]))] %}
-    {% for s in selection %}
-        {% set dummy = options.append(("{},{}".format(s[0], s[1]), get_localization(s[1]))) %}
-    {% endfor %}
-    {% set arg_dict = {"required":""} if required else {} %}
-    {{select_with_header(headerkey, name, options, arg_dict)}}
+  {% set options = [(defaultoption[0], get_localization(defaultoption[1]))] %}
+  {% for s in selection %}
+    {% set dummy = options.append(("{},{}".format(s[0], s[1]), get_localization(s[1]))) %}
+  {% endfor %}
+  {% set arg_dict = {"required":""} if required else {} %}
+  {{ select_with_header(headerkey, name, options, arg_dict) }}
 {%- endmacro %}
 
 {% macro course_type_select(ctypes, required, defaultvalue=("","course_type_default")) -%}
-    {{select_from_option_tuple("type_select", "course_type_header", defaultvalue, ctypes, required)}}
+  {{ select_from_option_tuple("type_select", "course_type_header", defaultvalue, ctypes, required) }}
 {%- endmacro %}
 
 {% macro course_difficulty_select(cds, required, defaultvalue=("","course_diff_default")) -%}
-    {{select_from_option_tuple("difficulty_select", "course_difficulty_header", defaultvalue, cds, required)}}
+  {{ select_from_option_tuple("difficulty_select", "course_difficulty_header", defaultvalue, cds, required) }}
 {%- endmacro %}
 
 {% macro course_type_inert_select(selection) -%}
-    {{inert_select("course_type_header", "type_select", selection)}}
+  {{ inert_select("course_type_header", "type_select", selection) }}
 {%- endmacro %}
 
 {% macro course_difficulty_inert_select(selection) -%}
-    {{inert_select("course_difficulty_header", "difficulty_select", selection)}}
+  {{ inert_select("course_difficulty_header", "difficulty_select", selection) }}
 {%- endmacro %}
 
 {% macro return_to_index_link() -%}
-    {{link_with_text("/", get_localization("return_to_index_button"))}}
+  {{ link_with_text("/", get_localization("return_to_index_button") ) }}
 {%- endmacro %}
 
 {% macro edit_round_link(round_id) -%}
-    {{link_with_text("/edit_round/{}".format(round_id), get_localization("modify_button"))}}
+  {{ link_with_text("/edit_round/{}".format(round_id) , get_localization("modify_button")) }}
 {%- endmacro %}
 
 {% macro delete_round_link(round_id) -%}
-    {{link_with_text("/delete_round/{}".format(round_id), get_localization("delete_button"))}}
+  {{ link_with_text("/delete_round/{}".format(round_id) , get_localization("delete_button")) }}
 {%- endmacro %}
 
 {% macro new_course_link() -%}
-    {{link_with_text("/new_course", get_localization("create_course_button"))}}
+  {{ link_with_text("/new_course", get_localization("create_course_button") ) }}
 {%- endmacro %}
 
 {% macro show_courses_link() -%}
-    {{link_with_text("/show_courses", get_localization("browse_courses_button"))}}
+  {{ link_with_text("/show_courses", get_localization("browse_courses_button") ) }}
 {%- endmacro %}
 
 {% macro new_round_link() -%}
-    {{link_with_text("/new_round", get_localization("create_round_button"))}}
+  {{ link_with_text("/new_round", get_localization("create_round_button") ) }}
 {%- endmacro %}
 
 {% macro find_round_link() -%}
-    {{link_with_text("/find_round", get_localization("find_round_button"))}}
+  {{ link_with_text("/find_round", get_localization("find_round_button") ) }}
 {%- endmacro %}
 
 {% macro login_link() -%}
-    {{link_with_text("/login", get_localization("log_in_button"))}}
+  {{ link_with_text("/login", get_localization("log_in_button") ) }}
 {%- endmacro %}
 
 {% macro logout_link() -%}
-    {{link_with_text("/logout", get_localization("log_out_button"))}}
+  {{ link_with_text("/logout", get_localization("log_out_button") ) }}
 {%- endmacro %}
 
 {% macro register_link() -%}
-    {{link_with_text("/register", get_localization("register_button"))}}
+  {{ link_with_text("/register", get_localization("register_button") ) }}
 {%- endmacro %}
 
 {% macro user_link(user_id, username) -%}
-    {{link_with_text("/user/{}".format(user_id), username)}}
+  {{ link_with_text("/user/{}".format(user_id) , username) }}
 {%- endmacro %}
 
 {% macro course_link(course_id, text) -%}
-    {{link_with_text("/course/{}".format(course_id), text)}}
+  {{ link_with_text("/course/{}".format(course_id) , text) }}
 {%- endmacro %}
 
 {% macro round_link(round_id, text) -%}
-    {{link_with_text( "/round/{}".format(round_id), text)}}
+  {{ link_with_text("/round/{}".format(round_id) , text) }}
 {%- endmacro %}
 
 {% macro return_to_course_view_link(course_id) -%}
-    {{course_link(course_id, get_localization("return_to_course_page_button"))}}
+  {{ course_link(course_id, get_localization("return_to_course_page_button") ) }}
 {%- endmacro %}
 
 {% macro return_to_round_view_link(round_id) -%}
-    {{round_link(round_id, get_localization("return_to_round_page_button"))}}
+  {{ round_link(round_id, get_localization("return_to_round_page_button") ) }}
 {%- endmacro %}
 
 {% macro course_list_item(course) -%}
-    <div class='course_item'>
-        <a href="{{'/course/{}'.format(course.id)}}" class='nounderline'>
-            {{ course["coursename"] }}<br />
-            {{ get_localization("course_item_num_holes") }} {{ course.num_holes }}
-        </a>
-    </div>
+  <div class="course_item">
+    <a href="{{ '/course/{}'.format(course.id) }}" class="nounderline">
+      {{ course["coursename"] }}
+      <br />
+      {{ get_localization("course_item_num_holes") }} {{ course.num_holes }}
+    </a>
+  </div>
 {%- endmacro %}
 
 {% macro course_info(course) -%}
-    {{ course.coursename }}, {{ get_localization("course_item_num_holes") }} {{ course.num_holes }}
+  {{ course.coursename }}, {{ get_localization("course_item_num_holes") }} {{ course.num_holes }}
 {%- endmacro %}
 
 {% macro round_start_with_header(start_time) -%}
-    {{ get_localization("round_item_start") }} {{ utilities.format_date_from_iso(start_time) }}
+  {{ get_localization("round_item_start") }} {{ utilities.format_date_from_iso(start_time) }}
 {%- endmacro %}
 
 {% macro round_course_with_header(coursename) -%}
-    {{ get_localization("round_item_place") }} {{ coursename }}
+  {{ get_localization("round_item_place") }} {{ coursename }}
 {%- endmacro %}
 
 {% macro round_username_with_header(username) -%}
-    {{ get_localization("round_item_creator") }} {{ username }}
+  {{ get_localization("round_item_creator") }} {{ username }}
 {%- endmacro %}
 
 {% macro round_num_participating_with_header(num_participating, num_players) -%}
-    {{ get_localization("round_item_players") }} {{ "{} / {}".format(num_participating, num_players) }}
+  {{ get_localization("round_item_players") }} {{ "{} / {}".format(num_participating, num_players) }}
 {%- endmacro %}
 
 {% macro round_list_item(round) -%}
-    <div class='round_item'>
-        <a href="{{'/round/{}'.format(round.id)}}" class='nounderline'>
-            {{ round_start_with_header(round.start_time) }}<br />
-            {{ round_course_with_header(round.coursename) }}<br />
-            {{ round_username_with_header(round.username) }}<br />
-            {{ round_num_participating_with_header(round.num_participating, round.num_players) }}<br />
-        </a>
-    </div>
+  <div class="round_item">
+    <a href="{{ '/round/{}'.format(round.id) }}" class="nounderline">
+      {{ round_start_with_header(round.start_time) }}
+      <br />
+      {{ round_course_with_header(round.coursename) }}
+      <br />
+      {{ round_username_with_header(round.username) }}
+      <br />
+      {{ round_num_participating_with_header(round.num_participating, round.num_players) }}
+      <br />
+    </a>
+  </div>
 {%- endmacro %}
 
 {% macro round_info(round) -%}
-    {{ round_start_with_header(round.start_time) }}
-    {{ round_course_with_header(round.coursename) }}
-    {{ round_username_with_header(round.participators[round.creator_id]) }}
-    {{ round_num_participating_with_header(round.participators.keys()|length, round.num_players) }}
+  {{ round_start_with_header(round.start_time) }}
+  {{ round_course_with_header(round.coursename) }}
+  {{ round_username_with_header(round.participators[round.creator_id]) }}
+  {{ round_num_participating_with_header(round.participators.keys() |length, round.num_players) }}
 {%- endmacro %}

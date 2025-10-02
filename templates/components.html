@@ -5,7 +5,8 @@
 {%- endmacro %}
 
 {% macro user_input(type, name, arg_dict) -%}
-    <input type="{{ type }}" name="{{ name }}"
+    {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
+    <input type="{{ type }}" name="{{ name }}" id="{{ name }}"
         {% if arg_dict %}
             {% for k, v in arg_dict.items() %}
                 {{k}}="{{ v }}"
@@ -38,7 +39,8 @@
 {%- endmacro %}
 
 {% macro user_input_with_header(headerkey, type, name, arg_dict) -%}
-    {{get_localization(headerkey)}} <br />{{user_input(type, name, arg_dict)}}
+    {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
+    <label for="{{ name }}"> {{get_localization(headerkey)}} </label><br />{{user_input(type, name, arg_dict)}}
 {%- endmacro %}
 
 {% macro inert_text_input(headerkey, name, value) -%}
@@ -109,7 +111,8 @@
 {%- endmacro %}
 
 {% macro select(name, options, arg_dict) -%}
-    <select name="{{ name }}"
+     {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
+    <select name="{{ name }}" id="{{ name }}"
         {% for k, v in arg_dict.items() -%}
             {{k}}="{{ v }}"
         {%- endfor %}
@@ -122,7 +125,7 @@
 {%- endmacro %}
 
 {% macro select_with_header(headerkey, name, options, arg_dict) -%}
-    {{get_localization(headerkey)}} <br />{{select(name, options, arg_dict)}}
+    <label for="{{ name }}"> {{get_localization(headerkey)}} </label><br />{{select(name, options, arg_dict)}}
 {%- endmacro %}
 
 {% macro inert_select(headerkey, name, selection) -%}

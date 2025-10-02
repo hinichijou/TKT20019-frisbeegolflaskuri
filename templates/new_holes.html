@@ -4,7 +4,7 @@
 
 {% block content %}
 <h2>{{ get_localization("add_holes_header") }}</h2>
-    <form action="/create_holes" method="post">
+    <form action="{{ url_for('create_holes') }}" method="post">
         <p>
             {{ components.inert_text_input("course_name_header", "coursename", course.coursename) }}
         </p>

@@ -5,7 +5,7 @@
 {% block content %}
     {% if session.user_id %}
         <h2>{{ get_localization("new_course_header") }}</h2>
-        <form action="/create_course" method="post">
+        <form action="{{ url_for('create_course') }}" method="post">
             <p>
                 {{ components.course_name_input() }}
             </p>

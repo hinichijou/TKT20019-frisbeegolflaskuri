@@ -5,7 +5,7 @@
 {% block content %}
     {% if session.user_id %}
         <h2>{{ get_localization("find_round_header") }}</h2>
-        <form action="/find_round"  method="get">
+        <form action="{{ url_for('find_round') }}" method="get">
             <p>
                 {{ components.find_course_select(courses, course_query) }}
             </p>

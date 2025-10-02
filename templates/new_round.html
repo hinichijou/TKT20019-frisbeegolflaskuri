@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("new_round_header") }}{% endblock %}
+{% block title %}{{ get_localization("new_round_header") }}{% endblock title %}
 
 {% block content %}
     <h2>{{ get_localization("new_round_header") }}</h2>
@@ -17,4 +17,4 @@
         {{ components.submit_button_with_localized_text("create_round_button") }}
         {{ components.csrf_token_input() }}
     </form>
-{% endblock %}
+{% endblock content %}

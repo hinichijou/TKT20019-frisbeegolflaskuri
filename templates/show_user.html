@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("user_page_header") }}{% endblock %}
+{% block title %}{{ get_localization("user_page_header") }}{% endblock title %}
 
 {% block content %}
     <h2>{{ user.username }}</h2>
@@ -28,4 +28,4 @@
             {{ components.round_list_item(round) }}
         {% endfor %}
     {% endif %}
-{% endblock %}
+{% endblock content %}

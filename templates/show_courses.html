@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("courses_header") }}{% endblock %}
+{% block title %}{{ get_localization("courses_header") }}{% endblock title %}
 
 {% block content %}
     <h2>{{ get_localization("courses_header") }}</h2>
     {% for course in courses %}
         {{ components.course_list_item(course) }}
     {% endfor %}
-{% endblock %}
+{% endblock content %}

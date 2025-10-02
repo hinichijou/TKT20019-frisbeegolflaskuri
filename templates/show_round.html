@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("round_information_header") }}{% endblock %}
+{% block title %}{{ get_localization("round_information_header") }}{% endblock title %}
 
 {% block content %}
     <h2>{{ round.coursename }}</h2>
@@ -46,4 +46,4 @@
             {{ components.csrf_token_input() }}
         </form>
     {% endif %}
-{% endblock %}
+{% endblock content %}

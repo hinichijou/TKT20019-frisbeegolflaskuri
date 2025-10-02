@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("find_round_header") }}{% endblock %}
+{% block title %}{{ get_localization("find_round_header") }}{% endblock title %}
 
 {% block content %}
     {% if session.user_id %}
@@ -22,4 +22,4 @@
             {% endfor %}
         {% endif %}
     {% endif %}
-{% endblock %}
+{% endblock content %}

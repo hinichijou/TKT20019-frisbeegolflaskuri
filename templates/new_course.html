@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("new_course_header") }}{% endblock %}
+{% block title %}{{ get_localization("new_course_header") }}{% endblock title %}
 
 {% block content %}
     {% if session.user_id %}
@@ -22,4 +22,4 @@
             {{ components.csrf_token_input() }}
         </form>
     {% endif %}
-{% endblock %}
+{% endblock content %}

@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("modify_holes_header") }}{% endblock %}
+{% block title %}{{ get_localization("modify_holes_header") }}{% endblock title %}
 
 {% block content %}
     <h2>{{ get_localization("modify_holes_header") }}</h2>
@@ -31,4 +31,4 @@
         {{ components.hidden_input("num_players", round.num_players) }}
         {{ components.csrf_token_input() }}
     </form>
-{% endblock %}
+{% endblock content %}

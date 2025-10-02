@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("register_header") }}{% endblock %}
+{% block title %}{{ get_localization("register_header") }}{% endblock title %}
 
 {% block content %}
     {% if not session.user_id %}
@@ -8,4 +8,4 @@
             {{ get_localization("registered_message") }}
         </p>
     {% endif %}
-{% endblock %}
+{% endblock content %}

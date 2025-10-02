@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("add_holes_header") }}{% endblock %}
+{% block title %}{{ get_localization("add_holes_header") }}{% endblock title %}
 
 {% block content %}
 <h2>{{ get_localization("add_holes_header") }}</h2>
@@ -27,4 +27,4 @@
         {{ components.submit_button_with_localized_text("create_course_button") }}
         {{ components.csrf_token_input() }}
     </form>
-{% endblock %}
+{% endblock content %}

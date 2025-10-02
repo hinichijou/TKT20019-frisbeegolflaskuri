@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("modify_num_holes_header") }}{% endblock %}
+{% block title %}{{ get_localization("modify_num_holes_header") }}{% endblock title %}
 
 {% block content %}
     <h2>{{ get_localization("modify_num_holes_header") }}</h2>
@@ -24,4 +24,4 @@
         {% endfor %}
         {{ components.csrf_token_input() }}
     </form>
-{% endblock %}
+{% endblock content %}

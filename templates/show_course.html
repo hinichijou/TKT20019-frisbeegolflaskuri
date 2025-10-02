@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ course.coursename }}{% endblock %}
+{% block title %}{{ course.coursename }}{% endblock title %}
 
 {% block content %}
     <h2>{{ course.coursename }}</h2>
@@ -26,4 +26,4 @@
         {{ get_localization("hole_length_header") }} {{course.hole_data[i|string]["length"]}}<br />
         </p>
     {% endfor %}
-{% endblock %}
+{% endblock content %}

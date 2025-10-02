@@ -345,7 +345,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=120
 
 # Maximum number of lines in a module.
 max-module-lines=1000
@@ -444,7 +444,10 @@ disable=raw-checker-failed,
         C0115,
         C0116,
 # Disable no-else-return. Style follows the example videos and readability is up to preference
-        R1705
+        R1705,
+# Disable inconsistent-return-statements. Style follows the example videos and readability is up to preference. The warning
+# is caused by a situation where we now the method has to be GET or POST and a None return would be redundant.
+        R1710
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

@@ -13,9 +13,9 @@
       <p>
         {{ get_localization("hole_header").format(i) }}
         <br />
-        {{ components.default_par_input(i) }}
+        {{ components.par_input_default(i) }}
         <br />
-        {{ components.default_length_input(i) }}
+        {{ components.length_input_default(i) }}
       </p>
     {% endfor %}
     {{ components.submit_button_with_localized_text("create_course_button") }}

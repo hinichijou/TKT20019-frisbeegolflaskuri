@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ get_localization("main_header") }}{% endblock %}
+{% block title %}{{ get_localization("main_header") }}{% endblock title %}
 
 {% block content %}
     {% if session.user_id %}
@@ -9,4 +9,4 @@
             {{ components.round_list_item(round) }}
         {% endfor %}
     {% endif %}
-{% endblock %}
+{% endblock content %}

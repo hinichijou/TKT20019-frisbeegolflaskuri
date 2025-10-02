@@ -1,18 +1,12 @@
 {% extends "layout.html" %}
-
-{% block title %}{{ get_localization("log_in_header") }}{% endblock %}
-
+{% block title %}{{ get_localization("log_in_header") }}{% endblock title %}
 {% block content %}
     {% if not session.user_id %}
         <h2>{{ get_localization("log_in_header") }}</h2>
-        <form action="/login" method="post">
-            <p>
-                {{ components.account_name_input() }}
-            </p>
-            <p>
-                {{ components.password_input() }}
-            </p>
+        <form action="{{ url_for('login') }}" method="post">
+            <p>{{ components.account_name_input() }}</p>
+            <p>{{ components.password_input() }}</p>
             {{ components.submit_button_with_localized_text("log_in_button") }}
         </form>
     {% endif %}
-{% endblock %}
+{% endblock content %}

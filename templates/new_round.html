@@ -1,20 +1,14 @@
 {% extends "layout.html" %}
-
-{% block title %}{{ get_localization("new_round_header") }}{% endblock title %}
-
+{% block title %}
+  {{ get_localization("new_round_header") }}
+{% endblock title %}
 {% block content %}
-    <h2>{{ get_localization("new_round_header") }}</h2>
-    <form action="{{ url_for('create_round') }}" method="post">
-        <p>
-            {{ components.course_select(courses, True) }}
-        </p>
-        <p>
-            {{ components.start_date_input(date, "datetime-local", True) }}
-        </p>
-        <p>
-            {{ components.amount_players_input() }}
-        </p>
-        {{ components.submit_button_with_localized_text("create_round_button") }}
-        {{ components.csrf_token_input() }}
-    </form>
+  <h2>{{ get_localization("new_round_header") }}</h2>
+  <form action="{{ url_for('create_round') }}" method="post">
+    <p>{{ components.course_select(courses, True) }}</p>
+    <p>{{ components.start_date_input(date, "datetime-local", True) }}</p>
+    <p>{{ components.amount_players_input() }}</p>
+    {{ components.submit_button_with_localized_text("create_round_button") }}
+    {{ components.csrf_token_input() }}
+  </form>
 {% endblock content %}

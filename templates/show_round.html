@@ -1,49 +1,52 @@
 {% extends "layout.html" %}
-
-{% block title %}{{ get_localization("round_information_header") }}{% endblock title %}
-
+{% block title %}
+  {{ get_localization("round_information_header") }}
+{% endblock title %}
 {% block content %}
-    <h2>{{ round.coursename }}</h2>
-    {% if session.user_id == round.creator_id %}
-        <p>
-        {{ components.edit_round_link(round.id) }}
-        {{ components.delete_round_link(round.id) }}
-        </p>
-    {% endif %}
+  <h2>{{ round.coursename }}</h2>
+  {% if session.user_id == round.creator_id %}
     <p>
-        {{ get_localization("round_item_creator") }} {{ components.user_link(round.creator_id, round.participators[round.creator_id]) }}
+      {{ components.edit_round_link(round.id) }}
+      {{ components.delete_round_link(round.id) }}
     </p>
-    <p>{{ components.round_start_with_header(round["start_time"]) }}</p>
-    <p>{{ get_localization("round_item_players_participating") }} {{ round.participators.keys()|length }} / {{ round.num_players }}</p>
-    <p>{{ get_localization("course_item_num_holes") }} {{ round.num_holes }}</p>
-    {% for i in range(1, 1 + round.num_holes|int) %}
-        <p>
-        {{ get_localization("hole_header").format(i) }} <br />
-        {{ get_localization("par_header") }} <br />
-        {{ round.hole_data[i|string]["par"] }}<br />
-        {{ get_localization("hole_length_header") }} <br />
-        {{ round.hole_data[i|string]["length"] }}<br />
-        </p>
-    {% endfor %}
-    <h3>{{ get_localization("sign_ups_header") }}</h3>
+  {% endif %}
+  <p>
+    {{ get_localization("round_item_creator") }} {{ components.user_link(round.creator_id, round.participators[round.creator_id]) }}
+  </p>
+  <p>{{ components.round_start_with_header(round["start_time"]) }}</p>
+  <p>
+    {{ get_localization("round_item_players_participating") }} {{ round.participators.keys() |length }} / {{ round.num_players }}
+  </p>
+  <p>{{ get_localization("course_item_num_holes") }} {{ round.num_holes }}</p>
+  {% for i in range(1, 1 + round.num_holes|int) %}
     <p>
-        {% for k, v in round.participators.items() %}
-        <li>
-            {{ components.user_link(k, v) }}
-        </li>
-        {% endfor %}
+      {{ get_localization("hole_header").format(i) }}
+      <br />
+      {{ get_localization("par_header") }}
+      <br />
+      {{ round.hole_data[i|string]["par"] }}
+      <br />
+      {{ get_localization("hole_length_header") }}
+      <br />
+      {{ round.hole_data[i|string]["length"] }}
+      <br />
     </p>
-    {% if session.user_id not in round.participators.keys() and round.participators.keys()|length < round.num_players %}
-        <form action="{{ url_for('round_sign_up') }}" method="post">
-            {{ components.submit_button_with_localized_text("round_sign_up_button") }}
-            {{ components.hidden_input("round_id", round.id) }}
-            {{ components.csrf_token_input() }}
-        </form>
-    {% elif session.user_id != round.creator_id and session.user_id in round.participators.keys()%}
-        <form action="{{ url_for('round_unparticipate') }}" method="post">
-            {{ components.submit_button_with_localized_text("round_unparticipate_button") }}
-            {{ components.hidden_input("round_id", round.id) }}
-            {{ components.csrf_token_input() }}
-        </form>
-    {% endif %}
+  {% endfor %}
+  <h3>{{ get_localization("sign_ups_header") }}</h3>
+  <p>
+    {% for k, v in round.participators.items() %}<li>{{ components.user_link(k, v) }}</li>{% endfor %}
+  </p>
+  {% if session.user_id not in round.participators.keys() and round.participators.keys()|length < round.num_players %}
+    <form action="{{ url_for('round_sign_up') }}" method="post">
+      {{ components.submit_button_with_localized_text("round_sign_up_button") }}
+      {{ components.hidden_input("round_id", round.id) }}
+      {{ components.csrf_token_input() }}
+    </form>
+  {% elif session.user_id != round.creator_id and session.user_id in round.participators.keys() %}
+    <form action="{{ url_for('round_unparticipate') }}" method="post">
+      {{ components.submit_button_with_localized_text("round_unparticipate_button") }}
+      {{ components.hidden_input("round_id", round.id) }}
+      {{ components.csrf_token_input() }}
+    </form>
+  {% endif %}
 {% endblock content %}

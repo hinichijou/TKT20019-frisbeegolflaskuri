@@ -1,36 +1,36 @@
 {% extends "layout.html" %}
 {% block title %}
-    {{ get_localization("modify_holes_header") }}
+  {{ get_localization("modify_holes_header") }}
 {% endblock title %}
 {% block content %}
-    <h2>{{ get_localization("modify_holes_header") }}</h2>
-    <form action="{{ url_for('update_course') }}" method="post">
-        <p>{{ components.inert_text_input("course_name_header", "coursename", course.coursename) }}</p>
-        <p>{{ components.inert_text_input("course_holes_header", "num_holes", course.num_holes) }}</p>
-        {% if "difficulty_select" in course and course.difficulty_select[0] %}
-            <p>{{ components.course_difficulty_inert_select(course.difficulty_select) }}</p>
-        {% else %}
-            {{ components.hidden_input('difficulty_select', '') }}
-        {% endif %}
-        {% if "type_select" in course and course.type_select[0] %}
-            <p>{{ components.course_type_inert_select(course.type_select) }}</p>
-        {% else %}
-            {{ components.hidden_input('type_select', '') }}
-        {% endif %}
-        {% for i in range(1, 1 + course.num_holes|int) %}
-            <p>
-                {{ get_localization("hole_header").format(i) }}
-                <br />
-                {% set par_val = course.hole_data[i|string]["par"] if i <= course.hole_data|length else constants.hole_par_default %}
-                {{ components.par_input(i, par_val) }}
-                <br />
-                {% set length_val = course.hole_data[i|string]["length"] if i <= course.hole_data|length else constants.hole_length_default %}
-                {{ components.length_input(i, length_val) }}
-            </p>
-        {% endfor %}
-        {{ components.submit_button_with_localized_text("submit_changes_button") }}
-        <p>{{ components.return_to_course_view_link(course.id) }}</p>
-        {{ components.hidden_input("id", course.id) }}
-        {{ components.csrf_token_input() }}
-    </form>
+  <h2>{{ get_localization("modify_holes_header") }}</h2>
+  <form action="{{ url_for('update_course') }}" method="post">
+    <p>{{ components.inert_text_input("course_name_header", "coursename", course.coursename) }}</p>
+    <p>{{ components.inert_text_input("course_holes_header", "num_holes", course.num_holes) }}</p>
+    {% if "difficulty_select" in course and course.difficulty_select[0] %}
+      <p>{{ components.course_difficulty_inert_select(course.difficulty_select) }}</p>
+    {% else %}
+      {{ components.hidden_input('difficulty_select', '') }}
+    {% endif %}
+    {% if "type_select" in course and course.type_select[0] %}
+      <p>{{ components.course_type_inert_select(course.type_select) }}</p>
+    {% else %}
+      {{ components.hidden_input('type_select', '') }}
+    {% endif %}
+    {% for i in range(1, 1 + course.num_holes|int) %}
+      <p>
+        {{ get_localization("hole_header").format(i) }}
+        <br />
+        {% set par_val = course.hole_data[i|string]["par"] if i <= course.hole_data|length else constants.hole_par_default %}
+        {{ components.par_input(i, par_val) }}
+        <br />
+        {% set length_val = course.hole_data[i|string]["length"] if i <= course.hole_data|length else constants.hole_length_default %}
+        {{ components.length_input(i, length_val) }}
+      </p>
+    {% endfor %}
+    {{ components.submit_button_with_localized_text("submit_changes_button") }}
+    <p>{{ components.return_to_course_view_link(course.id) }}</p>
+    {{ components.hidden_input("id", course.id) }}
+    {{ components.csrf_token_input() }}
+  </form>
 {% endblock content %}

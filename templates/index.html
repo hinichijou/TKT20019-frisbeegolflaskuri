@@ -1,12 +1,10 @@
 {% extends "layout.html" %}
-
-{% block title %}{{ get_localization("main_header") }}{% endblock title %}
-
+{% block title %}
+  {{ get_localization("main_header") }}
+{% endblock title %}
 {% block content %}
-    {% if session.user_id %}
-        <h2>{{ get_localization("all_rounds_header") }}</h2>
-        {% for round in rounds %}
-            {{ components.round_list_item(round) }}
-        {% endfor %}
-    {% endif %}
+  {% if session.user_id %}
+    <h2>{{ get_localization("all_rounds_header") }}</h2>
+    {% for round in rounds %}{{ components.round_list_item(round) }}{% endfor %}
+  {% endif %}
 {% endblock content %}

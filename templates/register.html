@@ -1,21 +1,15 @@
 {% extends "layout.html" %}
-
-{% block title %}{{ get_localization("register_header") }}{% endblock title %}
-
+{% block title %}
+  {{ get_localization("register_header") }}
+{% endblock title %}
 {% block content %}
-    {% if not session.user_id %}
-        <h2>{{ get_localization("register_header") }}</h2>
-        <form action="{{ url_for('create') }}" method="post">
-            <p>
-                {{ components.account_name_input() }}
-            </p>
-            <p>
-                {{ components.password_input() }}
-            </p>
-            <p>
-                {{ components.repeat_password_input() }}
-            </p>
-            {{ components.submit_button_with_localized_text("register_button") }}
-        </form>
-    {% endif %}
+  {% if not session.user_id %}
+    <h2>{{ get_localization("register_header") }}</h2>
+    <form action="{{ url_for('create') }}" method="post">
+      <p>{{ components.account_name_input() }}</p>
+      <p>{{ components.password_input() }}</p>
+      <p>{{ components.repeat_password_input() }}</p>
+      {{ components.submit_button_with_localized_text("register_button") }}
+    </form>
+  {% endif %}
 {% endblock content %}

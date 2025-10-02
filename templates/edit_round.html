@@ -1,32 +1,24 @@
 {% extends "layout.html" %}
-
-{% block title %}{{ get_localization("modify_round_header") }}{% endblock title %}
-
+{% block title %}
+  {{ get_localization("modify_round_header") }}
+{% endblock title %}
 {% block content %}
-    <h2>{{ get_localization("modify_round_header") }}</h2>
-    <form method="post">
-        <p>
-            {{ components.course_select(courses, False, defaultoption = ("", round.coursename)) }}
-        </p>
-        <p>
-            {{ components.start_date_input(round.start_time, "datetime-local", True) }}
-        </p>
-        <p>
-            {{ components.amount_players_input(value=round.num_players) }}
-        </p>
-        {{ components.localized_formaction_button("submit_changes_button", "/update_round_basic") }}
-        {{ components.localized_formaction_button("to_hole_modification_button", "/edit_round_num_holes") }}
-        <p>
-            {{ components.return_to_round_view_link(round.id) }}
-        </p>
-        {{ components.hidden_input("id", round.id) }}
-        {{ components.hidden_input("coursename", round.coursename) }}
-        {{ components.hidden_input("num_holes", round.num_holes) }}
-        {{ components.hidden_input("hole_data", round.hole_data) }}
-        {% for i in range(1, 1 + round.num_holes|int) %}
-            {{ components.hidden_input("par_{}".format(i), round["hole_data"][i|string]["par"]) }}
-            {{ components.hidden_input("length_{}".format(i), round["hole_data"][i|string]["length"]) }}
-        {% endfor %}
-        {{ components.csrf_token_input() }}
-    </form>
+  <h2>{{ get_localization("modify_round_header") }}</h2>
+  <form method="post">
+    <p>{{ components.course_select(courses, False, defaultoption = ("", round.coursename) ) }}</p>
+    <p>{{ components.start_date_input(round.start_time, "datetime-local", True) }}</p>
+    <p>{{ components.amount_players_input(value=round.num_players) }}</p>
+    {{ components.localized_formaction_button('submit_changes_button', '/update_round_basic') }}
+    {{ components.localized_formaction_button('to_hole_modification_button', '/edit_round_num_holes') }}
+    <p>{{ components.return_to_round_view_link(round.id) }}</p>
+    {{ components.hidden_input("id", round.id) }}
+    {{ components.hidden_input("coursename", round.coursename) }}
+    {{ components.hidden_input("num_holes", round.num_holes) }}
+    {{ components.hidden_input("hole_data", round.hole_data) }}
+    {% for i in range(1, 1 + round.num_holes|int) %}
+      {{ components.hidden_input("par_{}".format(i) , round["hole_data"][i|string]["par"]) }}
+      {{ components.hidden_input("length_{}".format(i) , round["hole_data"][i|string]["length"]) }}
+    {% endfor %}
+    {{ components.csrf_token_input() }}
+  </form>
 {% endblock content %}

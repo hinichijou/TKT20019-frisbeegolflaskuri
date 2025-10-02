@@ -1,25 +1,19 @@
 {% extends "layout.html" %}
-
-{% block title %}{{ get_localization("find_round_header") }}{% endblock title %}
-
+{% block title %}
+  {{ get_localization("find_round_header") }}
+{% endblock title %}
 {% block content %}
-    {% if session.user_id %}
-        <h2>{{ get_localization("find_round_header") }}</h2>
-        <form action="{{ url_for('find_round') }}" method="get">
-            <p>
-                {{ components.find_course_select(courses, course_query) }}
-            </p>
-            <p>
-                {{ components.start_date_input(start_time, "date", False, headerkey = "find_by_date_header") }}
-            </p>
-            {{ components.submit_button_with_localized_text("submit_search_button") }}
-            {{ components.csrf_token_input() }}
-        </form>
-        {% if arginput %}
-            <h3>{{ get_localization("search_results_header") }}</h3>
-            {% for result in results %}
-                {{ components.round_list_item(result) }}
-            {% endfor %}
-        {% endif %}
+  {% if session.user_id %}
+    <h2>{{ get_localization("find_round_header") }}</h2>
+    <form action="{{ url_for('find_round') }}" method="get">
+      <p>{{ components.find_course_select(courses, course_query) }}</p>
+      <p>{{ components.start_date_input(start_time, "date", False, headerkey = "find_by_date_header") }}</p>
+      {{ components.submit_button_with_localized_text("submit_search_button") }}
+      {{ components.csrf_token_input() }}
+    </form>
+    {% if arginput %}
+      <h3>{{ get_localization("search_results_header") }}</h3>
+      {% for result in results %}{{ components.round_list_item(result) }}{% endfor %}
     {% endif %}
+  {% endif %}
 {% endblock content %}

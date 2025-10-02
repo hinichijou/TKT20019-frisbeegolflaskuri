@@ -1,34 +1,28 @@
 {% extends "layout.html" %}
-
-{% block title %}{{ get_localization("modify_holes_header") }}{% endblock title %}
-
+{% block title %}
+  {{ get_localization("modify_holes_header") }}
+{% endblock title %}
 {% block content %}
-    <h2>{{ get_localization("modify_holes_header") }}</h2>
-    <form action="{{ url_for('update_round_full') }}" method="post">
-        <p>
-            {{ components.inert_text_input("course_name_header", "coursename", round.coursename) }}
-        </p>
-        <p>
-            {{ components.inert_text_input("course_holes_header", "num_holes", round.num_holes) }}
-        </p>
-        {% for i in range(1, 1 + round.num_holes|int) %}
-            <p>
-                {{ get_localization("hole_header").format(i) }} <br />
-
-                {% set par_val = round.hole_data[i|string]["par"] if i <= round.hole_data|length else constants.hole_par_default %}
-                {{ components.par_input(i, par_val) }} <br />
-
-                {% set length_val = round.hole_data[i|string]["length"] if i <= round.hole_data|length else constants.hole_length_default %}
-                {{ components.length_input(i, length_val) }}
-            </p>
-        {% endfor %}
-        {{ components.submit_button_with_localized_text("submit_changes_button") }}
-        <p>
-            {{ components.return_to_round_view_link(round.id) }}
-        </p>
-        {{ components.hidden_input("id", round.id) }}
-        {{ components.hidden_input("start_time", round.start_time) }}
-        {{ components.hidden_input("num_players", round.num_players) }}
-        {{ components.csrf_token_input() }}
-    </form>
+  <h2>{{ get_localization("modify_holes_header") }}</h2>
+  <form action="{{ url_for('update_round_full') }}" method="post">
+    <p>{{ components.inert_text_input("course_name_header", "coursename", round.coursename) }}</p>
+    <p>{{ components.inert_text_input("course_holes_header", "num_holes", round.num_holes) }}</p>
+    {% for i in range(1, 1 + round.num_holes|int) %}
+      <p>
+        {{ get_localization("hole_header").format(i) }}
+        <br />
+        {% set par_val = round.hole_data[i|string]["par"] if i <= round.hole_data|length else constants.hole_par_default %}
+        {{ components.par_input(i, par_val) }}
+        <br />
+        {% set length_val = round.hole_data[i|string]["length"] if i <= round.hole_data|length else constants.hole_length_default %}
+        {{ components.length_input(i, length_val) }}
+      </p>
+    {% endfor %}
+    {{ components.submit_button_with_localized_text("submit_changes_button") }}
+    <p>{{ components.return_to_round_view_link(round.id) }}</p>
+    {{ components.hidden_input("id", round.id) }}
+    {{ components.hidden_input("start_time", round.start_time) }}
+    {{ components.hidden_input("num_players", round.num_players) }}
+    {{ components.csrf_token_input() }}
+  </form>
 {% endblock content %}

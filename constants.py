@@ -1,5 +1,8 @@
+from dataclasses import dataclass
 from utilities import Singleton
 
+
+@dataclass
 class Constants(Singleton):
     coursename_minlength = 2
     coursename_maxlength = 30
@@ -18,5 +21,6 @@ class Constants(Singleton):
     hole_length_max = 500
     round_min_players = 1
     round_max_players = 10
+
 
 constants = Constants()

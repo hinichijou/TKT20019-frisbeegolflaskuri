@@ -2,18 +2,34 @@ import json
 import db
 import m_courses
 from enums import FindRoundParam
+from utilities import use_default_if_list_none
 
 default_format_options = {"hole_data": True}
+
 
 def add_round(course_id, creator, start_time, num_players):
     course_data = m_courses.get_course_data(course_id, format_options={"hole_data": False})
 
     if course_data:
-        sql = "INSERT INTO rounds (coursename, num_holes, hole_data, creator_id, start_time, num_players) VALUES (?, ?, ?, ?, ?, ?)"
-        db.execute(sql, [course_data["coursename"], course_data["num_holes"], course_data["hole_data"], creator, start_time, num_players])
+        sql = (
+            "INSERT INTO rounds (coursename, num_holes, hole_data, creator_id, start_time, num_players) "
+            "VALUES (?, ?, ?, ?, ?, ?)"
+        )
+        db.execute(
+            sql,
+            [
+                course_data["coursename"],
+                course_data["num_holes"],
+                course_data["hole_data"],
+                creator,
+                start_time,
+                num_players,
+            ],
+        )
         return db.last_insert_id()
     else:
         return None
+
 
 def delete_round(round_id):
     delete_participation(round_id)
@@ -21,20 +37,38 @@ def delete_round(round_id):
     sql = "DELETE FROM rounds WHERE id = ?"
     db.execute(sql, [round_id])
 
+
 def update_round(data):
-    sql = "UPDATE rounds SET coursename = ?, num_holes = ?, hole_data = ?, creator_id = ?, start_time = ?, num_players = ? WHERE id = ?"
-    db.execute(sql, [data["coursename"], data["num_holes"], json.dumps(data["hole_data"]), data["user_id"], data["start_time"], data["num_players"], data["id"]])
+    sql = (
+        "UPDATE rounds "
+        "SET coursename = ?, num_holes = ?, hole_data = ?, creator_id = ?, start_time = ?, num_players = ? "
+        "WHERE id = ?"
+    )
+    db.execute(
+        sql,
+        [
+            data["coursename"],
+            data["num_holes"],
+            json.dumps(data["hole_data"]),
+            data["user_id"],
+            data["start_time"],
+            data["num_players"],
+            data["id"],
+        ],
+    )
 
 
 def get_all_rounds():
-    sql = "SELECT rounds.id, coursename, username, start_time, num_players, " \
-            "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating " \
-            "FROM rounds " \
-            "JOIN users ON users.id=rounds.creator_id " \
-            "LEFT JOIN participations ON participations.round_id=rounds.id " \
-            "GROUP BY rounds.id"
+    sql = (
+        "SELECT rounds.id, coursename, username, start_time, num_players, "
+        "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating "
+        "FROM rounds "
+        "JOIN users ON users.id=rounds.creator_id "
+        "LEFT JOIN participations ON participations.round_id=rounds.id "
+        "GROUP BY rounds.id"
+    )
 
-    rounds = db.query_db(sql, resp_type = db.RespType.DICT)
+    rounds = db.query_db(sql, resp_type=db.RespType.DICT)
 
     if not rounds:
         rounds = []
@@ -43,20 +77,24 @@ def get_all_rounds():
 
     return rounds
 
-def get_round(id):
-    sql = "SELECT rounds.id as round_id, creator_id, coursename, num_holes, hole_data, start_time, num_players, " \
-            "GROUP_CONCAT(users.id) AS user_ids, " \
-            "GROUP_CONCAT(users.username) AS usernames " \
-            "FROM rounds " \
-            "LEFT JOIN participations ON participations.round_id=rounds.id " \
-            "JOIN users ON users.id IN (rounds.creator_id, participations.participator_id) " \
-            "WHERE rounds.id = ? " \
-            "GROUP BY rounds.id"
-    result = db.query_db(sql, [id], db.RespType.DICT)
+
+def get_round(round_id):
+    sql = (
+        "SELECT rounds.id as round_id, creator_id, coursename, num_holes, hole_data, start_time, num_players, "
+        "GROUP_CONCAT(users.id) AS user_ids, "
+        "GROUP_CONCAT(users.username) AS usernames "
+        "FROM rounds "
+        "LEFT JOIN participations ON participations.round_id=rounds.id "
+        "JOIN users ON users.id IN (rounds.creator_id, participations.participator_id) "
+        "WHERE rounds.id = ? "
+        "GROUP BY rounds.id"
+    )
+    result = db.query_db(sql, [round_id], db.RespType.DICT)
     return format_rounds(result)[0] if result else result
 
+
 def get_sql_for_param(param):
-    match(param):
+    match param:
         case FindRoundParam.DATE:
             return "start_time LIKE ?"
         case FindRoundParam.COURSENAME:
@@ -70,42 +108,52 @@ def get_sql_for_param(param):
         case _:
             return ""
 
+
 def create_where_condition(params):
     where = ""
 
-    for i in range(len(params)):
+    for i, p in enumerate(params):
         if i == 0:
-            where += "WHERE " + get_sql_for_param(params[i]) + " "
+            where += "WHERE " + get_sql_for_param(p) + " "
         else:
-            where += "AND " + get_sql_for_param(params[i]) + " "
+            where += "AND " + get_sql_for_param(p) + " "
 
     return where
+
 
 def find_rounds(searchparams):
     types, params = zip(*searchparams)
     where = create_where_condition(types)
-    sql = "SELECT rounds.id, coursename, username, start_time, num_players, " \
-            "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating " \
-            "FROM rounds " \
-            "JOIN users ON users.id=rounds.creator_id " \
-            "LEFT JOIN participations ON participations.round_id=rounds.id " \
-            + where + \
-            "GROUP BY rounds.id " \
-            "ORDER BY start_time DESC"
-    result = db.query_db(sql, params, resp_type = db.RespType.DICT)
+    sql = (
+        "SELECT rounds.id, coursename, username, start_time, num_players, "
+        "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating "
+        "FROM rounds "
+        "JOIN users ON users.id=rounds.creator_id "
+        "LEFT JOIN participations ON participations.round_id=rounds.id " + where + "GROUP BY rounds.id "
+        "ORDER BY start_time DESC"
+    )
+    result = db.query_db(sql, params, resp_type=db.RespType.DICT)
     return format_rounds(result) if result else result
 
+
 def get_user_id_for_round(round_id):
-    sql = "SELECT rounds.id, users.id AS user_id FROM rounds JOIN users ON users.id=rounds.creator_id WHERE rounds.id = ?"
+    sql = (
+        "SELECT rounds.id, users.id AS user_id FROM rounds JOIN users ON users.id=rounds.creator_id WHERE rounds.id = ?"
+    )
     result = db.query_db(sql, [round_id])
     return result[0]["user_id"] if result else result
 
-#Format options is a bad choice in retrospect, better to have the data always in consistent format and handle in component logic. Think about refactoring.
-def format_rounds(rounds, format_options = default_format_options):
+
+# Format options is a bad choice in retrospect, better to have the data always in consistent
+# format and handle in component logic. Think about refactoring.
+def format_rounds(rounds, format_options=None):
+    use_default_if_list_none(format_options, default=default_format_options)
+
     for row in rounds:
         if format_options["hole_data"] and "hole_data" in row:
             row["hole_data"] = json.loads(row["hole_data"])
-        # The join in SQL query made id to be ambiguous, but its better that id can be found consistently from all round query responses. And round.id makes sense in terms of naming.
+        # The join in SQL query made id to be ambiguous, but its better that id can be found
+        # consistently from all round query responses. And round.id makes sense in terms of naming.
         if "round_id" in row:
             row["id"] = row["round_id"]
         if "user_ids" in row and "usernames" in row:
@@ -116,11 +164,13 @@ def format_rounds(rounds, format_options = default_format_options):
 
     return rounds
 
+
 def add_participation(round_id, user_id):
     sql = "INSERT INTO participations (round_id, participator_id) VALUES (?, ?)"
     db.execute(sql, [round_id, user_id])
 
-def delete_participation(round_id, user_id = ""):
+
+def delete_participation(round_id, user_id=""):
     sql = "DELETE FROM participations WHERE round_id = ?"
     params = [round_id]
     if user_id:

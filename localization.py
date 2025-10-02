@@ -1,4 +1,4 @@
-#The idea would be that these localizations could be loaded for example from a json file. For now just a dict.
+# The idea would be that these localizations could be loaded for example from a json file. For now just a dict.
 
 localizations_fin = {
     "main_header": "Frisbeegolflaskuri",
@@ -16,19 +16,19 @@ localizations_fin = {
     "create_course_button": "Lisää rata",
     "browse_courses_button": "Selaa ratoja",
     "create_round_button": "Lisää kierros",
-    "find_round_button":"Etsi kierros",
-    "all_rounds_header":"Kierrokset",
+    "find_round_button": "Etsi kierros",
+    "all_rounds_header": "Kierrokset",
     "delete_course_header": "Poista rata",
     "delete_course_are_you_sure": "Haluatko varmasti poistaa tämän radan?",
     "delete_course_button": "Poista rata",
     "delete_round_header": "Poista kierros",
     "delete_round_are_you_sure": "Haluatko varmasti poistaa tämän kierroksen?",
     "delete_round_button": "Poista kierros",
-    "modify_round_header":"Muokkaa kierrosta",
-    "find_round_header":"Etsi kierros",
-    "find_by_course_name_header":"Etsi radan nimellä:",
-    "find_by_date_header":"Etsi päivämäärällä:",
-    "search_results_header":"Tulokset",
+    "modify_round_header": "Muokkaa kierrosta",
+    "find_round_header": "Etsi kierros",
+    "find_by_course_name_header": "Etsi radan nimellä:",
+    "find_by_date_header": "Etsi päivämäärällä:",
+    "search_results_header": "Tulokset",
     "course_name_header": "Nimi:",
     "course_holes_header": "Väylien lukumäärä:",
     "add_holes_header": "Lisää väylien tiedot",
@@ -98,10 +98,12 @@ localizations_fin = {
     "username_taken": "VIRHE: tunnus on jo varattu",
     "user_does_not_exist": "VIRHE: käyttäjää ei ole olemassa",
     "wrong_username_or_password": "VIRHE: väärä tunnus tai salasana",
-    "create_round_course_does_not_exist": "VIRHE: Rataa ei löytynyt tietokannasta. Uutta kierrosta ei luotu. Varmista että rata on tietokannassa ja yritä uudelleen."
+    "create_round_course_does_not_exist": """VIRHE: Rataa ei löytynyt tietokannasta. Uutta kierrosta ei luotu.
+        Varmista että rata on tietokannassa ja yritä uudelleen.""",
 }
 
 localizations = localizations_fin
+
 
 def get_localization(key):
     s = str(key)

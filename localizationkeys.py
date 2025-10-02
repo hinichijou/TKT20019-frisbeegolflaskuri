@@ -1,6 +1,8 @@
 from enum import StrEnum, auto
 
-#The idea would be that we could use these keys in the code with dot notation which then map into localizations that are stored in a json file as key-value pairs. A different file could be loaded for a different language
+
+# The idea would be that we could use these keys in the code with dot notation which then map into localizations
+# that are stored in a json file as key-value pairs. A different file could be loaded for a different language.
 class LocalizationKeys(StrEnum):
     no_courses_found = auto()
     password_mismatch = auto()

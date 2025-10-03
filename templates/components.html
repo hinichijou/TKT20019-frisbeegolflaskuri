@@ -33,6 +33,10 @@
   {{ submit_button_with_text(get_localization(text) , arg_dict, name) }}
 {%- endmacro %}
 
+{% macro formaction_button(text, action, name = "submit") -%}
+  {{ submit_button_with_text(text, {"formaction":action}, name) }}
+{%- endmacro %}
+
 {% macro localized_formaction_button(text, action, name = "submit") -%}
   {{ submit_button_with_localized_text(text, {"formaction":action}, name) }}
 {%- endmacro %}
@@ -302,10 +306,30 @@
   {{ round_num_participating_with_header(round.participators.keys() |length, round.num_players) }}
 {%- endmacro %}
 
+{% macro page_navigation_back(link) -%}
+  <a href="{{ link }}">&lt;&lt;</a>
+{%- endmacro %}
+
+{% macro page_navigation_page_count(page, page_count) -%}
+  {{ get_localization("page_navigation_page") }} {{ page }}/{{ page_count }}
+{%- endmacro %}
+
+{% macro page_navigation_forward(link) -%}
+  <a href="{{ link }}">&gt;&gt;</a>
+{%- endmacro %}
+
 {% macro page_navigation(page, page_count, handler) -%}
   <p>
-    <a href="{{ url_for(handler, page=page - 1) }}">&lt;&lt;</a>
-    Sivu {{ page }}/{{ page_count }}
-    <a href="{{ url_for(handler, page=page + 1) }}">&gt;&gt;</a>
+    {{ page_navigation_back(url_for(handler, page=page - 1)) }}
+    {{ page_navigation_page_count(page, page_count) }}
+    {{ page_navigation_forward(url_for(handler, page=page + 1)) }}
+  </p>
+{%- endmacro %}
+
+{% macro custom_href_page_navigation(link_back, link_forward, page, page_count) -%}
+  <p>
+    {{ page_navigation_back(link_back) }}
+    {{ page_navigation_page_count(page, page_count) }}
+    {{ page_navigation_forward(link_forward) }}
   </p>
 {%- endmacro %}

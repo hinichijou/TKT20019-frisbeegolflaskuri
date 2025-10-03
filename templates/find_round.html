@@ -9,7 +9,6 @@
       <p>{{ components.find_course_select(courses, course_query) }}</p>
       <p>{{ components.start_date_input(start_time, "date", False, headerkey = "find_by_date_header") }}</p>
       {{ components.submit_button_with_localized_text("submit_search_button") }}
-      {{ components.csrf_token_input() }}
     </form>
     {% if arginput %}
       <h3>{{ get_localization("search_results_header") }}</h3>
@@ -18,5 +17,11 @@
   {% endif %}
 {% endblock content %}
 {% block page_navigation %}
-  {{ components.page_navigation(page, page_count, "find_round") }}
+  <form action="{{ url_for('find_round') }}" method="get">
+    {{ components.formaction_button("<<", url_for("find_round", page=page - 1)) }}
+    {{ get_localization("page_navigation_page") }} {{ page }}/{{ page_count }}
+    {{ components.formaction_button(">>", url_for("find_round", page=page + 1)) }}
+    {{ components.hidden_input("course_select", course_query) }}
+    {{ components.hidden_input("start_time", start_time) }}
+  </form>
 {% endblock page_navigation %}

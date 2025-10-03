@@ -157,6 +157,10 @@ def test_user_id(user_id):
     return test_num(user_id)
 
 
+def test_page(page):
+    return test_num(page)
+
+
 def test_start_time(start_time):
     return test_date(start_time)
 
@@ -223,6 +227,9 @@ def render_page_if_in_page_limits(page, page_count, path, page_func):
 @app.route("/")
 @app.route("/<int:page>")
 def index(page=1):
+    input_tests = [lambda: test_page(page)]
+    test_inputs(input_tests)
+
     page_size, page_count = get_page_size_and_count(m_rounds.round_count())
 
     return render_page_if_in_page_limits(
@@ -502,7 +509,7 @@ def delete_round(round_id):
 def find_round(page=1):
     require_login()
 
-    input_tests = []
+    input_tests = [lambda: test_page(page)]
 
     course_query = request.args.get("course_select")
     if course_query and course_query != "":
@@ -530,17 +537,16 @@ def find_round(page=1):
         # Search date only if something is set
         searchparams.append((FindRoundParam.DATE, start_time + "%"))
 
-    # TODO: refactor to work with the search query
-    page_size, page_count = get_page_size_and_count(m_rounds.round_count())
-
     # With default parameters returns all rounds if they are sent in the query
-    results = (
-        m_rounds.find_rounds(searchparams)
-        if len(searchparams) > 0
-        else m_rounds.get_all_rounds(page, page_size)
-        if arginput
-        else []
-    )
+    if len(searchparams) > 0:
+        page_size, page_count = get_page_size_and_count(m_rounds.round_count(searchparams))
+        results = m_rounds.find_rounds(searchparams, page, page_size)
+    elif arginput:
+        page_size, page_count = get_page_size_and_count(m_rounds.round_count())
+        results = m_rounds.get_all_rounds(page, page_size)
+    else:
+        page_count = 1
+        results = []
 
     courses = m_courses.get_courses()
     if not courses:
@@ -718,21 +724,38 @@ def update_round_full():
 
     return redirect("/round/" + round_["id"])
 
-
 @app.route("/user/<int:user_id>")
-def show_user(user_id):
+@app.route("/user/<int:user_id>/<int:r_page>/<int:p_page>")
+def show_user(user_id, r_page=1, p_page=1):
     require_login()
-    test_inputs([lambda: test_user_id(user_id)])
+    test_inputs([lambda: test_user_id(user_id), lambda: test_page(r_page), lambda: test_page(p_page)])
 
     user = m_users.get_user(user_id)
 
     abort_if_null(user, 404)
 
     # The queries below could be combined to a single query but this is good enough for the time being
-    rounds = m_rounds.find_rounds([(FindRoundParam.CREATORID, user_id)])
-    participating_rounds = m_rounds.find_rounds([(FindRoundParam.PARTICIPATORID, user_id)])
+    searchparams = [(FindRoundParam.CREATORID, user_id)]
+    r_count = m_rounds.round_count(searchparams)
+    r_page_size, r_page_count = get_page_size_and_count(r_count)
+    rounds = m_rounds.find_rounds(searchparams, r_page, r_page_size)
 
-    return render_template("show_user.html", user=user, rounds=rounds, participating_rounds=participating_rounds)
+    p_count = m_rounds.participations_count(user_id)
+    p_page_size, p_page_count = get_page_size_and_count(p_count)
+    participating_rounds = m_rounds.find_rounds([(FindRoundParam.PARTICIPATORID, user_id)], p_page, p_page_size)
+
+    return render_template(
+        "show_user.html",
+        user=user,
+        rounds=rounds,
+        participating_rounds=participating_rounds,
+        r_page=r_page,
+        r_page_count=r_page_count,
+        r_count=r_count,
+        p_page=p_page,
+        p_page_count=p_page_count,
+        p_count=p_count
+    )
 
 
 @app.route("/round_sign_up", methods=["POST"])

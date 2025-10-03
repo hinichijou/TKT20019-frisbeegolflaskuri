@@ -7,13 +7,31 @@
   <p>{{ get_localization("username_header") }} {{ user.username }}</p>
   <p>{{ get_localization("user_id_header") }} {{ user.id }}</p>
   {% if rounds|length > 0 %}
-    <p>{{ get_localization("user_amount_rounds_created").format(rounds|length) }}</p>
+    <p>{{ get_localization("user_amount_rounds_created").format(r_count) }}</p>
     <h3>{{ get_localization("rounds_created_by_user_header") }}</h3>
     {% for round in rounds %}{{ components.round_list_item(round) }}{% endfor %}
+    {% if r_page_count and r_page_count > 1 %}
+      {{ components.custom_href_page_navigation(
+          url_for("show_user", r_page=r_page - 1, p_page=p_page, user_id=user.id),
+          url_for("show_user", r_page=r_page + 1, p_page=p_page, user_id=user.id),
+          r_page,
+          r_page_count
+        )
+      }}
+    {% endif %}
   {% endif %}
   {% if participating_rounds|length > 0 %}
-    <p>{{ get_localization("user_amount_rounds_participating").format(participating_rounds|length) }}</p>
+    <p>{{ get_localization("user_amount_rounds_participating").format(p_count) }}</p>
     <h3>{{ get_localization("rounds_user_participating_header") }}</h3>
     {% for round in participating_rounds %}{{ components.round_list_item(round) }}{% endfor %}
+    {% if p_page_count and p_page_count > 1 %}
+      {{ components.custom_href_page_navigation(
+          url_for("show_user", r_page=r_page, p_page=p_page - 1, user_id=user.id),
+          url_for("show_user", r_page=r_page, p_page=p_page + 1, user_id=user.id),
+          p_page,
+          p_page_count
+        )
+      }}
+    {% endif %}
   {% endif %}
 {% endblock content %}

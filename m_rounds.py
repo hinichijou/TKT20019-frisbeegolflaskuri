@@ -124,8 +124,9 @@ def create_where_condition(params):
     return where
 
 
-def find_rounds(searchparams):
+def find_rounds(searchparams, page, page_size):
     types, params = zip(*searchparams)
+    params = params + get_page_limit_and_offset(page, page_size)
     where = create_where_condition(types)
     sql = (
         "SELECT rounds.id, coursename, username, start_time, num_players, "
@@ -133,7 +134,8 @@ def find_rounds(searchparams):
         "FROM rounds "
         "JOIN users ON users.id=rounds.creator_id "
         "LEFT JOIN participations ON participations.round_id=rounds.id " + where + "GROUP BY rounds.id "
-        "ORDER BY start_time DESC"
+        "ORDER BY start_time DESC "
+        "LIMIT ? OFFSET ?"
     )
     result = db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)
     return format_rounds(result) if result else result
@@ -146,9 +148,21 @@ def get_user_id_for_round(round_id):
     result = db.fetch_all_from_db(sql, [round_id])
     return result[0]["user_id"] if result else result
 
-def round_count():
+
+# Params None returns count of all rounds
+def round_count(searchparams=None):
+    params = None
+    where = None
+
+    if searchparams:
+        types, params = zip(*searchparams)
+        where = create_where_condition(types).rstrip()
+
     sql = "SELECT COUNT(id) FROM rounds"
-    result = db.fetch_one_from_db(sql)
+    if where:
+        sql += f" {where}"
+
+    result = db.fetch_one_from_db(sql, params)
     return result[0]
 
 
@@ -186,3 +200,10 @@ def delete_participation(round_id, user_id=""):
         params.append(user_id)
 
     db.execute(sql, params)
+
+
+def participations_count(user_id):
+    sql = "SELECT COUNT(id) FROM participations WHERE participator_id = ?"
+
+    result = db.fetch_one_from_db(sql, [user_id])
+    return result[0]

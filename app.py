@@ -1,10 +1,11 @@
 import math
 import secrets
 import sqlite3
+import time
 import datetime
 
 from flask import Flask
-from flask import abort, redirect, render_template, flash, request, session
+from flask import abort, redirect, render_template, flash, request, session, g
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import config
@@ -25,6 +26,18 @@ app.secret_key = config.secret_key
 @app.context_processor
 def utility_processor():
     return {"get_localization": get_localization, "utilities": utilities}
+
+
+@app.before_request
+def before_request():
+    g.start_time = time.time()
+
+
+@app.after_request
+def after_request(response):
+    elapsed_time = round(time.time() - g.start_time, 2)
+    print("elapsed time:", elapsed_time, "s")
+    return response
 
 
 def show_message_and_redirect(key, category, route):

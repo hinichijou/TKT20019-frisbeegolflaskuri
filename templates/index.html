@@ -8,3 +8,6 @@
     {% for round in rounds %}{{ components.round_list_item(round) }}{% endfor %}
   {% endif %}
 {% endblock content %}
+{% block page_navigation %}
+  {{ components.page_navigation(page, page_count, "index") }}
+{% endblock page_navigation %}

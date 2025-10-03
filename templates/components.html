@@ -301,3 +301,11 @@
   {{ round_username_with_header(round.participators[round.creator_id]) }}
   {{ round_num_participating_with_header(round.participators.keys() |length, round.num_players) }}
 {%- endmacro %}
+
+{% macro page_navigation(page, page_count, handler) -%}
+  <p>
+    <a href="{{ url_for(handler, page=page - 1) }}">&lt;&lt;</a>
+    Sivu {{ page }}/{{ page_count }}
+    <a href="{{ url_for(handler, page=page + 1) }}">&gt;&gt;</a>
+  </p>
+{%- endmacro %}

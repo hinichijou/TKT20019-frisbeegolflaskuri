@@ -4,6 +4,9 @@ from utilities import Singleton
 
 @dataclass
 class Constants(Singleton):
+    db_name = "database.db"
+    mass_test_db_name = "mass_test.db"
+    page_size = 10
     coursename_minlength = 2
     coursename_maxlength = 30
     username_minlength = 3

@@ -2,7 +2,7 @@ import json
 import db
 import m_courses
 from enums import FindRoundParam
-from utilities import use_default_if_list_none
+from utilities import use_default_if_list_none, get_page_limit_and_offset
 
 default_format_options = {"hole_data": True}
 
@@ -58,17 +58,20 @@ def update_round(data):
     )
 
 
-def get_all_rounds():
+def get_all_rounds(page, page_size):
     sql = (
         "SELECT rounds.id, coursename, username, start_time, num_players, "
         "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating "
         "FROM rounds "
         "JOIN users ON users.id=rounds.creator_id "
         "LEFT JOIN participations ON participations.round_id=rounds.id "
-        "GROUP BY rounds.id"
+        "GROUP BY rounds.id "
+        "LIMIT ? OFFSET ?"
     )
 
-    rounds = db.query_db(sql, resp_type=db.RespType.DICT)
+    limit, offset = get_page_limit_and_offset(page, page_size)
+
+    rounds = db.fetch_all_from_db(sql, [limit, offset], resp_type=db.RespType.DICT)
 
     if not rounds:
         rounds = []
@@ -89,7 +92,7 @@ def get_round(round_id):
         "WHERE rounds.id = ? "
         "GROUP BY rounds.id"
     )
-    result = db.query_db(sql, [round_id], db.RespType.DICT)
+    result = db.fetch_all_from_db(sql, [round_id], db.RespType.DICT)
     return format_rounds(result)[0] if result else result
 
 
@@ -132,7 +135,7 @@ def find_rounds(searchparams):
         "LEFT JOIN participations ON participations.round_id=rounds.id " + where + "GROUP BY rounds.id "
         "ORDER BY start_time DESC"
     )
-    result = db.query_db(sql, params, resp_type=db.RespType.DICT)
+    result = db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)
     return format_rounds(result) if result else result
 
 
@@ -140,8 +143,13 @@ def get_user_id_for_round(round_id):
     sql = (
         "SELECT rounds.id, users.id AS user_id FROM rounds JOIN users ON users.id=rounds.creator_id WHERE rounds.id = ?"
     )
-    result = db.query_db(sql, [round_id])
+    result = db.fetch_all_from_db(sql, [round_id])
     return result[0]["user_id"] if result else result
+
+def round_count():
+    sql = "SELECT COUNT(id) FROM rounds"
+    result = db.fetch_one_from_db(sql)
+    return result[0]
 
 
 # Format options is a bad choice in retrospect, better to have the data always in consistent

@@ -46,7 +46,7 @@ def update_course(data):
 
 def get_courses():
     sql = "SELECT id, coursename, num_holes FROM courses"
-    return db.query_db(sql, resp_type=db.RespType.DICT)
+    return db.fetch_all_from_db(sql, resp_type=db.RespType.DICT)
 
 
 def get_course_data(course_id, format_options=None):
@@ -64,7 +64,7 @@ def get_course_data(course_id, format_options=None):
         "WHERE courses.id = ? "
         "GROUP BY courses.id "
     )
-    result = db.query_db(sql, [course_id], resp_type=db.RespType.DICT)
+    result = db.fetch_all_from_db(sql, [course_id], resp_type=db.RespType.DICT)
     return format_course_data(result, format_options)[0] if result else result
 
 

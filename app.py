@@ -1,3 +1,4 @@
+import math
 import secrets
 import sqlite3
 import datetime
@@ -189,9 +190,36 @@ def format_selections_to_list(course):
     course["difficulty_select"] = list_from_form_comma_string(course["difficulty_select"])
 
 
+def get_page_size_and_count(content_count):
+    page_size = constants.page_size
+    page_count = math.ceil(content_count / page_size)
+    page_count = max(page_count, 1)
+
+    return page_size, page_count
+
+
+def render_page_if_in_page_limits(page, page_count, path, page_func):
+    if page < 1:
+        return redirect(path + "1")
+    if page > page_count:
+        return redirect(path + str(page_count))
+
+    return page_func()
+
+
 @app.route("/")
-def index():
-    return render_template("index.html", rounds=m_rounds.get_all_rounds())
+@app.route("/<int:page>")
+def index(page=1):
+    page_size, page_count = get_page_size_and_count(m_rounds.round_count())
+
+    return render_page_if_in_page_limits(
+        page,
+        page_count,
+        "/",
+        lambda: render_template(
+            "index.html", page=page, page_count=page_count, rounds=m_rounds.get_all_rounds(page, page_size)
+        ),
+    )
 
 
 @app.route("/new_course")
@@ -457,7 +485,8 @@ def delete_round(round_id):
 
 
 @app.route("/find_round")
-def find_round():
+@app.route("/find_round/<int:page>")
+def find_round(page=1):
     require_login()
 
     input_tests = []
@@ -488,22 +517,36 @@ def find_round():
         # Search date only if something is set
         searchparams.append((FindRoundParam.DATE, start_time + "%"))
 
+    # TODO: refactor to work with the search query
+    page_size, page_count = get_page_size_and_count(m_rounds.round_count())
+
     # With default parameters returns all rounds if they are sent in the query
     results = (
-        m_rounds.find_rounds(searchparams) if len(searchparams) > 0 else m_rounds.get_all_rounds() if arginput else []
+        m_rounds.find_rounds(searchparams)
+        if len(searchparams) > 0
+        else m_rounds.get_all_rounds(page, page_size)
+        if arginput
+        else []
     )
 
     courses = m_courses.get_courses()
     if not courses:
         courses = []
 
-    return render_template(
-        "find_round.html",
-        courses=courses,
-        course_query=course_query,
-        start_time=start_time,
-        results=results,
-        arginput=arginput,
+    return render_page_if_in_page_limits(
+        page,
+        page_count,
+        "/find_round/",
+        lambda: render_template(
+            "find_round.html",
+            page=page,
+            page_count=page_count,
+            courses=courses,
+            course_query=course_query,
+            start_time=start_time,
+            results=results,
+            arginput=arginput,
+        ),
     )
 
 

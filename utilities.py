@@ -24,3 +24,9 @@ def use_default_if_list_none(list_, default=None):
         return [] if default is None else default
 
     return list_
+
+
+def get_page_limit_and_offset(page, page_size):
+    limit = page_size
+    offset = page_size * (page - 1)
+    return limit, offset

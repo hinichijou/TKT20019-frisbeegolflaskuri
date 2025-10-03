@@ -38,5 +38,9 @@
     {% endwith %}
     {% block content %}
     {% endblock content %}
+    {% if page_count and page_count > 1 %}
+      {% block page_navigation %}
+      {% endblock page_navigation %}
+    {% endif %}
   </body>
 </html>

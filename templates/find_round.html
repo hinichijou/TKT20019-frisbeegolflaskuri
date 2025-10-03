@@ -17,3 +17,6 @@
     {% endif %}
   {% endif %}
 {% endblock content %}
+{% block page_navigation %}
+  {{ components.page_navigation(page, page_count, "find_round") }}
+{% endblock page_navigation %}

@@ -21,7 +21,7 @@ def get_selection_items(searchtypes):
         "FROM selection_class_items "
         "LEFT JOIN selection_classes ON selection_class_items.class_id=selection_classes.id " + where
     )
-    result = db.query_db(sql, params, resp_type=db.RespType.DICT)
+    result = db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)
 
     return create_selection_dict(result) if result else result
 

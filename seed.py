@@ -38,6 +38,7 @@ for i in range(1, rounds_count + 1):
     creator_id = random.randint(1, user_count)
     start_time = datetime.datetime.now().isoformat(timespec="minutes")
     num_players = random.randint(constants.round_min_players, constants.round_max_players)
+    coursename = "course" + str(random.randint(1, course_count))
     num_holes = random.randint(constants.course_holes_min, constants.course_holes_max)
 
     holes_dict = {}
@@ -52,7 +53,7 @@ for i in range(1, rounds_count + 1):
 
     db.execute("""INSERT INTO rounds (creator_id, start_time, num_players, coursename, num_holes, hole_data)
                   VALUES (?, ?, ?, ?, ?, ?)""",
-               [creator_id, start_time, num_players, "course" + str(i), num_holes, json.dumps(holes_dict) ])
+               [creator_id, start_time, num_players, coursename, num_holes, json.dumps(holes_dict) ])
 
 db.commit()
 db.close()

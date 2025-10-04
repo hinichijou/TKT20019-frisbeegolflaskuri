@@ -29,7 +29,7 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 # Sovelluksen käyttöohje:
 * Sovellus vaatii toimiakseen [Python](https://www.python.org/downloads/)asennuksen, [SQLite](https://www.sqlite.org/download.html) asennuksen sekä [Flask](https://flask.palletsprojects.com/en/stable/) kirjaston asennuksen.
 
-* Pythonille on suositeltavaa luoda virtuaaliympäristö ajamalla komento `python -m venv venv` projektikansiossa. Virtuaaliympäristö aktivoidaan komennolla `venv\Scripts\activate.bat` (komennot Windowsille, komennoissa mahdollisesti pieniä eroja käyttöjärjestelmästä riippuen).
+* Pythonille on suositeltavaa luoda virtuaaliympäristö ajamalla komento (`python -m venv venv` Windowsille, `source venv/bin/activate` Linuxille) projektikansiossa. Virtuaaliympäristö aktivoidaan komennolla `venv\Scripts\activate.bat` (komennot Windowsille, komennoissa mahdollisesti pieniä eroja käyttöjärjestelmästä riippuen).
 
 * Sovellus tarvitsee toimiakseen tietokannan, jonka voi luoda ajamalla komennon `sqlite3 database.db < schema.sql` pääkansiossa.
 

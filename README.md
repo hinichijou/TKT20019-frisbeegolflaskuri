@@ -63,3 +63,12 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 * `seed.py` luo vakioarvoilla n. gigan kokoisen tietokannan, halutessaan muuttujia `user_count`, `course_count` ja `round_count` muokkaamalla saa generoitua pienemmän tietomäärän jos tämä tuntuu liian suurelta.
 
 * Sovelluksen muokkaaminen soveltuvaksi suurelle tietomäärälle on vielä kesken, osa näkymistä on sivutettu ja osa tarpeellisista indekseistä luotu, mutta ei välttämättä vielä kaikkia. Sovelluksessa on radoille dropdown valikoita, jotka toimivat todella huonosti erittäin suurilla ratamäärillä, mutta tämä on ongelma jota en välttämättä aio korjata, koska sovelluksessa ei ole tarkoitus olla tuhansia ratoja ja pidän dropdowneista käytettävyyden puolesta.
+
+# (Vapaaehtoinen) pylint:
+* Halutessaan sovelluksen koodin tyyliä voi arvioida [Pylintillä](https://pylint.readthedocs.io/en/stable/index.html).
+
+* Asenna pylint komennolla `pip install pylint`.
+
+* Komento `pylint *.py` tarkastaa kaikki päähakemistossa olevat Python-tiedostot ja tulostaa niistä raportin komentoriville.
+
+* Repositoriossa on custom pylint tiedosto `pylintrc`, johon on tehty joitain muutoksia vakioasetuksiin. Varoitukset C0114, C0115, C0116, R1705 ja R1710 on disabloitu, jotta raportit näyttäisivät hyödyllisempiä varoituksia, halutessaan asetuksia voi säätää kyseisestä tiedostosta.

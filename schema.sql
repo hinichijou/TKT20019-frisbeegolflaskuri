@@ -43,3 +43,11 @@ CREATE TABLE course_selections (
     item_id INTEGER REFERENCES selection_class_items,
     course_id INTEGER REFERENCES courses
 );
+
+CREATE TABLE results (
+    id INTEGER PRIMARY KEY,
+    round_id INTEGER REFERENCES rounds,
+    player_id INTEGER REFERENCES users,
+    hole NUMBER,
+    result NUMBER
+);

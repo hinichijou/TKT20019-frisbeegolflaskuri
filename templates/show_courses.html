@@ -6,3 +6,6 @@
   <h2>{{ get_localization("courses_header") }}</h2>
   {% for course in courses %}{{ components.course_list_item(course) }}{% endfor %}
 {% endblock content %}
+{% block page_navigation %}
+  {{ components.page_navigation(page, page_count, "show_courses") }}
+{% endblock page_navigation %}

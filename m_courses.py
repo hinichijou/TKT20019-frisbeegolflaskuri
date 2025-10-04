@@ -1,6 +1,6 @@
 import json
 import db
-from utilities import use_default_if_list_none
+from utilities import use_default_if_list_none, get_page_limit_and_offset
 
 default_format_options = {"hole_data": True}
 
@@ -44,9 +44,17 @@ def update_course(data):
         add_course_selection(data["id"], data["type_select"][0])
 
 
-def get_courses():
-    sql = "SELECT id, coursename, num_holes FROM courses"
-    return db.fetch_all_from_db(sql, resp_type=db.RespType.DICT)
+def get_courses(page, page_size):
+    sql = "SELECT id, coursename, num_holes FROM courses LIMIT ? OFFSET ?"
+    limit, offset = get_page_limit_and_offset(page, page_size)
+    return db.fetch_all_from_db(sql, [limit, offset], resp_type=db.RespType.DICT)
+
+
+def courses_count():
+    sql = "SELECT COUNT(id) FROM courses"
+
+    result = db.fetch_one_from_db(sql)
+    return result[0]
 
 
 def get_course_data(course_id, format_options=None):

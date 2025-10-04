@@ -354,14 +354,19 @@ def delete_course(course_id):
 
 
 @app.route("/show_courses")
-def show_courses():
+@app.route("/show_courses/<int:page>")
+def show_courses(page=1):
     require_login()
 
-    courses = m_courses.get_courses()
+    input_tests = [lambda: test_page(page)]
+    test_inputs(input_tests)
+
+    page_size, page_count = get_page_size_and_count(m_courses.courses_count())
+    courses = m_courses.get_courses(page, page_size)
     if not courses:
         return show_error_and_redirect(LocalizationKeys.no_courses_found, "/")
 
-    return render_template("show_courses.html", courses=courses)
+    return render_template("show_courses.html", page=page, page_count=page_count, courses=courses)
 
 
 @app.route("/course/<int:course_id>")
@@ -453,7 +458,7 @@ def update_course():
 def new_round():
     require_login()
 
-    courses = m_courses.get_courses()
+    courses = m_courses.get_courses(1, m_courses.courses_count())
     if not courses:
         return show_error_and_redirect(LocalizationKeys.no_courses_found, "/")
 
@@ -554,7 +559,7 @@ def find_round(page=1):
         page_count = 1
         results = []
 
-    courses = m_courses.get_courses()
+    courses = m_courses.get_courses(1, m_courses.courses_count())
     if not courses:
         courses = []
 
@@ -603,7 +608,7 @@ def edit_round(round_id):
     abort_if_null(round_, 404)
     abort_if_id_not_sid(round_["creator_id"])
 
-    courses = m_courses.get_courses()
+    courses = m_courses.get_courses(1, m_courses.courses_count())
     if not courses:
         courses = []
 

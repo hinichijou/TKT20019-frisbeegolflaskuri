@@ -23,7 +23,7 @@ for i in range(1, course_count + 1):
     num_holes = random.randint(constants.course_holes_min, constants.course_holes_max)
 
     holes_dict = {}
-    for j in range(1, num_holes):
+    for j in range(1, num_holes + 1):
         parkey = f"par_{j}"
         lengthkey = f"length_{j}"
 

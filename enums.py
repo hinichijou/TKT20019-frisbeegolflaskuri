@@ -18,7 +18,6 @@ class FindRoundParam(Enum):
     COURSENAME = 2
     CREATORID = 3
     ROUNDID = 4
-    PARTICIPATORID = 5
 
 
 class RespType(Enum):

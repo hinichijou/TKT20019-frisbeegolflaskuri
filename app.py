@@ -747,9 +747,9 @@ def show_user(user_id, r_page=1, p_page=1):
     r_page_size, r_page_count = get_page_size_and_count(r_count)
     rounds = m_rounds.find_rounds(searchparams, r_page, r_page_size)
 
-    p_count = m_rounds.participations_count(user_id)
+    p_count = m_rounds.user_participations_count(user_id)
     p_page_size, p_page_count = get_page_size_and_count(p_count)
-    participating_rounds = m_rounds.find_rounds([(FindRoundParam.PARTICIPATORID, user_id)], p_page, p_page_size)
+    participating_rounds = m_rounds.find_participating_rounds(user_id, p_page, p_page_size)
 
     return render_template(
         "show_user.html",

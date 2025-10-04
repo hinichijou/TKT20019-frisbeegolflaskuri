@@ -106,8 +106,6 @@ def get_sql_for_param(param):
             return "creator_id = ?"
         case FindRoundParam.ROUNDID:
             return "rounds.id = ?"
-        case FindRoundParam.PARTICIPATORID:
-            return "participations.participator_id = ?"
         case _:
             return ""
 
@@ -202,8 +200,32 @@ def delete_participation(round_id, user_id=""):
     db.execute(sql, params)
 
 
-def participations_count(user_id):
+def user_participations_count(user_id):
     sql = "SELECT COUNT(id) FROM participations WHERE participator_id = ?"
 
     result = db.fetch_one_from_db(sql, [user_id])
     return result[0]
+
+
+def round_participations_count(round_id):
+    sql = "SELECT COUNT(id) FROM participations WHERE round_id = ?"
+
+    result = db.fetch_one_from_db(sql, [round_id])
+    return result[0]
+
+
+def find_participating_rounds(user_id, page, page_size):
+    params = (user_id,) + get_page_limit_and_offset(page, page_size)
+    sql = (
+        "SELECT rounds.id, coursename, username, start_time, num_players, "
+        "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating "
+        "FROM rounds "
+        "JOIN users ON users.id=rounds.creator_id "
+        "LEFT JOIN participations ON participations.round_id=rounds.id "
+        "WHERE rounds.id IN (SELECT round_id FROM participations WHERE participations.participator_id = ?) "
+        "GROUP BY rounds.id "
+        "ORDER BY start_time DESC "
+        "LIMIT ? OFFSET ?"
+    )
+    result = db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)
+    return format_rounds(result) if result else result

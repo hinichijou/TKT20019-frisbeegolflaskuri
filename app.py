@@ -25,7 +25,7 @@ app.secret_key = config.secret_key
 
 @app.context_processor
 def utility_processor():
-    return {"get_localization": get_localization, "utilities": utilities}
+    return {"get_localization": get_localization, "constants": constants, "utilities": utilities}
 
 
 @app.before_request
@@ -256,7 +256,7 @@ def new_course():
         [SelectionItemClass.COURSE_DIFFICULTY, SelectionItemClass.COURSE_TYPE]
     )
 
-    return render_template("new_course.html", constants=constants, selections=selections)
+    return render_template("new_course.html", selections=selections)
 
 
 def get_basic_course_data(form):
@@ -290,7 +290,7 @@ def create_course():
 
     format_selections_to_list(course)
 
-    return render_template("new_holes.html", constants=constants, course=course)
+    return render_template("new_holes.html", course=course)
 
 
 def create_holes_dict(form):
@@ -412,7 +412,7 @@ def edit_course(course_id):
                 del selections["course_type"][i]
                 break
 
-    return render_template("edit_course.html", constants=constants, course=course, selections=selections)
+    return render_template("edit_course.html", course=course, selections=selections)
 
 
 def build_course_data(form):
@@ -437,7 +437,7 @@ def edit_course_holes():
 
     course = build_course_data(request.form)
 
-    return render_template("edit_course_holes.html", constants=constants, course=course)
+    return render_template("edit_course_holes.html", course=course)
 
 
 @app.route("/update_course", methods=["POST"])
@@ -464,7 +464,6 @@ def new_round():
 
     return render_template(
         "new_round.html",
-        constants=constants,
         courses=courses,
         date=datetime.datetime.now().isoformat(timespec="minutes"),
     )
@@ -619,7 +618,7 @@ def edit_round(round_id):
             del courses[i]
             break
 
-    return render_template("edit_round.html", constants=constants, courses=courses, round=round_)
+    return render_template("edit_round.html", courses=courses, round=round_)
 
 
 def build_round_data_course_select(form):
@@ -685,7 +684,7 @@ def edit_round_num_holes():
 
     round_ = build_round_data_course_select(request.form)
     get_round_user_id(round_)
-    return render_template("edit_round_num_holes.html", constants=constants, round=round_)
+    return render_template("edit_round_num_holes.html", round=round_)
 
 
 def build_round_data(form):
@@ -721,7 +720,7 @@ def edit_round_holes():
 
     round_ = build_round_data(request.form)
     get_round_user_id(round_)
-    return render_template("edit_round_holes.html", constants=constants, round=round_)
+    return render_template("edit_round_holes.html", round=round_)
 
 
 @app.route("/update_round_full", methods=["POST"])
@@ -838,7 +837,7 @@ def create():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html", constants=constants)
+        return render_template("login.html")
     if request.method == "POST":
         test_inputs(
             [

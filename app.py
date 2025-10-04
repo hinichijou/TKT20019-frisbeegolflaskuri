@@ -230,15 +230,21 @@ def index(page=1):
     input_tests = [lambda: test_page(page)]
     test_inputs(input_tests)
 
-    page_size, page_count = get_page_size_and_count(m_rounds.round_count())
+    # Don't query rounds if user not logged in since they are only visible for logged in viewers.
+    # Would make more sense to have separate pages before and after login
+    if "user_id" in session:
+        page_size, page_count = get_page_size_and_count(m_rounds.round_count())
+        rounds = m_rounds.get_all_rounds(page, page_size)
+    else:
+        page_size = 1
+        page_count = 1
+        rounds = []
 
     return render_page_if_in_page_limits(
         page,
         page_count,
         "/",
-        lambda: render_template(
-            "index.html", page=page, page_count=page_count, rounds=m_rounds.get_all_rounds(page, page_size)
-        ),
+        lambda: render_template("index.html", page=page, page_count=page_count, rounds=rounds),
     )
 
 
@@ -724,6 +730,7 @@ def update_round_full():
 
     return redirect("/round/" + round_["id"])
 
+
 @app.route("/user/<int:user_id>")
 @app.route("/user/<int:user_id>/<int:r_page>/<int:p_page>")
 def show_user(user_id, r_page=1, p_page=1):
@@ -754,7 +761,7 @@ def show_user(user_id, r_page=1, p_page=1):
         r_count=r_count,
         p_page=p_page,
         p_page_count=p_page_count,
-        p_count=p_count
+        p_count=p_count,
     )
 
 

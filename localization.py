@@ -67,6 +67,7 @@ localizations_fin = {
     "round_item_creator": "Lisännyt:",
     "round_item_players": "Pelaajia:",
     "round_item_players_participating": "Ilmoittautuneita pelaajia:",
+    "no_search_results_message": "Haullasi ei löytynyt kierroksia. Muuta hakuparametreja ja kokeile uudelleen.",
     "logged_in": "Olet kirjautunut nimellä",
     "registered_message": "Tunnus luotu",
     "register_button": "Luo tunnus",

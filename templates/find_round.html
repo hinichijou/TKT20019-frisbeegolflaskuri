@@ -13,6 +13,9 @@
     {% if arginput %}
       <h3>{{ get_localization("search_results_header") }}</h3>
       {% for result in results %}{{ components.round_list_item(result) }}{% endfor %}
+      {% if results|length == 0 %}
+        {{ get_localization("no_search_results_message") }}
+      {% endif %}
     {% endif %}
   {% endif %}
 {% endblock content %}

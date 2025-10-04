@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}
+  {{ round.coursename }} {{ get_localization("hole") }} {{ hole_num }}
+{% endblock title %}
+{% block content %}
+  <h2>{{ round.coursename }} {{ get_localization("hole") }} {{ hole_num }}</h2>
+  {# Number input default buttons are not customizable. This component would not have buttons while opening the numeric input on mobile, could be preferable #}
+  {# The usability is anyways bad without javascript so might as well just use the number type #}
+  {# {{ components.user_input("text", "result", {"value":result, "readonly":"", "class":"result", "inputmode":"numeric", "pattern":"[0-9]*"}) }}<br/> #}
+  {{ components.number_input("result", constants.hole_par_min, constants.hole_par_max, {"required":"", "value":result, "class":"result"}) }}<br/>
+  <p>
+    {{ components.round_link(round.id, get_localization("return_to_round_page_button")) }}
+  </p>
+{% endblock content %}

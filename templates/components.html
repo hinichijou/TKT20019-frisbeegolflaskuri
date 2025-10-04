@@ -57,7 +57,12 @@
   {{ user_input_with_header(headerkey, type, name, arg_dict) }}
 {%- endmacro %}
 
-{% macro number_input(headerkey, name, min, max, arg_dict) -%}
+{% macro number_input(name, min, max, arg_dict) -%}
+  {% set arg_dict = dict(arg_dict, **{"min":min,"max":max, "oninput":"this.value = Math.min('{}', Math.max(this.value|0, '{}'))".format(max, min)}) -%}
+  {{ user_input("number", name, arg_dict) }}
+{%- endmacro %}
+
+{% macro number_input_with_header(headerkey, name, min, max, arg_dict) -%}
   {% set arg_dict = dict(arg_dict, **{"min":min,"max":max, "oninput":"this.value = Math.min('{}', Math.max(this.value|0, '{}'))".format(max, min)}) -%}
   {{ user_input_with_header(headerkey, "number", name, arg_dict) }}
 {%- endmacro %}
@@ -75,15 +80,15 @@
 {%- endmacro %}
 
 {% macro amount_players_input(value=constants.round_min_players) -%}
-  {{ number_input("amount_players_header", "num_players", constants.round_min_players, constants.round_max_players, {"required":"", "value":value}) }}
+  {{ number_input_with_header("amount_players_header", "num_players", constants.round_min_players, constants.round_max_players, {"required":"", "value":value}) }}
 {%- endmacro %}
 
 {% macro par_input(index, value) -%}
-  {{ number_input("par_header", "par_{}".format(index) , constants.hole_par_min, constants.hole_par_max, {"required":"", "value":value}) }}
+  {{ number_input_with_header("par_header", "par_{}".format(index) , constants.hole_par_min, constants.hole_par_max, {"required":"", "value":value}) }}
 {%- endmacro %}
 
 {% macro length_input(index, value) -%}
-  {{ number_input("hole_length_header", "length_{}".format(index) , constants.hole_length_min, constants.hole_length_max, {"required":"", "value":value}) }}
+  {{ number_input_with_header("hole_length_header", "length_{}".format(index) , constants.hole_length_min, constants.hole_length_max, {"required":"", "value":value}) }}
 {%- endmacro %}
 
 {% macro par_input_default(index) -%}
@@ -95,7 +100,7 @@
 {%- endmacro %}
 
 {% macro course_holes_input(value = constants.course_holes_default) -%}
-  {{ number_input("course_holes_header", "num_holes", constants.course_holes_min, constants.course_holes_max, {"required":"", "value":value}) }}
+  {{ number_input_with_header("course_holes_header", "num_holes", constants.course_holes_min, constants.course_holes_max, {"required":"", "value":value}) }}
 {%- endmacro %}
 
 {% macro base_password_input(headerkey, name) -%}

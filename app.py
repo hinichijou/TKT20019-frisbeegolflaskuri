@@ -161,6 +161,14 @@ def test_page(page):
     return test_num(page)
 
 
+def test_hole_num(hole):
+    return test_num(hole)
+
+
+def test_hole_result(result):
+    return test_num(result)
+
+
 def test_start_time(start_time):
     return test_date(start_time)
 
@@ -800,9 +808,27 @@ def round_unparticipate():
     return redirect(f"/round/{round_['round_id']}")
 
 
+@app.route("/hole/<int:round_id>/<int:player_id>/<int:hole_num>")
+def show_hole(round_id, player_id, hole_num):
+    require_login()
+
+    test_inputs([lambda: test_hole_num(hole_num), lambda: test_user_id(player_id)])
+    round_ = round_id_input_handling(round_id)
+
+    if 0 >= hole_num or hole_num > round_["num_holes"]:
+        abort(403)
+
+    player = m_users.get_user(player_id)
+    abort_if_null(player, 404)
+
+    result=constants.hole_par_default
+
+    return render_template("show_hole.html", round=round_, player=player, hole_num=hole_num, result=result)
+
+
 @app.route("/register")
 def register():
-    return render_template("register.html", constants=constants)
+    return render_template("register.html")
 
 
 @app.route("/registered")

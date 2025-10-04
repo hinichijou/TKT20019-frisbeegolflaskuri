@@ -17,21 +17,9 @@
   <p>
     {{ get_localization("round_item_players_participating") }} {{ round.participators.keys() |length }} / {{ round.num_players }}
   </p>
-  <p>{{ get_localization("course_item_num_holes") }} {{ round.num_holes }}</p>
-  {% for i in range(1, 1 + round.num_holes|int) %}
-    <p>
-      {{ get_localization("hole_header").format(i) }}
-      <br />
-      {{ get_localization("par_header") }}
-      <br />
-      {{ round.hole_data[i|string]["par"] }}
-      <br />
-      {{ get_localization("hole_length_header") }}
-      <br />
-      {{ round.hole_data[i|string]["length"] }}
-      <br />
-    </p>
-  {% endfor %}
+  {% if session.user_id == round.creator_id or session.user_id in round.participators.keys() %}
+    <a href="{{ url_for('show_hole', round_id=round.id, player_id=session.user_id, hole_num=1) }}" class="button">{{ get_localization("start_round_button") }}</a>
+  {% endif %}
   <h3>{{ get_localization("sign_ups_header") }}</h3>
   <p>
     {% for k, v in round.participators.items() %}<li>{{ components.user_link(k, v) }}</li>{% endfor %}
@@ -49,4 +37,19 @@
       {{ components.csrf_token_input() }}
     </form>
   {% endif %}
+  <h3>{{ get_localization("course_item_num_holes") }} {{ round.num_holes }}</h3>
+  {% for i in range(1, 1 + round.num_holes|int) %}
+    <p>
+      {{ get_localization("hole_header").format(i) }}
+      <br />
+      {{ get_localization("par_header") }}
+      <br />
+      {{ round.hole_data[i|string]["par"] }}
+      <br />
+      {{ get_localization("hole_length_header") }}
+      <br />
+      {{ round.hole_data[i|string]["length"] }}
+      <br />
+    </p>
+  {% endfor %}
 {% endblock content %}

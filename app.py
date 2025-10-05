@@ -833,7 +833,9 @@ def show_hole(round_id, player_id, hole_num):
     if request.method == "POST":
         check_csrf(request.form)
         if "result" in request.form:
-            test_inputs([lambda: test_hole_result(request.form["result"]), lambda: test_hole_num(request.form["result_hole"])])
+            test_inputs(
+                [lambda: test_hole_result(request.form["result"]), lambda: test_hole_num(request.form["result_hole"])]
+            )
             post_result = int(request.form["result"])
             result_hole = int(request.form["result_hole"])
 
@@ -851,7 +853,7 @@ def show_hole(round_id, player_id, hole_num):
             else:
                 m_results.create_result(round_id, player_id, result_hole, post_result)
 
-            #The end of the course results flow
+            # The end of the course results flow
             if result_hole == round_["num_holes"]:
                 return redirect(f"/round/{round_['round_id']}")
 

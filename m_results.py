@@ -15,3 +15,8 @@ def find_result(round_id, player_id, hole):
     sql = "SELECT id, result FROM results WHERE round_id=? AND player_id=? AND hole=?"
     result = db.fetch_one_from_db(sql, [round_id, player_id, hole])
     return result
+
+
+def delete_results_for_round(round_id):
+    sql = "DELETE FROM results WHERE round_id = ?"
+    db.execute(sql, [round_id])

@@ -1,6 +1,7 @@
 import json
 import db
 import m_courses
+import m_results
 from enums import FindRoundParam
 from utilities import use_default_if_list_none, get_page_limit_and_offset
 
@@ -33,6 +34,7 @@ def add_round(course_id, creator, start_time, num_players):
 
 def delete_round(round_id):
     delete_participation(round_id)
+    m_results.delete_results_for_round(round_id)
 
     sql = "DELETE FROM rounds WHERE id = ?"
     db.execute(sql, [round_id])

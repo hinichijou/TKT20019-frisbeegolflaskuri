@@ -18,6 +18,7 @@ import m_users
 import m_rounds
 import m_courses
 import m_selection_classes
+import m_results
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -808,20 +809,51 @@ def round_unparticipate():
     return redirect(f"/round/{round_['round_id']}")
 
 
-@app.route("/hole/<int:round_id>/<int:player_id>/<int:hole_num>")
+@app.route("/hole/<int:round_id>/<int:player_id>/<int:hole_num>", methods=["GET", "POST"])
 def show_hole(round_id, player_id, hole_num):
     require_login()
 
     test_inputs([lambda: test_hole_num(hole_num), lambda: test_user_id(player_id)])
     round_ = round_id_input_handling(round_id)
 
-    if 0 >= hole_num or hole_num > round_["num_holes"]:
+    if 0 >= hole_num or hole_num > int(round_["num_holes"]):
         abort(403)
 
     player = m_users.get_user(player_id)
     abort_if_null(player, 404)
 
-    result=constants.hole_par_default
+    # Confirm user has access rights to this round
+    if player_id not in round_["participators"].keys():
+        abort(403)
+
+    # Check if user already has a result for this hole
+    result = m_results.find_result(round_id, player_id, hole_num)
+    result = constants.hole_par_default if not result else result[1]
+
+    if request.method == "POST":
+        check_csrf(request.form)
+        if "result" in request.form:
+            test_inputs([lambda: test_hole_result(request.form["result"]), lambda: test_hole_num(request.form["result_hole"])])
+            post_result = int(request.form["result"])
+            result_hole = int(request.form["result_hole"])
+
+            # Check that the posted hole exists for the round
+            if 0 >= result_hole or result_hole > int(round_["num_holes"]):
+                abort(403)
+
+            # Check if user already has a result for the posted hole
+            prev_result = m_results.find_result(round_id, player_id, result_hole)
+
+            if prev_result:
+                # Check that there is a difference in the new posted result
+                if prev_result[1] != post_result:
+                    m_results.update_result(prev_result[0], post_result)
+            else:
+                m_results.create_result(round_id, player_id, result_hole, post_result)
+
+            #The end of the course results flow
+            if result_hole == round_["num_holes"]:
+                return redirect(f"/round/{round_['round_id']}")
 
     return render_template("show_hole.html", round=round_, player=player, hole_num=hole_num, result=result)
 

@@ -1,13 +1,19 @@
 {% extends "layout.html" %}
 {% block title %}
-  {{ round.coursename }} {{ get_localization("hole") }} {{ hole_num }}
+  {{ player.username }} {{ round.coursename }} {{ get_localization("hole") }} {{ hole_num }}
 {% endblock title %}
 {% block content %}
-  <h2>{{ round.coursename }} {{ get_localization("hole") }} {{ hole_num }}</h2>
-  {# Number input default buttons are not customizable. This component would not have buttons while opening the numeric input on mobile, could be preferable #}
-  {# The usability is anyways bad without javascript so might as well just use the number type #}
-  {# {{ components.user_input("text", "result", {"value":result, "readonly":"", "class":"result", "inputmode":"numeric", "pattern":"[0-9]*"}) }}<br/> #}
-  {{ components.number_input("result", constants.hole_par_min, constants.hole_par_max, {"required":"", "value":result, "class":"result"}) }}<br/>
+  <h2>{{ player.username }} {{ round.coursename }} {{ get_localization("hole") }} {{ hole_num }}</h2>
+  <form action="{{ url_for('show_hole', round_id=round.id, player_id=player.id, hole_num=[round.num_holes, hole_num+1]|min) }}" method="post">
+    {# Number input default buttons are not customizable. This component would not have buttons while opening the numeric input on mobile, could be preferable #}
+    {# The usability is anyways bad without javascript so might as well just use the number type #}
+    {# {{ components.user_input("text", "result", {"value":result, "readonly":"", "class":"result", "inputmode":"numeric", "pattern":"[0-9]*"}) }}<br/> #}
+    {{ components.number_input("result", constants.hole_par_min, constants.hole_par_max, {"required":"", "value":result, "class":"result"}) }}<br/>
+    {% set button_text = get_localization("to_next_hole_button") if hole_num < round.num_holes else get_localization("end_round_button")  %}
+    <p><button class="style" type="submit" name="next_button" id="next_button">{{ button_text }}</button></p>
+    {{ components.hidden_input("result_hole", hole_num) }}
+    {{ components.csrf_token_input() }}
+  </form>
   <p>
     {{ components.round_link(round.id, get_localization("return_to_round_page_button")) }}
   </p>

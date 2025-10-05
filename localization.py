@@ -88,6 +88,8 @@ localizations_fin = {
     "return_to_courses_button": "Palaa ratalistaukseen",
     "return_to_course_page_button": "Palaa ratanäkymään",
     "return_to_round_page_button": "Palaa kierrosnäkymään",
+    "to_next_hole_button": "Seuraava väylä",
+    "end_round_button": "Lopeta kierros",
     "page_navigation_page": "Sivu",
     "registration_success": "Tunnuksen luonti onnistui!",
     "login_success": "Sisäänkirjautuminen onnistui!",

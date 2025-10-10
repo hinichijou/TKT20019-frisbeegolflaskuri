@@ -826,10 +826,6 @@ def show_hole(round_id, player_id, hole_num):
     if player_id not in round_["participators"].keys():
         abort(403)
 
-    # Check if user already has a result for this hole
-    result = m_results.find_result(round_id, player_id, hole_num)
-    result = result[1] if result else round_["hole_data"][str(hole_num)]["par"] if str(hole_num) in round_["hole_data"] else constants.hole_par_default
-
     if request.method == "POST":
         check_csrf(request.form)
         if "result" in request.form:
@@ -844,7 +840,7 @@ def show_hole(round_id, player_id, hole_num):
                 abort(403)
 
             # Check if user already has a result for the posted hole
-            prev_result = m_results.find_result(round_id, player_id, result_hole)
+            prev_result = m_results.find_hole_result(round_id, player_id, result_hole)
 
             if prev_result:
                 # Check that there is a difference in the new posted result
@@ -857,7 +853,22 @@ def show_hole(round_id, player_id, hole_num):
             if result_hole == round_["num_holes"]:
                 return redirect(f"/round/{round_['round_id']}")
 
-    return render_template("show_hole.html", round=round_, player=player, hole_num=hole_num, result=result)
+    # Check if user already has a result for this hole
+    hole_result = m_results.find_hole_result(round_id, player_id, hole_num)
+    display_result = (
+        hole_result[1]
+        if hole_result
+        else round_["hole_data"][str(hole_num)]["par"]
+        if str(hole_num) in round_["hole_data"]
+        else constants.hole_par_default
+    )
+
+    # Fetch round results for all users to be able to display them
+    round_results = m_results.find_round_results(round_id)
+
+    return render_template(
+        "show_hole.html", round=round_, player=player, hole_num=hole_num, round_results=round_results, display_result=display_result
+    )
 
 
 @app.route("/register")

@@ -87,3 +87,34 @@ a.button:active {
   box-shadow: inset -2px -2px 3px rgb(255 255 255 / 0.6),
     inset 2px 2px 3px rgb(0 0 0 / 0.6);
 }
+
+table {
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  display: block;
+  overflow: auto;
+  width: 100%;
+}
+
+thead {
+  background-color: rgb(228 240 245);
+}
+
+th,
+td {
+  border: 1px solid rgb(160 160 160);
+  padding: 8px 10px;
+  min-width: 1em;
+}
+
+td {
+  text-align: center;
+}
+
+tbody > tr:nth-of-type(even) {
+  background-color: rgb(237 238 242);
+}
+
+tbody > tr:nth-of-type(odd) {
+  background-color: rgb(255, 255, 255);
+}

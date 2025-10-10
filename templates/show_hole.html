@@ -9,37 +9,42 @@
     {# The usability is anyways bad without javascript so might as well just use the number type #}
     {# {{ components.user_input("text", "result", {"value":result, "readonly":"", "class":"result", "inputmode":"numeric", "pattern":"[0-9]*"}) }}<br/> #}
     {{ components.number_input("result", constants.hole_par_min, constants.hole_par_max, {"required":"", "value":display_result, "class":"result"}) }}<br/>
-    <p>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Pelaaja</th>
-            {% for i in range(1, 1 + round.num_holes|int) %}
-              <th scope="col">{{ i|string }}</th>
-            {% endfor %}
-            <th scope="col">Yhteensä</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for id, name in round["participators"].items() %}
-            <tr>
-              <th scope="row">{{ name }}</th>
-              {% for i in range(1, 1 + round.num_holes|int) %}
-                {% set hole_result = round_results[id][i]["result"] if i in round_results[id] else "-" %}
-                <td>{{ hole_result }}</td>
-              {% endfor %}
-              {% set total_result = round_results[id]["total"] if "total" in round_results[id] else "-" %}
-              <td>{{ total_result }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </p>
     {% set button_text = get_localization("to_next_hole_button") if hole_num < round.num_holes else get_localization("end_round_button")  %}
     <p><button class="style" type="submit" name="next_button" id="next_button">{{ button_text }}</button></p>
     {{ components.hidden_input("result_hole", hole_num) }}
     {{ components.csrf_token_input() }}
   </form>
+  <h2>Tilanne</h2>
+  <p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Väylä</th>
+          {% for id, name in round["participators"].items() %}
+            <th scope="col">{{ name }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in range(1, 1 + round.num_holes|int) %}
+          <tr>
+            <th scope="row">{{ i|string }}</th>
+            {% for id in round["participators"].keys() %}
+              {% set hole_result = round_results[id][i]["result"] if i in round_results[id] else "-" %}
+              <td>{{ hole_result }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+        <tr>
+          <th scope="row">Yhteensä</th>
+          {% for id in round["participators"].keys() %}
+            {% set total_result = round_results[id]["total"] if "total" in round_results[id] else "-" %}
+            <td>{{ total_result }}</td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+  </p>
   <p>
     {{ components.round_link(round.id, get_localization("return_to_round_page_button")) }}
   </p>

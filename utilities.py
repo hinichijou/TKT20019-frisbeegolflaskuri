@@ -1,5 +1,7 @@
 import datetime
 
+from enums import ResultCategory
+
 
 class Singleton:
     def __new__(cls):
@@ -30,3 +32,28 @@ def get_page_limit_and_offset(page, page_size):
     limit = page_size
     offset = page_size * (page - 1)
     return limit, offset
+
+
+def get_type_for_result(result, par):
+    if result <= par - 2:
+        return ResultCategory.EAGLE
+    if result == par - 1:
+        return ResultCategory.BIRDIE
+    if result == par:
+        return ResultCategory.PAR
+    if result == par + 1:
+        return ResultCategory.BOGEY
+    if result >= par + 2:
+        return ResultCategory.DOUBLEBOGEY
+
+    return ResultCategory.DEFAULT
+
+
+def get_round_over_under_string(results, hole_data):
+    result = 0
+    for key in hole_data.keys():
+        intkey = int(key)
+        if intkey in results:
+            result += results[intkey]["result"] - int(hole_data[key]["par"])
+
+    return str(result) if result <= 0 else "+" + str(result)

@@ -251,6 +251,10 @@
   {{ link_with_text("/round/{}".format(round_id) , text) }}
 {%- endmacro %}
 
+{% macro hole_link(round_id, player_id, hole_num, text) -%}
+  {{ link_with_text("/hole/{}/{}/{}".format(round_id, player_id, hole_num) , text) }}
+{%- endmacro %}
+
 {% macro return_to_course_view_link(course_id) -%}
   {{ course_link(course_id, get_localization("return_to_course_page_button") ) }}
 {%- endmacro %}

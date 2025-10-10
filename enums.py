@@ -24,6 +24,16 @@ class RespType(Enum):
     DEFAULT = 1
     DICT = 2
 
+
 class QueryType(Enum):
     ONE = 1
     ALL = 2
+
+
+class ResultCategory(StrEnum):
+    DEFAULT = auto()
+    EAGLE = auto()
+    BIRDIE = auto()
+    PAR = auto()
+    BOGEY = auto()
+    DOUBLEBOGEY = auto()

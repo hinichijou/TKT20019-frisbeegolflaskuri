@@ -112,6 +112,26 @@ td {
   text-align: center;
 }
 
+td.eagle {
+  background-color: rgb(0, 33, 160);
+  color: rgb(162, 181, 255);
+}
+
+td.birdie {
+  background-color: rgb(7, 160, 0);
+  color: rgb(162, 255, 182);
+}
+
+td.bogey {
+  background-color: rgb(160, 67, 0);
+  color: rgb(255, 212, 162);
+}
+
+td.doublebogey {
+  background-color: rgb(160, 0, 0);
+  color: rgb(255, 162, 162);
+}
+
 tbody > tr:nth-of-type(even) {
   background-color: rgb(237 238 242);
 }
@@ -120,7 +140,7 @@ tbody > tr:nth-of-type(odd) {
   background-color: rgb(255, 255, 255);
 }
 
-tbody > tr:last-of-type {
+tbody > tr:nth-last-of-type(2) {
   border-top: 3px solid rgb(160 160 160);
 }
 

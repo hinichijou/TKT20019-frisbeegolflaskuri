@@ -10,7 +10,12 @@
     {# {{ components.user_input("text", "result", {"value":result, "readonly":"", "class":"result", "inputmode":"numeric", "pattern":"[0-9]*"}) }}<br/> #}
     {{ components.number_input("result", constants.hole_par_min, constants.hole_par_max, {"required":"", "value":display_result, "class":"result"}) }}<br/>
     {% set button_text = get_localization("to_next_hole_button") if hole_num < round.num_holes else get_localization("end_round_button")  %}
-    <p><button class="style" type="submit" name="next_button" id="next_button">{{ button_text }}</button></p>
+    <p>
+      {% if hole_num > 1 %}
+        <button class="style" formaction="{{ url_for('show_hole', round_id=round.id, player_id=player.id, hole_num=hole_num-1) }}" type="submit" name="previous_button" id="previous_button">{{ get_localization("to_previous_hole_button") }}</button>
+      {% endif %}
+      <button class="style" type="submit" name="next_button" id="next_button">{{ button_text }}</button>
+    </p>
     {{ components.hidden_input("result_hole", hole_num) }}
     {{ components.csrf_token_input() }}
   </form>
@@ -19,9 +24,9 @@
     <table>
       <thead>
         <tr>
-          <th scope="col">Väylä</th>
+          <th scope="col">{{ get_localization("hole").capitalize() }}</th>
           {% for id, name in round["participators"].items() %}
-            <th scope="col">{{ name }}</th>
+            <th scope="col">{{ components.hole_link(round.id, id, hole_num, name) }}</th>
           {% endfor %}
         </tr>
       </thead>
@@ -31,15 +36,24 @@
             <th scope="row">{{ i|string }}</th>
             {% for id in round["participators"].keys() %}
               {% set hole_result = round_results[id][i]["result"] if i in round_results[id] else "-" %}
-              <td>{{ hole_result }}</td>
+              {% set result_class = "" if hole_result == "-" else utilities.get_type_for_result(hole_result, round.hole_data[i|string]["par"]|int) %}
+              <td class="{{ result_class }}">{{ hole_result }}</td>
             {% endfor %}
           </tr>
         {% endfor %}
         <tr>
-          <th scope="row">Yhteensä</th>
+          <th scope="row">{{ get_localization("total_header") }}</th>
           {% for id in round["participators"].keys() %}
             {% set total_result = round_results[id]["total"] if "total" in round_results[id] else "-" %}
             <td>{{ total_result }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <th scope="row">{{ get_localization("over_under_header") }}</th>
+          {% for id in round["participators"].keys() %}
+            {% set total_result = round_results[id]["total"] if "total" in round_results[id] else "-" %}
+            {% set par = utilities.get_round_over_under_string(round_results[id], round.hole_data) %}
+            <td>{{ par }}</td>
           {% endfor %}
         </tr>
       </tbody>

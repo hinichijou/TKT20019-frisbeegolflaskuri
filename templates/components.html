@@ -413,12 +413,12 @@
         <th scope="col">{{ get_localization("hole_length").capitalize() }}</th>
       </thead>
       <tbody>
-        {% for i in range(1, 1 + round.num_holes|int) %}
+        {% for i in range(1, 1 + num_holes|int) %}
           <tr>
             <th scope="row">
               {{ i|string }}
-              <td>{{ round.hole_data[i|string]["par"] }}</td>
-              <td>{{ round.hole_data[i|string]["length"] }}</td>
+              <td>{{ hole_data[i|string]["par"] }}</td>
+              <td>{{ hole_data[i|string]["length"] }}</td>
             </th>
           </tr>
         {% endfor %}

@@ -16,16 +16,5 @@
       {% endfor %}
     {% endif %}
   </p>
-  <h3>{{ get_localization("course_information_header") }}</h3>
-  <p>{{ get_localization("course_holes_header") }} {{ course.num_holes }}</p>
-  {% for i in range(1, 1 + course.num_holes|int) %}
-    <p>
-      {{ get_localization("hole_header").format(i) }}
-      <br />
-      {{ get_localization("par_header") }} {{ course.hole_data[i|string]["par"] }}
-      <br />
-      {{ get_localization("hole_length_header") }} {{ course.hole_data[i|string]["length"] }}
-      <br />
-    </p>
-  {% endfor %}
+  {{ components.course_hole_information(course.num_holes, course.hole_data) }}
 {% endblock content %}

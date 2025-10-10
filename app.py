@@ -603,7 +603,10 @@ def show_round(round_id):
 
     round_ = round_id_input_handling(round_id)
 
-    return render_template("show_round.html", round=round_)
+    # Fetch round results for all users to be able to display them
+    round_results = m_results.find_round_results(round_id)
+
+    return render_template("show_round.html", round=round_, round_results=round_results)
 
 
 @app.route("/edit_round/<int:round_id>")
@@ -867,7 +870,12 @@ def show_hole(round_id, player_id, hole_num):
     round_results = m_results.find_round_results(round_id)
 
     return render_template(
-        "show_hole.html", round=round_, player=player, hole_num=hole_num, round_results=round_results, display_result=display_result
+        "show_hole.html",
+        round=round_,
+        player=player,
+        hole_num=hole_num,
+        round_results=round_results,
+        display_result=display_result,
     )
 
 

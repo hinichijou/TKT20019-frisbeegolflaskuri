@@ -1,7 +1,15 @@
 {# jinja kwargs have to be accessed at least once in any macro that should accept them. Means they are basically useless for this usecase. #}
 
-{% macro link_with_text(link, text) -%}
-  <a href="{{ link }}">{{ text }}</a>
+{% macro link_with_text(link, text, arg_dict) -%}
+  <a href="{{ link }}"
+    {% if arg_dict %}
+      {% for k, v in arg_dict.items() %}
+        {{ k }}="{{ v }}"
+      {% endfor %}
+    {% endif %}
+  >
+    {{ text }}
+  </a>
 {%- endmacro %}
 
 {% macro user_input(type, name, arg_dict) -%}
@@ -204,11 +212,11 @@
 {%- endmacro %}
 
 {% macro edit_round_link(round_id) -%}
-  {{ link_with_text("/edit_round/{}".format(round_id) , get_localization("modify_button")) }}
+  {{ link_with_text("/edit_round/{}".format(round_id), get_localization("modify_button")) }}
 {%- endmacro %}
 
 {% macro delete_round_link(round_id) -%}
-  {{ link_with_text("/delete_round/{}".format(round_id) , get_localization("delete_button")) }}
+  {{ link_with_text("/delete_round/{}".format(round_id), get_localization("delete_button")) }}
 {%- endmacro %}
 
 {% macro new_course_link() -%}
@@ -240,19 +248,19 @@
 {%- endmacro %}
 
 {% macro user_link(user_id, username) -%}
-  {{ link_with_text("/user/{}".format(user_id) , username) }}
+  {{ link_with_text("/user/{}".format(user_id), username) }}
 {%- endmacro %}
 
 {% macro course_link(course_id, text) -%}
-  {{ link_with_text("/course/{}".format(course_id) , text) }}
+  {{ link_with_text("/course/{}".format(course_id), text) }}
 {%- endmacro %}
 
 {% macro round_link(round_id, text) -%}
-  {{ link_with_text("/round/{}".format(round_id) , text) }}
+  {{ link_with_text("/round/{}".format(round_id), text) }}
 {%- endmacro %}
 
 {% macro hole_link(round_id, player_id, hole_num, text) -%}
-  {{ link_with_text("/hole/{}/{}/{}".format(round_id, player_id, hole_num) , text) }}
+  {{ link_with_text("/hole/{}/{}/{}".format(round_id, player_id, hole_num), text, {"class":"nounderline_inherit_color"}) }}
 {%- endmacro %}
 
 {% macro return_to_course_view_link(course_id) -%}
@@ -340,5 +348,81 @@
     {{ page_navigation_back(link_back) }}
     {{ page_navigation_page_count(page, page_count) }}
     {{ page_navigation_forward(link_forward) }}
+  </p>
+{%- endmacro %}
+
+{% macro round_score_board(round, round_results, navigatable_results) -%}
+  <p>
+    <table>
+      <thead class="results">
+        <tr>
+          <th scope="col">{{ get_localization("hole").capitalize() }}</th>
+          {% for id, name in round["participators"].items() %}
+            <th scope="col">
+              {{ user_link(id, name) }}
+            </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody class="results">
+        {% for i in range(1, 1 + round.num_holes|int) %}
+          <tr>
+            <th scope="row">
+              {{ i|string }}
+            </th>
+            {% for id in round["participators"].keys() %}
+              {% set hole_result = round_results[id][i]["result"] if i in round_results[id] else "-" %}
+              {% set result_class = "" if hole_result == "-" else utilities.get_type_for_result(hole_result, round.hole_data[i|string]["par"]|int) %}
+              <td class="{{ result_class }}">
+                {% if navigatable_results %}
+                  {{ hole_link(round.id, id, i, hole_result) }}
+                {% else %}
+                  {{ hole_result }}
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+        <tr>
+          <th scope="row">{{ get_localization("total_header") }}</th>
+          {% for id in round["participators"].keys() %}
+            {% set total_result = round_results[id]["total"] if "total" in round_results[id] else "-" %}
+            <td>{{ total_result }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <th scope="row">{{ get_localization("over_under_header") }}</th>
+          {% for id in round["participators"].keys() %}
+            {% set total_result = round_results[id]["total"] if "total" in round_results[id] else "-" %}
+            {% set par = utilities.get_round_over_under_string(round_results[id], round.hole_data) %}
+            <td>{{ par }}</td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+  </p>
+{%- endmacro %}
+
+{% macro course_hole_information(num_holes, hole_data) -%}
+  <h3>{{ get_localization("course_information_header") }}</h3>
+  <p>
+    <table>
+      <thead>
+        <th scope="col">{{ get_localization("hole").capitalize() }}</th>
+        <th scope="col">{{ get_localization("par").capitalize() }}</th>
+        <th scope="col">{{ get_localization("hole_length").capitalize() }}</th>
+      </thead>
+      <tbody>
+        {% for i in range(1, 1 + round.num_holes|int) %}
+          <tr>
+            <th scope="row">
+              {{ i|string }}
+              <td>{{ round.hole_data[i|string]["par"] }}</td>
+              <td>{{ round.hole_data[i|string]["length"] }}</td>
+            </th>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </p>
 {%- endmacro %}

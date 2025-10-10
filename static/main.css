@@ -34,8 +34,13 @@ body {
   padding: 0.2em 0.5em;
 }
 
-a.nounderline {
+a.nounderline,
+a.nounderline_inherit_color {
   text-decoration: none;
+}
+
+a.nounderline_inherit_color {
+  color: inherit;
 }
 
 .hidden {
@@ -140,14 +145,14 @@ tbody > tr:nth-of-type(odd) {
   background-color: rgb(255, 255, 255);
 }
 
-tbody > tr:nth-last-of-type(2) {
+tbody.results > tr:nth-last-of-type(2) {
   border-top: 3px solid rgb(160 160 160);
 }
 
-tbody > tr > th {
+tbody.results > tr > th {
   border-right: 3px solid rgb(160 160 160);
 }
 
-thead > tr > th:first-of-type {
+thead.results > tr > th:first-of-type {
   border-right: 3px solid rgb(160 160 160);
 }

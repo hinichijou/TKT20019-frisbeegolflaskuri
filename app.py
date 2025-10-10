@@ -828,7 +828,7 @@ def show_hole(round_id, player_id, hole_num):
 
     # Check if user already has a result for this hole
     result = m_results.find_result(round_id, player_id, hole_num)
-    result = constants.hole_par_default if not result else result[1]
+    result = result[1] if result else round_["hole_data"][str(hole_num)]["par"] if str(hole_num) in round_["hole_data"] else constants.hole_par_default
 
     if request.method == "POST":
         check_csrf(request.form)

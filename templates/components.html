@@ -448,3 +448,23 @@
     </table>
   </p>
 {%- endmacro %}
+
+{% macro round_participations(participators) -%}
+  <h3>{{ get_localization("sign_ups_header") }}</h3>
+  <p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{{ get_localization("players_table_header") }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for k, v in participators.items() %}
+          <tr>
+            <td>{{ user_link(k, v) }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </p>
+{%- endmacro %}

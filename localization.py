@@ -39,6 +39,7 @@ localizations_fin = {
     "course_information_header": "Väylien tiedot",
     "round_information_header": "Kierroksen tiedot",
     "sign_ups_header": "Kierrokselle ilmoittautuneet pelaajat",
+    "players_table_header": "Pelaajat",
     "user_amount_rounds_created": "Käyttäjällä on {} luotua kierrosta",
     "rounds_created_by_user_header": "Käyttäjän lisäämät kierrokset:",
     "user_amount_rounds_participating": "Käyttäjä on ilmoittautunut {} kierrokselle",

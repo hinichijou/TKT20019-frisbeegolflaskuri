@@ -21,10 +21,7 @@
   {% if participating %}
     <a href="{{ url_for('show_hole', round_id=round.id, player_id=session.user_id, hole_num=1) }}" class="button_neutral">{{ get_localization("start_round_button") }}</a>
   {% endif %}
-  <h3>{{ get_localization("sign_ups_header") }}</h3>
-  <p>
-    {% for k, v in round.participators.items() %}<li>{{ components.user_link(k, v) }}</li>{% endfor %}
-  </p>
+  {{ components.round_participations(round.participators) }}
   {% if not participating and round.participators.keys()|length < round.num_players %}
     <form action="{{ url_for('round_sign_up') }}" method="post">
       <button class="positive" type="submit" name="participate_button" id="participate_button">{{ get_localization("round_sign_up_button") }}</button>

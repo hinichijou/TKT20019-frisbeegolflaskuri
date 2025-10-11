@@ -6,6 +6,13 @@
   {% if session.user_id %}
     <h2>{{ get_localization("all_rounds_header") }}</h2>
     {% for round in rounds %}{{ components.round_list_item(round) }}{% endfor %}
+  {% else %}
+    <h3>
+      {{ get_localization("welcome_message_1") }}
+      {{ components.link_with_text("/register", get_localization("welcome_message_register_link")) }}
+       {{ get_localization("welcome_message_2") }}
+      {{ components.link_with_text("/login", get_localization("welcome_message_login_link")) }}
+    </h3>
   {% endif %}
 {% endblock content %}
 {% block page_navigation %}

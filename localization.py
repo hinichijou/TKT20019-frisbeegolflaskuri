@@ -111,6 +111,10 @@ localizations_fin = {
     "username_taken": "VIRHE: tunnus on jo varattu",
     "user_does_not_exist": "VIRHE: käyttäjää ei ole olemassa",
     "wrong_username_or_password": "VIRHE: väärä tunnus tai salasana",
+    "welcome_message_1": "Tervetuloa frisbeegolflaskuriin. Aloita",
+    "welcome_message_2": "ja",
+    "welcome_message_register_link": "luomalla uusi tunnus",
+    "welcome_message_login_link": "kirjautumalla sisään",
     "create_round_course_does_not_exist": """VIRHE: Rataa ei löytynyt tietokannasta. Uutta kierrosta ei luotu.
         Varmista että rata on tietokannassa ja yritä uudelleen.""",
 }

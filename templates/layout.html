@@ -10,22 +10,31 @@
   </head>
   <body>
     <h1>{{ get_localization("main_header") }}</h1>
+    {% set a_args = {"class":"nounderline_inherit_color"}  %}
     {% if session.user_id %}
       <p>{{ get_localization("logged_in") }} {{ components.user_link(session.user_id, session.username) }}</p>
-      <p>
-        {{ components.return_to_index_link() }} |
-        {{ components.new_course_link() }} |
-        {{ components.show_courses_link() }} |
-        {{ components.new_round_link() }} |
-        {{ components.find_round_link() }} |
-        {{ components.logout_link() }}
-      </p>
+      <nav>
+        <div>
+          <ul class="nav">
+            <li class="nav" id="nav_index">{{ components.return_to_index_link(a_args) }}</li>
+            <li class="nav" id="nav_new_course">{{ components.new_course_link(a_args) }}</li>
+            <li class="nav" id="nav_show_courses">{{ components.show_courses_link(a_args) }}</li>
+            <li class="nav" id="nav_new_round">{{ components.new_round_link(a_args) }}</li>
+            <li class="nav" id="nav_find_round">{{ components.find_round_link(a_args) }}</li>
+            <li class="nav" id="nav_logout">{{ components.logout_link(a_args) }}</li>
+          </ul>
+        </div>
+      </nav>
     {% else %}
-      <p>
-        {{ components.return_to_index_link() }} |
-        {{ components.login_link() }} |
-        {{ components.register_link() }}
-      </p>
+      <nav>
+        <div>
+          <ul class="nav">
+            <li class="nav" id="nav_index">{{ components.return_to_index_link(a_args) }}</li>
+            <li class="nav" id="nav_login">{{ components.login_link(a_args) }}</li>
+            <li class="nav" id="nav_register">{{ components.register_link(a_args) }}</li>
+          </ul>
+        </div>
+      </nav>
     {% endif %}
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}

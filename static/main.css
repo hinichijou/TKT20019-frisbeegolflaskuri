@@ -109,12 +109,19 @@ thead {
 th,
 td {
   border: 1px solid rgb(160 160 160);
-  padding: 8px 10px;
-  min-width: 5em;
+  height: 2.5em;
+  width: 6em;
 }
 
 td {
   text-align: center;
+}
+
+td > a {
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 td.eagle {
@@ -155,4 +162,40 @@ tbody.results > tr > th {
 
 thead.results > tr > th:first-of-type {
   border-right: 3px solid rgb(160 160 160);
+}
+
+ul.nav {
+  list-style-type: none;
+  list-style-position: inside;
+  margin: 0;
+  padding: 0;
+  max-width: 50em;
+  background-color: rgb(49, 49, 49);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+li.nav {
+  padding: 0px;
+  width: 100%;
+  height: 3em;
+  background-color: rgb(3 33 43);
+  color: white;
+  text-align: center;
+}
+
+li.nav:nth-of-type(-n + 5) {
+  margin-right: 0.1em;
+}
+
+li.nav:hover {
+  background-color: rgb(7, 86, 112);
+}
+
+li.nav > a {
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }

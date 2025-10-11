@@ -207,8 +207,8 @@
   {{ inert_select("course_difficulty_header", "difficulty_select", selection) }}
 {%- endmacro %}
 
-{% macro return_to_index_link() -%}
-  {{ link_with_text("/", get_localization("return_to_index_button") ) }}
+{% macro return_to_index_link(arg_dict) -%}
+  {{ link_with_text("/", get_localization("return_to_index_button"), arg_dict ) }}
 {%- endmacro %}
 
 {% macro edit_round_link(round_id) -%}
@@ -219,32 +219,32 @@
   {{ link_with_text("/delete_round/{}".format(round_id), get_localization("delete_button")) }}
 {%- endmacro %}
 
-{% macro new_course_link() -%}
-  {{ link_with_text("/new_course", get_localization("create_course_button") ) }}
+{% macro new_course_link(arg_dict) -%}
+  {{ link_with_text("/new_course", get_localization("create_course_button"), arg_dict ) }}
 {%- endmacro %}
 
-{% macro show_courses_link() -%}
-  {{ link_with_text("/show_courses", get_localization("browse_courses_button") ) }}
+{% macro show_courses_link(arg_dict) -%}
+  {{ link_with_text("/show_courses", get_localization("browse_courses_button"), arg_dict ) }}
 {%- endmacro %}
 
-{% macro new_round_link() -%}
-  {{ link_with_text("/new_round", get_localization("create_round_button") ) }}
+{% macro new_round_link(arg_dict) -%}
+  {{ link_with_text("/new_round", get_localization("create_round_button"), arg_dict ) }}
 {%- endmacro %}
 
-{% macro find_round_link() -%}
-  {{ link_with_text("/find_round", get_localization("find_round_button") ) }}
+{% macro find_round_link(arg_dict) -%}
+  {{ link_with_text("/find_round", get_localization("find_round_button"), arg_dict ) }}
 {%- endmacro %}
 
-{% macro login_link() -%}
-  {{ link_with_text("/login", get_localization("log_in_button") ) }}
+{% macro login_link(arg_dict) -%}
+  {{ link_with_text("/login", get_localization("log_in_button"), arg_dict ) }}
 {%- endmacro %}
 
-{% macro logout_link() -%}
-  {{ link_with_text("/logout", get_localization("log_out_button") ) }}
+{% macro logout_link(arg_dict) -%}
+  {{ link_with_text("/logout", get_localization("log_out_button"), arg_dict ) }}
 {%- endmacro %}
 
-{% macro register_link() -%}
-  {{ link_with_text("/register", get_localization("register_button") ) }}
+{% macro register_link(arg_dict) -%}
+  {{ link_with_text("/register", get_localization("register_button"), arg_dict ) }}
 {%- endmacro %}
 
 {% macro user_link(user_id, username) -%}

@@ -6,7 +6,7 @@
   {% if session.user_id %}
     <h2>{{ get_localization("find_round_header") }}</h2>
     <form action="{{ url_for('find_round') }}" method="get">
-      <p>{{ components.find_course_select(courses, course_query) }}</p>
+      <p>{{ components.find_course_datalist(courses, course_query) }}</p>
       <p>{{ components.start_date_input(start_time, "date", False, headerkey = "find_by_date_header") }}</p>
       {{ components.submit_button_with_localized_text("submit_search_button") }}
     </form>

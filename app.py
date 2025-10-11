@@ -571,7 +571,7 @@ def find_round(page=1):
         course_query = ""
     else:
         # Search course name only if something is set
-        searchparams.append((FindRoundParam.COURSENAME, course_query))
+        searchparams.append((FindRoundParam.COURSENAME, course_query + "%"))
 
     if not start_time:
         start_time = ""  # datetime.date.today().isoformat() would set to today

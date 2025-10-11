@@ -103,7 +103,7 @@ def get_sql_for_param(param):
         case FindRoundParam.DATE:
             return "start_time LIKE ?"
         case FindRoundParam.COURSENAME:
-            return "coursename = ?"
+            return "coursename LIKE ?"
         case FindRoundParam.CREATORID:
             return "creator_id = ?"
         case FindRoundParam.ROUNDID:

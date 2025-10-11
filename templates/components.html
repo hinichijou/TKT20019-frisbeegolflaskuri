@@ -182,6 +182,23 @@
   </select>
 {%- endmacro %}
 
+{% macro find_course_datalist(courses, query) -%}
+  {{ get_localization("find_by_course_name_header") }}
+  <br />
+  <input list="courses"
+    value="{{ query }}"
+    id="course_select"
+    name="course_select"
+    minlength="{{ constants.coursename_minlength }}"
+    maxlength="{{ constants.coursename_maxlength }}"
+  />
+  <datalist id="courses">
+    {% for course in courses %}
+      <option value="{{ course.coursename }}">{{ course.coursename }}</option>
+    {% endfor %}
+  </datalist>
+{%- endmacro %}
+
 {% macro select_from_option_tuple(name, headerkey, defaultoption, selection, required) -%}
   {% set options = [(defaultoption[0], get_localization(defaultoption[1]))] %}
   {% for s in selection %}

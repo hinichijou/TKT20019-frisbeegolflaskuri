@@ -223,24 +223,32 @@ ul.nav {
   justify-content: space-between;
 }
 
-li.nav {
+li.nav,
+li.nav_selected {
   padding: 0px;
   width: 100%;
   height: 3em;
-  background-color: rgb(3 33 43);
   color: white;
   text-align: center;
 }
 
-li.nav:nth-of-type(-n + 5) {
+li.nav:nth-of-type(-n + 5),
+li.nav_selected:nth-of-type(-n + 5) {
   margin-right: 0.1em;
 }
 
-li.nav:hover {
+li.nav {
+  background-color: rgb(3 33 43);
+}
+
+li.nav:hover,
+li.nav_selected,
+li.nav_selected:hover {
   background-color: rgb(7, 86, 112);
 }
 
-li.nav > a {
+li.nav > a,
+li.nav_selected > a {
   height: 100%;
   display: flex;
   justify-content: space-evenly;

@@ -16,12 +16,12 @@
       <nav>
         <div>
           <ul class="nav">
-            <li class="nav" id="nav_index">{{ components.return_to_index_link(a_args) }}</li>
-            <li class="nav" id="nav_new_course">{{ components.new_course_link(a_args) }}</li>
-            <li class="nav" id="nav_show_courses">{{ components.show_courses_link(a_args) }}</li>
-            <li class="nav" id="nav_new_round">{{ components.new_round_link(a_args) }}</li>
-            <li class="nav" id="nav_find_round">{{ components.find_round_link(a_args) }}</li>
-            <li class="nav" id="nav_logout">{{ components.logout_link(a_args) }}</li>
+            {{ components.nav_bar_item("nav_index", "index", url_for("index"), "return_to_index_button", a_args) }}
+            {{ components.nav_bar_item("nav_new_course", "new_course", url_for("new_course"), "create_course_button", a_args) }}
+            {{ components.nav_bar_item("nav_show_courses", "show_courses", url_for("show_courses"), "browse_courses_button", a_args) }}
+            {{ components.nav_bar_item("nav_new_round", "new_round", url_for("new_round"), "create_round_button", a_args) }}
+            {{ components.nav_bar_item("nav_find_round", "find_round", url_for("find_round"), "find_round_button", a_args) }}
+            {{ components.nav_bar_item("nav_logout", "logout", url_for("logout"), "log_out_button", a_args) }}
           </ul>
         </div>
       </nav>
@@ -29,9 +29,9 @@
       <nav>
         <div>
           <ul class="nav">
-            <li class="nav" id="nav_index">{{ components.return_to_index_link(a_args) }}</li>
-            <li class="nav" id="nav_login">{{ components.login_link(a_args) }}</li>
-            <li class="nav" id="nav_register">{{ components.register_link(a_args) }}</li>
+            {{ components.nav_bar_item("nav_index", "index", url_for("index"), "return_to_index_button", a_args) }}
+            {{ components.nav_bar_item("nav_login", "login", url_for("login"), "log_in_button", a_args) }}
+            {{ components.nav_bar_item("nav_register", "register", url_for("register"), "register_button", a_args) }}
           </ul>
         </div>
       </nav>

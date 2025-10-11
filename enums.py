@@ -13,6 +13,17 @@ class FlashCategory(StrEnum):
     WARNING = auto()
 
 
+class NavPageCategory(StrEnum):
+    DEFAULT = auto()
+    INDEX = auto()
+    NEW_COURSE = auto()
+    SHOW_COURSES = auto()
+    NEW_ROUND = auto()
+    FIND_ROUND = auto()
+    REGISTER = auto()
+    LOGIN = auto()
+
+
 class FindRoundParam(Enum):
     DATE = 1
     COURSENAME = 2

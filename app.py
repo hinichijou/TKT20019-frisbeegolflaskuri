@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 import config
 from constants import constants
-from enums import SelectionItemClass, FindRoundParam, FlashCategory
+from enums import SelectionItemClass, FindRoundParam, FlashCategory, NavPageCategory
 from localizationkeys import LocalizationKeys
 from localization import get_localization
 import utilities
@@ -26,7 +26,12 @@ app.secret_key = config.secret_key
 
 @app.context_processor
 def utility_processor():
-    return {"get_localization": get_localization, "constants": constants, "utilities": utilities}
+    return {
+        "get_localization": get_localization,
+        "constants": constants,
+        "utilities": utilities,
+        "cur_page": g.cur_nav_page,
+    }
 
 
 @app.before_request
@@ -39,6 +44,10 @@ def after_request(response):
     elapsed_time = round(time.time() - g.start_time, 2)
     print("elapsed time:", elapsed_time, "s")
     return response
+
+
+def set_nav_page_to_context(p):
+    g.cur_nav_page = p
 
 
 def show_message_and_redirect(key, category, route):
@@ -239,6 +248,8 @@ def index(page=1):
     input_tests = [lambda: test_page(page)]
     test_inputs(input_tests)
 
+    set_nav_page_to_context(NavPageCategory.INDEX)
+
     # Don't query rounds if user not logged in since they are only visible for logged in viewers.
     # Would make more sense to have separate pages before and after login
     if "user_id" in session:
@@ -260,6 +271,8 @@ def index(page=1):
 @app.route("/new_course")
 def new_course():
     require_login()
+
+    set_nav_page_to_context(NavPageCategory.NEW_COURSE)
 
     selections = m_selection_classes.get_selection_items(
         [SelectionItemClass.COURSE_DIFFICULTY, SelectionItemClass.COURSE_TYPE]
@@ -370,6 +383,8 @@ def show_courses(page=1):
     input_tests = [lambda: test_page(page)]
     test_inputs(input_tests)
 
+    set_nav_page_to_context(NavPageCategory.SHOW_COURSES)
+
     page_size, page_count = get_page_size_and_count(m_courses.courses_count())
     courses = m_courses.get_courses(page, page_size)
     if not courses:
@@ -382,6 +397,8 @@ def show_courses(page=1):
 def show_course(course_id):
     require_login()
     test_inputs([lambda: test_course_id(course_id)])
+
+    set_nav_page_to_context(NavPageCategory.DEFAULT)
 
     course = m_courses.get_course_data(course_id)
 
@@ -398,6 +415,8 @@ def edit_course(course_id):
     course = m_courses.get_course_data(course_id)
 
     abort_if_null(course, 404)
+
+    set_nav_page_to_context(NavPageCategory.DEFAULT)
 
     selections = m_selection_classes.get_selection_items(
         [SelectionItemClass.COURSE_DIFFICULTY, SelectionItemClass.COURSE_TYPE]
@@ -466,6 +485,8 @@ def update_course():
 @app.route("/new_round")
 def new_round():
     require_login()
+
+    set_nav_page_to_context(NavPageCategory.NEW_ROUND)
 
     courses = m_courses.get_courses(1, m_courses.courses_count())
     if not courses:
@@ -540,6 +561,8 @@ def find_round(page=1):
 
     test_inputs(input_tests)
 
+    set_nav_page_to_context(NavPageCategory.FIND_ROUND)
+
     arginput = course_query is not None or start_time is not None
 
     searchparams = []
@@ -603,6 +626,8 @@ def show_round(round_id):
 
     round_ = round_id_input_handling(round_id)
 
+    set_nav_page_to_context(NavPageCategory.DEFAULT)
+
     # Fetch round results for all users to be able to display them
     round_results = m_results.find_round_results(round_id)
 
@@ -618,6 +643,8 @@ def edit_round(round_id):
 
     abort_if_null(round_, 404)
     abort_if_id_not_sid(round_["creator_id"])
+
+    set_nav_page_to_context(NavPageCategory.DEFAULT)
 
     courses = m_courses.get_courses(1, m_courses.courses_count())
     if not courses:
@@ -757,6 +784,8 @@ def show_user(user_id, r_page=1, p_page=1):
 
     abort_if_null(user, 404)
 
+    set_nav_page_to_context(NavPageCategory.DEFAULT)
+
     # The queries below could be combined to a single query but this is good enough for the time being
     searchparams = [(FindRoundParam.CREATORID, user_id)]
     r_count = m_rounds.round_count(searchparams)
@@ -829,6 +858,8 @@ def show_hole(round_id, player_id, hole_num):
     if player_id not in round_["participators"].keys():
         abort(403)
 
+    set_nav_page_to_context(NavPageCategory.DEFAULT)
+
     if request.method == "POST":
         check_csrf(request.form)
         if "result" in request.form:
@@ -881,6 +912,7 @@ def show_hole(round_id, player_id, hole_num):
 
 @app.route("/register")
 def register():
+    set_nav_page_to_context(NavPageCategory.REGISTER)
     return render_template("register.html")
 
 
@@ -916,6 +948,7 @@ def create():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
+        set_nav_page_to_context(NavPageCategory.LOGIN)
         return render_template("login.html")
     if request.method == "POST":
         test_inputs(

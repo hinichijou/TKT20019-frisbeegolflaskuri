@@ -351,6 +351,14 @@
   </p>
 {%- endmacro %}
 
+{% macro nav_bar_item(id, nav_page_id, link, localizationkey, arg_dict) -%}
+  {% if cur_page == nav_page_id %}
+    <li class="nav_selected" id="{{ id }}">{{ link_with_text(link, get_localization(localizationkey), arg_dict) }}</li>
+  {% else %}
+    <li class="nav" id="{{ id }}">{{ link_with_text(link, get_localization(localizationkey), arg_dict) }}</li>
+  {% endif %}
+{%- endmacro %}
+
 {% macro round_score_board(round, round_results, navigatable_results) -%}
   <p>
     <table>

@@ -273,7 +273,7 @@
 
 {% macro course_list_item(course) -%}
   <div class="course_item">
-    <a href="{{ '/course/{}'.format(course.id) }}" class="nounderline">
+    <a href="{{ '/course/{}'.format(course.id) }}" class="nounderline_inherit_color">
       {{ course["coursename"] }}
       <br />
       {{ get_localization("course_item_num_holes") }} {{ course.num_holes }}
@@ -303,7 +303,7 @@
 
 {% macro round_list_item(round) -%}
   <div class="round_item">
-    <a href="{{ '/round/{}'.format(round.id) }}" class="nounderline">
+    <a href="{{ '/round/{}'.format(round.id) }}" class="nounderline_inherit_color">
       {{ round_start_with_header(round.start_time) }}
       <br />
       {{ round_course_with_header(round.coursename) }}

@@ -3,11 +3,20 @@
   {{ get_localization("user_page_header") }}
 {% endblock title %}
 {% block content %}
+  {% set created_rounds_available = rounds and rounds|length > 0 %}
+  {% set participating_rounds_available = participating_rounds and participating_rounds|length > 0 %}
   <h2>{{ user.username }}</h2>
-  <p>{{ get_localization("username_header") }} {{ user.username }}</p>
-  <p>{{ get_localization("user_id_header") }} {{ user.id }}</p>
-  {% if rounds|length > 0 %}
-    <p>{{ get_localization("user_amount_rounds_created").format(r_count) }}</p>
+  <div class="user_info">
+    {{ get_localization("username_header") }} {{ user.username }}<br />
+    {{ get_localization("user_id_header") }} {{ user.id }}<br />
+    {% if created_rounds_available %}
+      {{ get_localization("user_amount_rounds_created").format(r_count) }}<br />
+    {% endif %}
+    {% if participating_rounds_available %}
+      {{ get_localization("user_amount_rounds_participating").format(p_count) }}<br />
+    {% endif %}
+  </div>
+  {% if created_rounds_available %}
     <h3>{{ get_localization("rounds_created_by_user_header") }}</h3>
     {% for round in rounds %}{{ components.round_list_item(round) }}{% endfor %}
     {% if r_page_count and r_page_count > 1 %}
@@ -20,8 +29,7 @@
       }}
     {% endif %}
   {% endif %}
-  {% if participating_rounds|length > 0 %}
-    <p>{{ get_localization("user_amount_rounds_participating").format(p_count) }}</p>
+  {% if participating_rounds_available %}
     <h3>{{ get_localization("rounds_user_participating_header") }}</h3>
     {% for round in participating_rounds %}{{ components.round_list_item(round) }}{% endfor %}
     {% if p_page_count and p_page_count > 1 %}

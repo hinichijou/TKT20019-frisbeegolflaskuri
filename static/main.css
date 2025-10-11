@@ -54,8 +54,10 @@ input.result {
   border-radius: 10px;
 }
 
-a.button,
-button.style {
+a.button_positive,
+a.button_neutral,
+a.button_negative,
+button {
   border: 0;
   line-height: 2.5;
   font-size: 1rem;
@@ -73,24 +75,52 @@ button.style {
     inset -2px -2px 3px rgb(0 0 0 / 0.6);
 }
 
-a.button {
+button {
+  padding: 0px 20px;
+}
+
+a.button_positive,
+a.button_neutral,
+a.button_negative {
   padding: 10px 20px;
-  background-color: rgb(23, 65, 202);
   text-decoration: none;
 }
 
-button.style {
-  padding: 0px 20px;
+a.button_positive:active,
+a.button_neutral:active,
+a.button_negative:active {
+  box-shadow: inset -2px -2px 3px rgb(255 255 255 / 0.6),
+    inset 2px 2px 3px rgb(0 0 0 / 0.6);
+}
+
+a.button_neutral,
+button.neutral {
   background-color: rgb(23, 65, 202);
 }
 
-a.button:hover {
+a.button_neutral:hover,
+button.neutral:hover {
   background-color: rgb(0, 65, 255);
 }
 
-a.button:active {
-  box-shadow: inset -2px -2px 3px rgb(255 255 255 / 0.6),
-    inset 2px 2px 3px rgb(0 0 0 / 0.6);
+a.button_negative,
+button.negative {
+  background-color: red;
+}
+
+a.button_negative:hover,
+button.negative:hover {
+  background-color: tomato;
+}
+
+a.button_positive,
+button.positive {
+  background-color: rgb(38, 202, 23);
+}
+
+a.button_positive:hover,
+button.positive:hover {
+  background-color: rgb(86, 253, 122);
 }
 
 table {

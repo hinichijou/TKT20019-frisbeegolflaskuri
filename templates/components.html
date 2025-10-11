@@ -408,20 +408,42 @@
   <p>
     <table>
       <thead>
-        <th scope="col">{{ get_localization("hole").capitalize() }}</th>
-        <th scope="col">{{ get_localization("par").capitalize() }}</th>
-        <th scope="col">{{ get_localization("hole_length").capitalize() }}</th>
+        <tr>
+          <th scope="col">{{ get_localization("hole").capitalize() }}</th>
+          <th scope="col">{{ get_localization("par").capitalize() }}</th>
+          <th scope="col">{{ get_localization("hole_length").capitalize() }}</th>
+        </tr>
       </thead>
       <tbody>
         {% for i in range(1, 1 + num_holes|int) %}
           <tr>
-            <th scope="row">
-              {{ i|string }}
-              <td>{{ hole_data[i|string]["par"] }}</td>
-              <td>{{ hole_data[i|string]["length"] }}</td>
-            </th>
+            <th scope="row">{{ i|string }}</th>
+            <td>{{ hole_data[i|string]["par"] }}</td>
+            <td>{{ hole_data[i|string]["length"] }}</td>
           </tr>
         {% endfor %}
+      </tbody>
+    </table>
+  </p>
+{%- endmacro %}
+
+{% macro course_classifications(classifications) -%}
+  <h3>{{ get_localization("course_classifications_header") }}</h3>
+  <p>
+    <table>
+      <thead>
+        <tr>
+          {% for k in classifications.keys() %}
+            <th scope="col">{{ get_localization(k) }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          {% for v in classifications.values() %}
+              <td>{{ get_localization(v[1]) }}</td>
+          {% endfor %}
+        </tr>
       </tbody>
     </table>
   </p>

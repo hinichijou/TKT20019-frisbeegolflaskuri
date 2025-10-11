@@ -35,6 +35,7 @@ localizations_fin = {
     "modify_num_holes_header": "Muokkaa väylien lukumäärää",
     "modify_holes_header": "Muokkaa väylien tietoja",
     "courses_header": "Radat",
+    "course_classifications_header": "Radan luokitukset",
     "course_information_header": "Väylien tiedot",
     "round_information_header": "Kierroksen tiedot",
     "sign_ups_header": "Kierrokselle ilmoittautuneet pelaajat",

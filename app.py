@@ -750,6 +750,20 @@ def show_round(round_id):
     return render_template("show_round.html", round=round_, round_results=round_results)
 
 
+@app.route("/round_result/<int:round_id>")
+def show_round_result(round_id):
+    require_login()
+
+    round_ = round_id_input_handling(round_id)
+
+    set_nav_page_to_context(NavPageCategory.DEFAULT)
+
+    # Fetch round results for all users to be able to display them
+    round_results = m_results.find_round_results(round_id)
+
+    return render_template("round_result.html", round=round_, round_results=round_results)
+
+
 @app.route("/edit_round/<int:round_id>")
 def edit_round(round_id):
     require_login()
@@ -1001,7 +1015,7 @@ def show_hole(round_id, player_id, hole_num):
 
             # The end of the course results flow
             if result_hole == round_["num_holes"]:
-                return redirect(f"/round/{round_['round_id']}")
+                return redirect(f"/round_result/{round_['round_id']}")
 
     # Check if user already has a result for this hole
     hole_result = m_results.find_hole_result(round_id, player_id, hole_num)

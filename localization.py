@@ -99,6 +99,8 @@ localizations_fin = {
     "round_sign_up_button": "Ilmoittaudu kierrokselle",
     "round_unparticipate_button": "Peru ilmoittautuminen",
     "start_round_button": "Aloita kierros",
+    "to_results_button": "Tulokset",
+    "end_round_button": "Lopeta kierros",
     "return_button": "Palaa takaisin",
     "return_to_index_button": "Etusivu",
     "return_to_courses_button": "Palaa ratalistaukseen",

@@ -11,7 +11,7 @@
     {# The usability is anyways bad without javascript so might as well just use the number type #}
     {# {{ components.user_input("text", "result", {"value":result, "readonly":"", "class":"result", "inputmode":"numeric", "pattern":"[0-9]*"}) }}<br/> #}
     {{ components.number_input("result", constants.hole_par_min, constants.hole_par_max, {"required":"", "value":display_result, "class":"result"}) }}<br/>
-    {% set button_text = get_localization("to_next_hole_button") if hole_num < round.num_holes else get_localization("end_round_button")  %}
+    {% set button_text = get_localization("to_next_hole_button") if hole_num < round.num_holes else get_localization("to_results_button")  %}
     <p>
       {% if hole_num > 1 %}
         <button class="neutral" formaction="{{ url_for('show_hole', round_id=round.id, player_id=player.id, hole_num=hole_num-1) }}" type="submit" name="previous_button" id="previous_button">{{ get_localization("to_previous_hole_button") }}</button>

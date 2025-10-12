@@ -32,7 +32,7 @@ localizations_fin = {
     "find_round_instruction": "Haku tyhjillä arvoilla palauttaa kaikki kierrokset. Radan nimikenttä ehdottaa tietokannasta löytyviä ratoja kenttään kirjoitetun tekstin pohjalta.",
     "find_by_course_name_header": "Etsi radan nimellä:",
     "find_by_date_header": "Etsi päivämäärällä:",
-    "find_by_user_header": "Etsi käyttäjän nimellä:",
+    "find_by_user_header": "Etsi kierroksen lisääjän nimellä:",
     "find_by_num_holes_header": "Etsi väylien lukumäärällä:",
     "find_by_course_type_header": "Etsi radan tyypillä:",
     "find_by_course_difficulty_header": "Etsi radan vaikeudella:",

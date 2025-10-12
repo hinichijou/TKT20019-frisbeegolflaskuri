@@ -6,7 +6,7 @@
   <h2>{{ get_localization("modify_num_holes_header") }}</h2>
   <form action="{{ url_for('edit_round_holes') }}" method="post">
     <p>{{ components.inert_text_input("course_name_header", "coursename", round.coursename) }}</p>
-    <p>{{ components.course_holes_input(round.num_holes) }}</p>
+    <p>{{ components.course_holes_input(arg_dict={"required": "True", "value": round.num_holes}) }}</p>
     {{ components.submit_button_with_localized_text("next_button") }}
     <p>{{ components.return_to_round_view_link(round.id) }}</p>
     {{ components.hidden_input("id", round.id) }}

@@ -1,5 +1,6 @@
 import json
 import db
+from enums import FindCourseParam
 from utilities import use_default_if_list_none, get_page_limit_and_offset
 
 default_format_options = {"hole_data": True}
@@ -50,11 +51,110 @@ def get_courses(page, page_size):
     return db.fetch_all_from_db(sql, [limit, offset], resp_type=db.RespType.DICT)
 
 
-def courses_count():
-    sql = "SELECT COUNT(id) FROM courses"
+def get_sql_for_param(param):
+    match param:
+        case FindCourseParam.COURSENAME:
+            return "coursename LIKE ?"
+        case FindCourseParam.NUM_HOLES:
+            return "num_holes = ?"
+        case FindCourseParam.TYPE:
+            return "course_selections.item_id=?"
+        case FindCourseParam.DIFFICULTY:
+            return "course_selections.item_id=?"
+        case _:
+            return ""
 
-    result = db.fetch_one_from_db(sql)
-    return result[0]
+
+def create_where_condition(params):
+    where = ""
+
+    for i, p in enumerate(params):
+        if i == 0:
+            where += "WHERE " + get_sql_for_param(p) + " "
+        else:
+            where += "AND " + get_sql_for_param(p) + " "
+
+    return where
+
+# Params None returns count of all courses
+def courses_count(searchparams=None):
+    params = None
+
+    if searchparams:
+        types, params = zip(*searchparams)
+
+        has_classifications = FindCourseParam.TYPE in types or FindCourseParam.DIFFICULTY in types
+        if has_classifications:
+            if FindCourseParam.TYPE in types and FindCourseParam.DIFFICULTY in types:
+                sql = ("WITH selections AS ("
+                "SELECT course_id "
+                "FROM course_selections "
+                "WHERE item_id = ? "
+                "INTERSECT "
+                "SELECT course_id "
+                "FROM course_selections "
+                "WHERE item_id = ?) "
+                "SELECT COUNT(courses.id) "
+                "FROM courses "
+                "INNER JOIN selections ON selections.course_id=courses.id")
+                types = [t for t in types if t != FindCourseParam.TYPE and t != FindCourseParam.DIFFICULTY]
+            else:
+                sql = ("SELECT COUNT(courses.id) "
+                "FROM courses "
+                "LEFT JOIN course_selections ON course_selections.course_id=courses.id")
+        else:
+            sql = "SELECT COUNT(courses.id) FROM courses"
+
+        where = create_where_condition(types).rstrip()
+
+        print(sql)
+        print(where)
+
+        if where:
+            sql += f" {where}"
+    else:
+        sql = "SELECT COUNT(courses.id) FROM courses"
+
+    result = db.fetch_one_from_db(sql, params)
+    return result[0] if result else 0
+
+
+def find_courses(searchparams, page, page_size):
+    types, params = zip(*searchparams)
+    params = params + get_page_limit_and_offset(page, page_size)
+
+    has_classifications = FindCourseParam.TYPE in types or FindCourseParam.DIFFICULTY in types
+    if has_classifications:
+        if FindCourseParam.TYPE in types and FindCourseParam.DIFFICULTY in types:
+            sql = ("WITH selections AS ("
+            "SELECT course_id "
+            "FROM course_selections "
+            "WHERE item_id = ? "
+            "INTERSECT "
+            "SELECT course_id "
+            "FROM course_selections "
+            "WHERE item_id = ?) "
+            "SELECT courses.id, coursename, num_holes "
+            "FROM courses "
+            "INNER JOIN selections ON selections.course_id=courses.id")
+            types = [t for t in types if t != FindCourseParam.TYPE and t != FindCourseParam.DIFFICULTY]
+            where = create_where_condition(types).rstrip()
+            sql +=  " " + where + " LIMIT ? OFFSET ?"
+        else:
+            where = create_where_condition(types).rstrip()
+            sql = (
+                "SELECT courses.id, coursename, num_holes "
+                "FROM courses "
+                "LEFT JOIN course_selections ON course_selections.course_id=courses.id " + where + " GROUP BY courses.id "
+                "LIMIT ? OFFSET ?"
+            )
+    else:
+        where = create_where_condition(types).rstrip()
+        sql = "SELECT courses.id, coursename, num_holes FROM courses " + where + " LIMIT ? OFFSET ?"
+
+    print(sql)
+
+    return db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)
 
 
 def get_course_data(course_id, format_options=None):

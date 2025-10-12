@@ -5,9 +5,11 @@
 {% block content %}
   {% if session.user_id %}
     <h2>{{ get_localization("find_round_header") }}</h2>
+    <small>{{ get_localization("find_course_instruction") }}</small>
     <form action="{{ url_for('find_round') }}" method="get">
       <p>{{ components.find_course_datalist(courses, course_query) }}</p>
       <p>{{ components.start_date_input(start_time, "date", False, headerkey = "find_by_date_header") }}</p>
+      <p>{{ components.account_name_input("find_by_user_header", {"value": user_query}) }}</p>
       {{ components.submit_button_with_localized_text("submit_search_button") }}
     </form>
     {% if arginput %}
@@ -24,7 +26,8 @@
     {{ components.formaction_button("<<", url_for("find_round", page=page - 1)) }}
     {{ get_localization("page_navigation_page") }} {{ page }}/{{ page_count }}
     {{ components.formaction_button(">>", url_for("find_round", page=page + 1)) }}
-    {{ components.hidden_input("course_select", course_query) }}
+    {{ components.hidden_input("coursename", course_query) }}
     {{ components.hidden_input("start_time", start_time) }}
+    {{ components.hidden_input("username", user_query) }}
   </form>
 {% endblock page_navigation %}

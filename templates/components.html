@@ -79,8 +79,8 @@
   {{ user_input_with_header(headerkey, type, name, arg_dict) }}
 {%- endmacro %}
 
-{% macro account_name_input() -%}
-  {{ text_input("account_name_header", "text", "username", constants.username_minlength, constants.username_maxlength, {"required":""}) }}
+{% macro account_name_input(headerkey="account_name_header", arg_dict={"required":""}) -%}
+  {{ text_input(headerkey, "text", "username", constants.username_minlength, constants.username_maxlength, arg_dict) }}
 {%- endmacro %}
 
 {% macro course_name_input(value = "") -%}
@@ -107,8 +107,12 @@
   {{ length_input(index, constants.hole_length_default) }}
 {%- endmacro %}
 
-{% macro course_holes_input(value = constants.course_holes_default) -%}
-  {{ number_input_with_header("course_holes_header", "num_holes", constants.course_holes_min, constants.course_holes_max, {"required":"", "value":value}) }}
+{% macro course_holes_input(headerkey="course_holes_header", arg_dict={"required":"True", "value":constants.course_holes_default}) -%}
+  {{ number_input_with_header(headerkey, "num_holes", constants.course_holes_min, constants.course_holes_max, arg_dict) }}
+{%- endmacro %}
+
+{% macro course_holes_input_no_forced_value(headerkey="course_holes_header", arg_dict=None) -%}
+  {{ user_input_with_header(headerkey, "number", "num_holes", arg_dict) }}
 {%- endmacro %}
 
 {% macro base_password_input(headerkey, name) -%}
@@ -187,8 +191,8 @@
   <br />
   <input list="courses"
     value="{{ query }}"
-    id="course_select"
-    name="course_select"
+    id="coursename"
+    name="coursename"
     minlength="{{ constants.coursename_minlength }}"
     maxlength="{{ constants.coursename_maxlength }}"
   />
@@ -212,8 +216,31 @@
   {{ select_from_option_tuple("type_select", "course_type_header", defaultvalue, ctypes, required) }}
 {%- endmacro %}
 
+{% macro find_course_by_selection(selection, query, name, headerkey, defaultkey) -%}
+  {{ get_localization(headerkey) }}
+  <br />
+  <select name="{{ name }}">
+    <option value="">{{ get_localization(defaultkey) }}</option>
+    {% for s in selection %}
+      {% if query == (s[0]|string) %}
+        <option selected value="{{ s[0] }}, {{ s[1] }}">{{ get_localization(s[1]) }}</option>
+      {% else %}
+        <option value="{{ s[0] }}, {{ s[1] }}">{{ get_localization(s[1]) }}</option>
+      {% endif %}
+    {% endfor %}
+  </select>
+{%- endmacro %}
+
+{% macro find_by_course_type(selection, query) -%}
+  {{ find_course_by_selection(selection, query, "type_select", "find_by_course_type_header", "course_type_default") }}
+{%- endmacro %}
+
 {% macro course_difficulty_select(cds, required, defaultvalue=("","course_diff_default")) -%}
   {{ select_from_option_tuple("difficulty_select", "course_difficulty_header", defaultvalue, cds, required) }}
+{%- endmacro %}
+
+{% macro find_by_course_difficulty(selection, query) -%}
+  {{ find_course_by_selection(selection, query, "difficulty_select", "find_by_course_difficulty_header", "course_diff_default") }}
 {%- endmacro %}
 
 {% macro course_type_inert_select(selection) -%}

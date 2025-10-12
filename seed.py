@@ -6,11 +6,12 @@ from constants import constants
 
 db = sqlite3.connect(constants.mass_test_db_name)
 
+db.execute("DELETE FROM participations")
+db.execute("DELETE FROM course_selections")
+db.execute("DELETE FROM results")
+db.execute("DELETE FROM rounds")
 db.execute("DELETE FROM users")
 db.execute("DELETE FROM courses")
-db.execute("DELETE FROM rounds")
-db.execute("DELETE FROM participations")
-db.execute("DELETE FROM results")
 
 user_count = 1000
 course_count = 10**5  # To put in scale Finland has somewhat over 1000 disc golf courses
@@ -36,6 +37,8 @@ for i in range(1, course_count + 1):
         "INSERT INTO courses (coursename, num_holes, hole_data) VALUES (?, ?, ?)",
         ["course" + str(i), num_holes, json.dumps(holes_dict)],
     )
+
+    #TODO: Add selections for courses
 
 for _ in range(1, rounds_count + 1):
     creator_id = random.randint(1, user_count)
@@ -63,6 +66,17 @@ for _ in range(1, rounds_count + 1):
     round_participations = random.randint(0, num_players - constants.round_min_players)
     round_id = result.lastrowid
 
+    # Add result for round creator
+    for i in range(1, num_holes + 1):
+        hole_result = random.randint(constants.hole_par_min, constants.hole_par_max)
+
+        db.execute(
+            """INSERT INTO results (round_id, player_id, hole, result)
+                    VALUES (?, ?, ?, ?)""",
+            [round_id, creator_id, i, hole_result],
+        )
+
+    # Add round participations
     for _ in range(0, round_participations):
         participator_id = random.randint(1, user_count)
 
@@ -75,6 +89,7 @@ for _ in range(1, rounds_count + 1):
             [round_id, participator_id],
         )
 
+        # Add result for participator
         for i in range(1, num_holes + 1):
             hole_result = random.randint(constants.hole_par_min, constants.hole_par_max)
 

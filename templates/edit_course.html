@@ -6,7 +6,7 @@
   <h2>{{ get_localization("modify_course_header") }}</h2>
   <form action="{{ url_for('edit_course_holes') }}" method="post">
     <p>{{ components.course_name_input(course.coursename) }}</p>
-    <p>{{ components.course_holes_input(course.num_holes) }}</p>
+    <p>{{ components.course_holes_input(arg_dict={"required": "True", "value": course.num_holes}) }}</p>
     <p>
       {% set course_diff_value = "{},{}".format(*course["items"]["course_difficulty"])
               if "items" in course and "course_difficulty" in course["items"]

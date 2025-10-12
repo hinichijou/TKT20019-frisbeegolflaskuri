@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 import config
 from constants import constants
-from enums import SelectionItemClass, FindRoundParam, FlashCategory, NavPageCategory
+from enums import FindCourseParam, SelectionItemClass, FindRoundParam, FlashCategory, NavPageCategory
 from localizationkeys import LocalizationKeys
 from localization import get_localization
 import utilities
@@ -26,11 +26,17 @@ app.secret_key = config.secret_key
 
 @app.context_processor
 def utility_processor():
+    cur_nav_page = ""
+    try:
+        cur_nav_page = g.cur_nav_page
+    except AttributeError:
+        g.cur_nav_page = ""
+
     return {
         "get_localization": get_localization,
         "constants": constants,
         "utilities": utilities,
-        "cur_page": g.cur_nav_page,
+        "cur_page": cur_nav_page,
     }
 
 
@@ -544,6 +550,105 @@ def delete_round(round_id):
         return redirect("/round/" + str(round_id))
 
 
+@app.route("/find_course")
+@app.route("/find_course/<int:page>")
+def find_course(page=1):
+    require_login()
+
+    input_tests = [lambda: test_page(page)]
+
+    course_query = request.args.get("coursename")
+    if course_query and course_query != "":
+        input_tests.append(lambda: test_coursename(course_query))
+
+    num_holes = request.args.get("num_holes")
+    if num_holes and num_holes != "":
+        input_tests.append(lambda: test_num_holes(num_holes))
+
+    type_query = request.args.get("type_select")
+    if type_query and type_query != "":
+        input_tests.append(lambda: test_item_id(type_query, False))
+
+    difficulty_query = request.args.get("difficulty_select")
+    if difficulty_query and difficulty_query != "":
+        input_tests.append(lambda: test_item_id(difficulty_query, False))
+
+    print("find_course1")
+
+    test_inputs(input_tests)
+
+    print("find_course2")
+
+    set_nav_page_to_context(NavPageCategory.FIND_COURSE)
+
+    arginput = (
+        course_query is not None or num_holes is not None or type_query is not None or difficulty_query is not None
+    )
+
+    searchparams = []
+
+    if not type_query:
+        type_query = ""
+    else:
+        type_query = type_query.split(",")[0]
+        searchparams.append((FindCourseParam.TYPE, type_query))
+
+    if not difficulty_query:
+        difficulty_query = ""
+    else:
+        difficulty_query = difficulty_query.split(",")[0]
+        searchparams.append((FindCourseParam.DIFFICULTY, difficulty_query))
+
+    if not course_query:
+        course_query = ""
+    else:
+        # Search course name only if something is set
+        searchparams.append((FindCourseParam.COURSENAME, course_query + "%"))
+
+    if not num_holes:
+        num_holes = ""
+    else:
+        searchparams.append((FindCourseParam.NUM_HOLES, num_holes))
+
+    # With default parameters returns all rounds if they are sent in the query
+    if len(searchparams) > 0:
+        page_size, page_count = get_page_size_and_count(m_courses.courses_count(searchparams))
+        results = m_courses.find_courses(searchparams, page, page_size)
+    elif arginput:
+        page_size, page_count = get_page_size_and_count(m_courses.courses_count())
+        results = m_courses.get_courses(page, page_size)
+    else:
+        page_count = 1
+        results = []
+
+    courses = m_courses.get_courses(1, m_courses.courses_count())
+    if not courses:
+        courses = []
+
+    selections = m_selection_classes.get_selection_items(
+        [SelectionItemClass.COURSE_DIFFICULTY, SelectionItemClass.COURSE_TYPE]
+    )
+
+    return render_page_if_in_page_limits(
+        page,
+        page_count,
+        "/find_course/",
+        lambda: render_template(
+            "find_course.html",
+            page=page,
+            page_count=page_count,
+            courses=courses,
+            selections=selections,
+            course_query=course_query,
+            num_holes_query=num_holes,
+            difficulty_query=difficulty_query,
+            type_query=type_query,
+            results=results,
+            arginput=arginput,
+        ),
+    )
+
+
 @app.route("/find_round")
 @app.route("/find_round/<int:page>")
 def find_round(page=1):
@@ -551,7 +656,7 @@ def find_round(page=1):
 
     input_tests = [lambda: test_page(page)]
 
-    course_query = request.args.get("course_select")
+    course_query = request.args.get("coursename")
     if course_query and course_query != "":
         input_tests.append(lambda: test_coursename(course_query))
 
@@ -559,11 +664,15 @@ def find_round(page=1):
     if start_time and start_time != "":
         input_tests.append(lambda: test_start_time(start_time))
 
+    user_query = request.args.get("username")
+    if user_query and user_query != "":
+        input_tests.append(lambda: test_username(user_query))
+
     test_inputs(input_tests)
 
     set_nav_page_to_context(NavPageCategory.FIND_ROUND)
 
-    arginput = course_query is not None or start_time is not None
+    arginput = course_query is not None or start_time is not None or user_query is not None
 
     searchparams = []
 
@@ -578,6 +687,12 @@ def find_round(page=1):
     else:
         # Search date only if something is set
         searchparams.append((FindRoundParam.DATE, start_time + "%"))
+
+    if not user_query:
+        user_query = ""
+    else:
+        # Search user name only if something is set
+        searchparams.append((FindRoundParam.CREATORNAME, user_query + "%"))
 
     # With default parameters returns all rounds if they are sent in the query
     if len(searchparams) > 0:
@@ -605,6 +720,7 @@ def find_round(page=1):
             courses=courses,
             course_query=course_query,
             start_time=start_time,
+            user_query=user_query,
             results=results,
             arginput=arginput,
         ),

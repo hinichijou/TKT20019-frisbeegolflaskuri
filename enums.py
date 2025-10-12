@@ -22,6 +22,7 @@ class NavPageCategory(StrEnum):
     FIND_ROUND = auto()
     REGISTER = auto()
     LOGIN = auto()
+    FIND_COURSE = auto()
 
 
 class FindRoundParam(Enum):
@@ -29,6 +30,14 @@ class FindRoundParam(Enum):
     COURSENAME = 2
     CREATORID = 3
     ROUNDID = 4
+    CREATORNAME = 5
+
+
+class FindCourseParam(Enum):
+    COURSENAME = 1
+    NUM_HOLES = 2
+    DIFFICULTY = 3
+    TYPE = 4
 
 
 class RespType(Enum):

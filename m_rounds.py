@@ -108,6 +108,8 @@ def get_sql_for_param(param):
             return "creator_id = ?"
         case FindRoundParam.ROUNDID:
             return "rounds.id = ?"
+        case FindRoundParam.CREATORNAME:
+            return "username LIKE ?"
         case _:
             return ""
 
@@ -152,18 +154,18 @@ def get_user_id_for_round(round_id):
 # Params None returns count of all rounds
 def round_count(searchparams=None):
     params = None
-    where = None
+    sql = "SELECT COUNT(rounds.id) FROM rounds"
 
     if searchparams:
         types, params = zip(*searchparams)
+        if FindRoundParam.CREATORNAME in types:
+            sql += " JOIN users ON users.id=rounds.creator_id"
         where = create_where_condition(types).rstrip()
-
-    sql = "SELECT COUNT(id) FROM rounds"
-    if where:
-        sql += f" {where}"
+        if where:
+            sql += f" {where}"
 
     result = db.fetch_one_from_db(sql, params)
-    return result[0]
+    return result[0] if result else 0
 
 
 # Format options is a bad choice in retrospect, better to have the data always in consistent

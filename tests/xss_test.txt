@@ -1,7 +1,0 @@
-There should be two levels of protection against this.
-1. All user input should be confirmed to contain only allowed characters
-2. Jinja templates should by default escape all user input values unless we specifically mark them safe.
-
-<script>alert("HAX");</script>
-
-Test the above input in all forms that allow user input.

@@ -14,7 +14,15 @@
     {% set button_text = get_localization("to_next_hole_button") if hole_num < round.num_holes else get_localization("to_results_button")  %}
     <p>
       {% if hole_num > 1 %}
-        <button class="neutral" formaction="{{ url_for('show_hole', round_id=round.id, player_id=player.id, hole_num=hole_num-1) }}" type="submit" name="previous_button" id="previous_button">{{ get_localization("to_previous_hole_button") }}</button>
+        <button
+          class="neutral"
+          formaction="{{ url_for('show_hole', round_id=round.id, player_id=player.id, hole_num=hole_num-1) }}"
+          type="submit"
+          name="previous_button"
+          id="previous_button"
+        >
+          {{ get_localization("to_previous_hole_button") }}
+        </button>
       {% endif %}
       <button class="neutral" type="submit" name="next_button" id="next_button">{{ button_text }}</button>
     </p>

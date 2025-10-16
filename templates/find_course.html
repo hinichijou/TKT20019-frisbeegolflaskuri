@@ -8,7 +8,13 @@
     <small>{{ get_localization("find_course_instruction") }}</small>
     <form action="{{ url_for('find_course') }}" method="get">
       <p>{{ components.find_course_datalist(courses, course_query) }}</p>
-      <p>{{ components.course_holes_input_no_forced_value("find_by_num_holes_header", {"value": num_holes_query, "min":constants.course_holes_min,"max":constants.course_holes_max}) }}</p>
+      <p>
+        {{
+          components.course_holes_input_no_forced_value("find_by_num_holes_header",
+            {"value": num_holes_query, "min":constants.course_holes_min,"max":constants.course_holes_max}
+          )
+        }}
+      </p>
       <p>{{ components.find_by_course_difficulty(selections.course_difficulty, difficulty_query) }}</p>
       <p>{{ components.find_by_course_type(selections.course_type, type_query) }}</p>
       {{ components.submit_button_with_localized_text("submit_search_button") }}

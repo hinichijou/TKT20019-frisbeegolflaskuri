@@ -6,8 +6,12 @@
   <h2>{{ round.coursename }}</h2>
   {% if session.user_id == round.creator_id %}
     <p>
-      <a href="{{ url_for('edit_round', round_id=round.id) }}" class="button_neutral">{{ get_localization("modify_button") }}</a>
-      <a href="{{ url_for('delete_round', round_id=round.id) }}" class="button_negative">{{ get_localization("delete_button") }}</a>
+      <a href="{{ url_for('edit_round', round_id=round.id) }}" class="button_neutral">
+        {{ get_localization("modify_button") }}
+      </a>
+      <a href="{{ url_for('delete_round', round_id=round.id) }}" class="button_negative">
+        {{ get_localization("delete_button") }}
+      </a>
     </p>
   {% endif %}
   <div class="round_info">
@@ -17,18 +21,24 @@
   </div>
   {% set participating = session.user_id in round.participators.keys() %}
   {% if participating %}
-    <a href="{{ url_for('show_hole', round_id=round.id, player_id=session.user_id, hole_num=1) }}" class="button_neutral">{{ get_localization("start_round_button") }}</a>
+    <a href="{{ url_for('show_hole', round_id=round.id, player_id=session.user_id, hole_num=1) }}" class="button_neutral">
+      {{ get_localization("start_round_button") }}
+    </a>
   {% endif %}
   {{ components.round_participations(round.participators) }}
   {% if not participating and round.participators.keys()|length < round.num_players %}
     <form action="{{ url_for('round_sign_up') }}" method="post">
-      <button class="positive" type="submit" name="participate_button" id="participate_button">{{ get_localization("round_sign_up_button") }}</button>
+      <button class="positive" type="submit" name="participate_button" id="participate_button">
+        {{ get_localization("round_sign_up_button") }}
+      </button>
       {{ components.hidden_input("round_id", round.id) }}
       {{ components.csrf_token_input() }}
     </form>
   {% elif session.user_id != round.creator_id and participating %}
     <form action="{{ url_for('round_unparticipate') }}" method="post">
-      <button class="negative" type="submit" name="unparticipate_button" id="unparticipate_button">{{ get_localization("round_unparticipate_button") }}</button>
+      <button class="negative" type="submit" name="unparticipate_button" id="unparticipate_button">
+        {{ get_localization("round_unparticipate_button") }}
+      </button>
       {{ components.hidden_input("round_id", round.id) }}
       {{ components.csrf_token_input() }}
     </form>

@@ -4,7 +4,7 @@
 
 * Sovellus testattiin `seed.py`:n arvoilla: `user_count = 1000`, `course_count = 10**5` ja `rounds_count = 10**6`.
 
-* Sovellukseen lisättiin sivutus kutsuihin `m_courses.get_courses`, `m_courses.find_courses`, `m_rounds.round_count`, `m_rounds.get_rounds`. Koska ratoja ja kierroksia voi olla sovelluksessa periaatteessa rajaton määrä, oli niitä listaavat kutsut käytännössä pakko sivuttaa ettei sovelluksesta tule käyttökelvotonta sekä UI:n että suorituskyvyn puolesta.
+* Sovellukseen lisättiin sivutus kutsuihin `m_courses.get_courses`, `m_courses.find_courses`, `m_rounds.get_rounds`, `m_rounds.find_rounds` ja `m_rounds.find_participating_rounds`. Koska ratoja ja kierroksia voi olla sovelluksessa periaatteessa rajaton määrä, oli niitä listaavat kutsut käytännössä pakko sivuttaa ettei sovelluksesta tule käyttökelvotonta sekä UI:n että suorituskyvyn puolesta.
 
 ## Suuri datamäärä ilman indeksointia
 

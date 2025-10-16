@@ -158,8 +158,6 @@ def test_password(password):
 
 
 def test_coursename(coursename):
-    print("test_coursename")
-
     return test_minmax_limits(len(coursename), constants.coursename_minlength, constants.coursename_maxlength)
 
 

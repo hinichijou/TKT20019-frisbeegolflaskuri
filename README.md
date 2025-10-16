@@ -74,7 +74,10 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 
 * Sovelluksen muokkaaminen soveltuvaksi suurelle tietomäärälle on vielä kesken, osa näkymistä on sivutettu ja osa tarpeellisista indekseistä luotu, mutta ei välttämättä vielä kaikkia. Sovelluksessa on radoille dropdown valikoita, jotka toimivat todella huonosti erittäin suurilla ratamäärillä, mutta tämä on ongelma jota en välttämättä aio korjata, koska sovelluksessa ei ole tarkoitus olla tuhansia ratoja ja pidän dropdowneista käytettävyyden puolesta.
 
-# (Vapaaehtoinen) pylint:
+# pylint:
+
+* Sovelluksen pylint-raportti löytyy tiedostosta [pylint-report.md](https://github.com/hinichijou/TKT20019-frisbeegolflaskuri/blob/main/pylint-report.md)
+
 * Halutessaan sovelluksen koodin tyyliä voi arvioida [Pylintillä](https://pylint.readthedocs.io/en/stable/index.html).
 
 * Asenna pylint komennolla `pip install pylint`.

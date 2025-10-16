@@ -33,12 +33,19 @@ for i in range(1, course_count + 1):
 
         holes_dict[str(j)] = {"par": par, "length": length}
 
-    db.execute(
+    result = db.execute(
         "INSERT INTO courses (coursename, num_holes, hole_data) VALUES (?, ?, ?)",
         ["course" + str(i), num_holes, json.dumps(holes_dict)],
     )
 
-    #TODO: Add selections for courses
+    course_id = result.lastrowid
+
+    # Add selections for courses
+    difficulty_select = random.randint(1, 3)
+    db.execute("INSERT INTO course_selections (item_id, course_id) VALUES (?, ?)", [difficulty_select, course_id])
+    type_select = random.randint(4, 6)
+    db.execute("INSERT INTO course_selections (item_id, course_id) VALUES (?, ?)", [type_select, course_id])
+
 
 for _ in range(1, rounds_count + 1):
     creator_id = random.randint(1, user_count)

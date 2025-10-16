@@ -75,8 +75,6 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 
 * `seed.py` luo vakioarvoilla n. 2 gigan kokoisen tietokannan, halutessaan muuttujia `user_count`, `course_count` ja `round_count` muokkaamalla saa generoitua pienemmän tietomäärän jos tämä tuntuu liian suurelta.
 
-* Sovelluksen muokkaaminen soveltuvaksi suurelle tietomäärälle on vielä kesken, osa näkymistä on sivutettu ja osa tarpeellisista indekseistä luotu, mutta ei välttämättä vielä kaikkia. Sovelluksessa on radoille dropdown valikoita, jotka toimivat todella huonosti erittäin suurilla ratamäärillä, mutta tämä on ongelma jota en välttämättä aio korjata, koska sovelluksessa ei ole tarkoitus olla tuhansia ratoja ja pidän dropdowneista käytettävyyden puolesta.
-
 # pylint:
 
 * Sovelluksen pylint-raportti löytyy tiedostosta [pylint-report.md](https://github.com/hinichijou/TKT20019-frisbeegolflaskuri/blob/main/pylint-report.md)

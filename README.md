@@ -67,7 +67,10 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 
 * Repositorion `tests` kansiosta löytyy tiedosto `csrf_test.html`, jolla voi testata, että csrf-aukko on paikattu. Kun tiedoston avaa selaimessa ja lomakkeen lähettää, se lähettää routeen `/delete_course/1` requestin, jonka ei kuitenkaan pitäisi mennä läpi, koska requestissa ei ole mukana csrf tokenia. Tällä hetkellä testi on kirjoitettu vain kyseiselle routelle, mutta aukko pitäisi olla samaan tapaan paikattu kaikissa post routeissa, jotka vaativat kirjautumista.
 
-# (Vapaaehtoinen) testaus suurella tietomäärällä:
+# Testaus suurella tietomäärällä:
+
+* Sovelluksen suuren datamäärän testiraportti löytyy tiedostosta [big-data-amount-test-report.md](https://github.com/hinichijou/TKT20019-frisbeegolflaskuri/blob/main/big-data-amount-test-report.md)
+
 * Halutessaan sovellusta voi testata suurella määrällä dataa luomalla uuden tietokannan komennoilla `sqlite3 mass_test.db < schema.sql` `sqlite3 mass_test.db < init.sql` ja `sqlite3 mass_test.db < indices.sql` ja sen jälkeen ajamalla datan generointiskriptin komennolla `python seed.py` ja vaihtamalla `config.py` tiedoston `database_name` muuttujan arvoksi `constants.mass_test_db_name`. Päätin luoda tietokannat eri nimillä, jotta pystyisin helposti vaihtelemaan erilaisia tietokantoja testaamista varten, nimiä voi toki halutessaan myös koodissa suhteellisen helposti muuttaa.
 
 * `seed.py` luo vakioarvoilla n. 2 gigan kokoisen tietokannan, halutessaan muuttujia `user_count`, `course_count` ja `round_count` muokkaamalla saa generoitua pienemmän tietomäärän jos tämä tuntuu liian suurelta.

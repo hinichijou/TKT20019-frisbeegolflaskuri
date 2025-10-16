@@ -172,9 +172,9 @@
     are not good option for this kind of use.
 #}
 {% macro find_course_select(courses, query) -%}
-  {{ get_localization("find_by_course_name_header") }}
+  <label for="course_select">{{ get_localization("find_by_course_name_header") }}</label>
   <br />
-  <select name="course_select">
+  <select name="course_select" id="course_select">
     <option value="">{{ get_localization("course_select_default") }}</option>
     {% for course in courses %}
       {% if query == course.coursename %}
@@ -187,7 +187,7 @@
 {%- endmacro %}
 
 {% macro find_course_datalist(courses, query) -%}
-  {{ get_localization("find_by_course_name_header") }}
+  <label for="coursename">{{ get_localization("find_by_course_name_header") }}</label>
   <br />
   <input list="courses"
     value="{{ query }}"
@@ -217,9 +217,9 @@
 {%- endmacro %}
 
 {% macro find_course_by_selection(selection, query, name, headerkey, defaultkey) -%}
-  {{ get_localization(headerkey) }}
+  <label for="{{ name }}">{{ get_localization(headerkey) }}</label>
   <br />
-  <select name="{{ name }}">
+  <select name="{{ name }}" id="{{ name }}">
     <option value="">{{ get_localization(defaultkey) }}</option>
     {% for s in selection %}
       {% if query == (s[0]|string) %}

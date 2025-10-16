@@ -127,4 +127,4 @@ def do_things():
     return c
 ```
 
-Applikaation routeissa käytännössä tällainen tilanne ei ole kuitenkaan mahdollinen, koska funktion dekoraattorissa on vaatimus, että metodin tulee olla `GET` tai `POST`. Niinpä tässä tapauksessa ei ole riskiä, että funktio ei jossain tilanteessa palauttaisi arvoa. Olen disabloinut ilmoituksen, koska se tulee jatkuvasti applikaation routeista, mutta se on kuitenkin periaatteessa hyödyllinen muissa paikoissa, joten ajan pylintrc:n ajoittain myös ilman virheen disablointia.
+Applikaation routeissa käytännössä tällainen tilanne ei ole kuitenkaan mahdollinen, koska funktion dekoraattorissa on vaatimus, että metodin tulee olla `GET` tai `POST`. Niinpä tässä tapauksessa ei ole riskiä, että funktio ei jossain tilanteessa palauttaisi arvoa. Olen disabloinut ilmoituksen, koska se tulee jatkuvasti applikaation routeista, mutta se on kuitenkin periaatteessa hyödyllinen muissa paikoissa, joten ajan pylintin ajoittain myös ilman virheen disablointia.

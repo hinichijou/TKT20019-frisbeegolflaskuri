@@ -3,7 +3,7 @@ import db
 import m_courses
 import m_results
 from enums import FindRoundParam
-from utilities import use_default_if_list_none, get_page_limit_and_offset
+from utilities import use_default_if_list_none, get_page_limit_and_offset, create_where_condition
 
 default_format_options = {"hole_data": True}
 
@@ -114,22 +114,10 @@ def get_sql_for_param(param):
             return ""
 
 
-def create_where_condition(params):
-    where = ""
-
-    for i, p in enumerate(params):
-        if i == 0:
-            where += "WHERE " + get_sql_for_param(p) + " "
-        else:
-            where += "AND " + get_sql_for_param(p) + " "
-
-    return where
-
-
 def find_rounds(searchparams, page, page_size):
     types, params = zip(*searchparams)
     params = params + get_page_limit_and_offset(page, page_size)
-    where = create_where_condition(types)
+    where = create_where_condition(types, get_sql_for_param)
     sql = (
         "SELECT rounds.id, coursename, username, start_time, num_players, "
         "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating "
@@ -160,7 +148,7 @@ def round_count(searchparams=None):
         types, params = zip(*searchparams)
         if FindRoundParam.CREATORNAME in types:
             sql += " JOIN users ON users.id=rounds.creator_id"
-        where = create_where_condition(types).rstrip()
+        where = create_where_condition(types, get_sql_for_param).rstrip()
         if where:
             sql += f" {where}"
 

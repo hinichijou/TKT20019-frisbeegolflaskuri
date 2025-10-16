@@ -57,3 +57,15 @@ def get_round_over_under_string(results, hole_data):
             result += results[intkey]["result"] - int(hole_data[key]["par"])
 
     return str(result) if result <= 0 else "+" + str(result)
+
+
+def create_where_condition(params, sql_for_param_func):
+    where = ""
+
+    for i, p in enumerate(params):
+        if i == 0:
+            where += "WHERE " + sql_for_param_func(p) + " "
+        else:
+            where += "AND " + sql_for_param_func(p) + " "
+
+    return where

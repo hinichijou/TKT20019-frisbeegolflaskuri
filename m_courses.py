@@ -1,7 +1,7 @@
 import json
 import db
 from enums import FindCourseParam
-from utilities import use_default_if_list_none, get_page_limit_and_offset
+from utilities import use_default_if_list_none, get_page_limit_and_offset, create_where_condition
 
 default_format_options = {"hole_data": True}
 
@@ -65,17 +65,6 @@ def get_sql_for_param(param):
             return ""
 
 
-def create_where_condition(params):
-    where = ""
-
-    for i, p in enumerate(params):
-        if i == 0:
-            where += "WHERE " + get_sql_for_param(p) + " "
-        else:
-            where += "AND " + get_sql_for_param(p) + " "
-
-    return where
-
 # Params None returns count of all courses
 def courses_count(searchparams=None):
     params = None
@@ -86,29 +75,30 @@ def courses_count(searchparams=None):
         has_classifications = FindCourseParam.TYPE in types or FindCourseParam.DIFFICULTY in types
         if has_classifications:
             if FindCourseParam.TYPE in types and FindCourseParam.DIFFICULTY in types:
-                sql = ("WITH selections AS ("
-                "SELECT course_id "
-                "FROM course_selections "
-                "WHERE item_id = ? "
-                "INTERSECT "
-                "SELECT course_id "
-                "FROM course_selections "
-                "WHERE item_id = ?) "
-                "SELECT COUNT(courses.id) "
-                "FROM courses "
-                "INNER JOIN selections ON selections.course_id=courses.id")
-                types = [t for t in types if t != FindCourseParam.TYPE and t != FindCourseParam.DIFFICULTY]
+                sql = (
+                    "WITH selections AS ("
+                    "SELECT course_id "
+                    "FROM course_selections "
+                    "WHERE item_id = ? "
+                    "INTERSECT "
+                    "SELECT course_id "
+                    "FROM course_selections "
+                    "WHERE item_id = ?) "
+                    "SELECT COUNT(courses.id) "
+                    "FROM courses "
+                    "INNER JOIN selections ON selections.course_id=courses.id"
+                )
+                types = [t for t in types if t not in (FindCourseParam.TYPE, FindCourseParam.DIFFICULTY)]
             else:
-                sql = ("SELECT COUNT(courses.id) "
-                "FROM courses "
-                "LEFT JOIN course_selections ON course_selections.course_id=courses.id")
+                sql = (
+                    "SELECT COUNT(courses.id) "
+                    "FROM courses "
+                    "LEFT JOIN course_selections ON course_selections.course_id=courses.id"
+                )
         else:
             sql = "SELECT COUNT(courses.id) FROM courses"
 
-        where = create_where_condition(types).rstrip()
-
-        print(sql)
-        print(where)
+        where = create_where_condition(types, get_sql_for_param).rstrip()
 
         if where:
             sql += f" {where}"
@@ -126,33 +116,35 @@ def find_courses(searchparams, page, page_size):
     has_classifications = FindCourseParam.TYPE in types or FindCourseParam.DIFFICULTY in types
     if has_classifications:
         if FindCourseParam.TYPE in types and FindCourseParam.DIFFICULTY in types:
-            sql = ("WITH selections AS ("
-            "SELECT course_id "
-            "FROM course_selections "
-            "WHERE item_id = ? "
-            "INTERSECT "
-            "SELECT course_id "
-            "FROM course_selections "
-            "WHERE item_id = ?) "
-            "SELECT courses.id, coursename, num_holes "
-            "FROM courses "
-            "INNER JOIN selections ON selections.course_id=courses.id")
-            types = [t for t in types if t != FindCourseParam.TYPE and t != FindCourseParam.DIFFICULTY]
-            where = create_where_condition(types).rstrip()
-            sql +=  " " + where + " LIMIT ? OFFSET ?"
+            sql = (
+                "WITH selections AS ("
+                "SELECT course_id "
+                "FROM course_selections "
+                "WHERE item_id = ? "
+                "INTERSECT "
+                "SELECT course_id "
+                "FROM course_selections "
+                "WHERE item_id = ?) "
+                "SELECT courses.id, coursename, num_holes "
+                "FROM courses "
+                "INNER JOIN selections ON selections.course_id=courses.id"
+            )
+            types = [t for t in types if t not in (FindCourseParam.TYPE, FindCourseParam.DIFFICULTY)]
+            where = create_where_condition(types, get_sql_for_param).rstrip()
+            sql += " " + where + " LIMIT ? OFFSET ?"
         else:
-            where = create_where_condition(types).rstrip()
+            where = create_where_condition(types, get_sql_for_param).rstrip()
             sql = (
                 "SELECT courses.id, coursename, num_holes "
                 "FROM courses "
-                "LEFT JOIN course_selections ON course_selections.course_id=courses.id " + where + " GROUP BY courses.id "
+                "LEFT JOIN course_selections ON course_selections.course_id=courses.id "
+                + where
+                + " GROUP BY courses.id "
                 "LIMIT ? OFFSET ?"
             )
     else:
-        where = create_where_condition(types).rstrip()
+        where = create_where_condition(types, get_sql_for_param).rstrip()
         sql = "SELECT courses.id, coursename, num_holes FROM courses " + where + " LIMIT ? OFFSET ?"
-
-    print(sql)
 
     return db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)
 

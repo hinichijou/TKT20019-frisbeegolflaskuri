@@ -158,6 +158,8 @@ def test_password(password):
 
 
 def test_coursename(coursename):
+    print("test_coursename")
+
     return test_minmax_limits(len(coursename), constants.coursename_minlength, constants.coursename_maxlength)
 
 
@@ -550,6 +552,14 @@ def delete_round(round_id):
         return redirect("/round/" + str(round_id))
 
 
+def handle_find_args(arg_name, input_tests, test_func):
+    arg_val = request.args.get(arg_name)
+    if arg_val and arg_val != "":
+        input_tests.append(lambda: test_func(arg_val))
+
+    return arg_val
+
+
 @app.route("/find_course")
 @app.route("/find_course/<int:page>")
 def find_course(page=1):
@@ -557,27 +567,12 @@ def find_course(page=1):
 
     input_tests = [lambda: test_page(page)]
 
-    course_query = request.args.get("coursename")
-    if course_query and course_query != "":
-        input_tests.append(lambda: test_coursename(course_query))
-
-    num_holes = request.args.get("num_holes")
-    if num_holes and num_holes != "":
-        input_tests.append(lambda: test_num_holes(num_holes))
-
-    type_query = request.args.get("type_select")
-    if type_query and type_query != "":
-        input_tests.append(lambda: test_item_id(type_query, False))
-
-    difficulty_query = request.args.get("difficulty_select")
-    if difficulty_query and difficulty_query != "":
-        input_tests.append(lambda: test_item_id(difficulty_query, False))
-
-    print("find_course1")
+    course_query = handle_find_args("coursename", input_tests, test_coursename)
+    num_holes = handle_find_args("num_holes", input_tests, test_num_holes)
+    type_query = handle_find_args("type_select", input_tests, lambda x: test_item_id(x, False))
+    difficulty_query = handle_find_args("difficulty_select", input_tests, lambda x: test_item_id(x, False))
 
     test_inputs(input_tests)
-
-    print("find_course2")
 
     set_nav_page_to_context(NavPageCategory.FIND_COURSE)
 
@@ -656,17 +651,9 @@ def find_round(page=1):
 
     input_tests = [lambda: test_page(page)]
 
-    course_query = request.args.get("coursename")
-    if course_query and course_query != "":
-        input_tests.append(lambda: test_coursename(course_query))
-
-    start_time = request.args.get("start_time")
-    if start_time and start_time != "":
-        input_tests.append(lambda: test_start_time(start_time))
-
-    user_query = request.args.get("username")
-    if user_query and user_query != "":
-        input_tests.append(lambda: test_username(user_query))
+    course_query = handle_find_args("coursename", input_tests, test_coursename)
+    start_time = handle_find_args("start_time", input_tests, test_start_time)
+    user_query = handle_find_args("username", input_tests, test_username)
 
     test_inputs(input_tests)
 

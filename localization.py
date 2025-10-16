@@ -28,8 +28,6 @@ localizations_fin = {
     "modify_round_header": "Muokkaa kierrosta",
     "find_round_header": "Etsi kierros",
     "find_course_header": "Etsi rata",
-    "find_course_instruction": "Haku tyhjillä arvoilla palauttaa kaikki radat. Radan nimikenttä ehdottaa tietokannasta löytyviä ratoja kenttään kirjoitetun tekstin pohjalta.",
-    "find_round_instruction": "Haku tyhjillä arvoilla palauttaa kaikki kierrokset. Radan nimikenttä ehdottaa tietokannasta löytyviä ratoja kenttään kirjoitetun tekstin pohjalta.",
     "find_by_course_name_header": "Etsi radan nimellä:",
     "find_by_date_header": "Etsi päivämäärällä:",
     "find_by_user_header": "Etsi kierroksen lisääjän nimellä:",
@@ -108,7 +106,6 @@ localizations_fin = {
     "return_to_round_page_button": "Palaa kierrosnäkymään",
     "to_next_hole_button": "Seuraava väylä",
     "to_previous_hole_button": "Edellinen väylä",
-    "end_round_button": "Lopeta kierros",
     "page_navigation_page": "Sivu",
     "registration_success": "Tunnuksen luonti onnistui!",
     "login_success": "Sisäänkirjautuminen onnistui!",
@@ -127,8 +124,12 @@ localizations_fin = {
     "welcome_message_2": "ja",
     "welcome_message_register_link": "luomalla uusi tunnus",
     "welcome_message_login_link": "kirjautumalla sisään",
-    "create_round_course_does_not_exist": """VIRHE: Rataa ei löytynyt tietokannasta. Uutta kierrosta ei luotu.
-        Varmista että rata on tietokannassa ja yritä uudelleen.""",
+    "create_round_course_does_not_exist": ("VIRHE: Rataa ei löytynyt tietokannasta. Uutta kierrosta ei luotu. "
+        "Varmista että rata on tietokannassa ja yritä uudelleen."),
+    "find_course_instruction": ("Haku tyhjillä arvoilla palauttaa kaikki radat. "
+        "Radan nimikenttä ehdottaa tietokannasta löytyviä ratoja kenttään kirjoitetun tekstin pohjalta."),
+    "find_round_instruction": ("Haku tyhjillä arvoilla palauttaa kaikki kierrokset. "
+        "Radan nimikenttä ehdottaa tietokannasta löytyviä ratoja kenttään kirjoitetun tekstin pohjalta."),
 }
 
 localizations = localizations_fin

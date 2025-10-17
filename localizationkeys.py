@@ -50,3 +50,6 @@ class LocalizationKeys(StrEnum):
     registration_success = auto()
     login_success = auto()
     logout_success = auto()
+    username_allowed_characters_message = auto()
+    coursename_allowed_characters_message = auto()
+    name_alnum_required_message = auto()

@@ -1,5 +1,14 @@
 from dataclasses import dataclass
-from utilities import Singleton
+
+class Singleton:
+    def __new__(cls):
+        if not hasattr(cls, "_instance"):
+            orig = super(Singleton, cls)
+            cls._instance = orig.__new__(cls)
+        return cls._instance
+
+    def __repr__(self):
+        return "I am a Singleton. This is a method that supresses too few public methods linter error."
 
 
 @dataclass
@@ -24,6 +33,7 @@ class Constants(Singleton):
     hole_length_max = 500
     round_min_players = 1
     round_max_players = 10
+    name_allowed_special_characters = " -=+'_()"
 
 
 constants = Constants()

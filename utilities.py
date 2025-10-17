@@ -1,17 +1,9 @@
 import datetime
 
-from enums import ResultCategory
-
-
-class Singleton:
-    def __new__(cls):
-        if not hasattr(cls, "_instance"):
-            orig = super(Singleton, cls)
-            cls._instance = orig.__new__(cls)
-        return cls._instance
-
-    def __repr__(self):
-        return "I am a Singleton. This is a method that supresses too few public methods linter error."
+from enums import ResultCategory, InputCategory
+from localizationkeys import LocalizationKeys
+from localization import get_localization
+from constants import constants
 
 
 def format_date_from_iso(isodate, format_="%d/%m/%Y %H:%M"):
@@ -69,3 +61,13 @@ def create_where_condition(params, sql_for_param_func):
             where += "AND " + sql_for_param_func(p) + " "
 
     return where
+
+
+def get_allowed_characters_message(input_category, localizationkey):
+    match input_category:
+        case InputCategory.USERNAME:
+            return get_localization(localizationkey).format((" ").join(constants.name_allowed_special_characters))
+        case InputCategory.COURSENAME:
+            return get_localization(localizationkey).format((" ").join(constants.name_allowed_special_characters))
+        case _:
+            return ""

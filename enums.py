@@ -57,3 +57,8 @@ class ResultCategory(StrEnum):
     PAR = auto()
     BOGEY = auto()
     DOUBLEBOGEY = auto()
+
+
+class InputCategory(Enum):
+    USERNAME = 1
+    COURSENAME = 2

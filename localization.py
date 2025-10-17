@@ -127,12 +127,27 @@ localizations_fin = {
     "welcome_message_2": "ja",
     "welcome_message_register_link": "luomalla uusi tunnus",
     "welcome_message_login_link": "kirjautumalla sisään",
-    "create_round_course_does_not_exist": ("VIRHE: Rataa ei löytynyt tietokannasta. Uutta kierrosta ei luotu. "
-        "Varmista että rata on tietokannassa ja yritä uudelleen."),
-    "find_course_instruction": ("Haku tyhjillä arvoilla palauttaa kaikki radat. "
-        "Radan nimikenttä ehdottaa tietokannasta löytyviä ratoja kenttään kirjoitetun tekstin pohjalta."),
-    "find_round_instruction": ("Haku tyhjillä arvoilla palauttaa kaikki kierrokset. "
-        "Radan nimikenttä ehdottaa tietokannasta löytyviä ratoja kenttään kirjoitetun tekstin pohjalta."),
+    "create_round_course_does_not_exist": (
+        "VIRHE: Rataa ei löytynyt tietokannasta. Uutta kierrosta ei luotu. "
+        "Varmista että rata on tietokannassa ja yritä uudelleen."
+    ),
+    "find_course_instruction": (
+        "Haku tyhjillä arvoilla palauttaa kaikki radat. "
+        "Radan nimikenttä ehdottaa tietokannasta löytyviä ratoja kenttään kirjoitetun tekstin pohjalta."
+    ),
+    "find_round_instruction": (
+        "Haku tyhjillä arvoilla palauttaa kaikki kierrokset. "
+        "Radan nimikenttä ehdottaa tietokannasta löytyviä ratoja kenttään kirjoitetun tekstin pohjalta."
+    ),
+    "username_allowed_characters_message": (
+        "Käyttäjänimessä sallitut merkit ovat kirjaimet, numerot, välilyönti ja erikoismerkit {}. "
+    ),
+    "coursename_allowed_characters_message": (
+        "Radan nimessä sallitut merkit ovat kirjaimet, numerot, välilyönti ja erikoismerkit {}. "
+    ),
+    "name_alnum_required_message": (
+        "Nimi ei saa koostua pelkistä erikoismerkeistä, varmista että nimestä löytyy kirjain tai numero."
+    ),
 }
 
 localizations = localizations_fin
@@ -143,5 +158,5 @@ def get_localization(key):
     if s in localizations:
         return localizations[s]
     else:
-        print(f"Virhe: lokalisaatioavainta {s} ei löydy lokalisaatiotiedostosta.")
+        print(f"Varoitus: lokalisaatioavainta {s} ei löydy lokalisaatiotiedostosta.")
         return s

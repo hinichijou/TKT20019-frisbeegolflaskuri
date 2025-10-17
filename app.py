@@ -4,13 +4,13 @@ import sqlite3
 import time
 import datetime
 
-from flask import Flask
+from flask import Flask, Response
 from flask import abort, redirect, render_template, flash, request, session, g
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import config
 from constants import constants
-from enums import FindCourseParam, SelectionItemClass, FindRoundParam, FlashCategory, NavPageCategory
+from enums import FindCourseParam, SelectionItemClass, FindRoundParam, FlashCategory, NavPageCategory, InputCategory
 from localizationkeys import LocalizationKeys
 from localization import get_localization
 import utilities
@@ -149,16 +149,44 @@ def test_num_minmax(num, min_val, max_val):
     return test_num(num) and test_minmax_limits(int(num), min_val, max_val)
 
 
-def test_username(username):
-    return test_minmax_limits(len(username), constants.username_minlength, constants.username_maxlength)
+def test_allowed_name_characters(name, require_alnum):
+    legit = True
+
+    if require_alnum:
+        # Require at least one alnum character in the name (prevents all whitespace names).
+        # Things start to get hairy when allowing other than alnum so trying to keep things relatively simple.
+        legit = any(str.isalnum(c) for c in name)
+
+    if legit:
+        # Test that all contained characters are on the allowed list.
+        allowed_special = set(constants.name_allowed_special_characters)
+        for c in name:
+            legit = str.isalnum(c) or c in allowed_special
+            if not legit:
+                return legit
+
+    return legit
+
+
+def test_username(username, require_alnum=True):
+    legit = test_minmax_limits(len(username), constants.username_minlength, constants.username_maxlength)
+    if legit:
+        legit = test_allowed_name_characters(username, require_alnum)
+
+    return legit
 
 
 def test_password(password):
     return test_minmax_limits(len(password), constants.password_minlength, constants.password_maxlength)
 
 
-def test_coursename(coursename):
-    return test_minmax_limits(len(coursename), constants.coursename_minlength, constants.coursename_maxlength)
+def test_coursename(coursename, require_alnum=True):
+    legit = test_minmax_limits(len(coursename), constants.coursename_minlength, constants.coursename_maxlength)
+
+    if legit:
+        legit = test_allowed_name_characters(coursename, require_alnum)
+
+    return legit
 
 
 def test_course_id(course_id, allow_empty=False):
@@ -314,7 +342,22 @@ def create_course():
 
     course = get_basic_course_data(request.form)
 
-    test_inputs(get_basic_course_data_input_tests(course))
+    input_tests = [
+        lambda: test_num_holes(course["num_holes"]),
+        lambda: test_item_id(course["type_select"], False),
+        lambda: test_item_id(course["difficulty_select"], False),
+    ]
+
+    test_inputs(input_tests)
+
+    if not test_coursename(request.form["coursename"]):
+        return show_error_and_redirect(
+            utilities.get_allowed_characters_message(
+                InputCategory.COURSENAME, LocalizationKeys.coursename_allowed_characters_message
+            )
+            + get_localization(LocalizationKeys.name_alnum_required_message),
+            "/new_course",
+        )
 
     format_selections_to_list(course)
 
@@ -558,6 +601,18 @@ def handle_find_args(arg_name, input_tests, test_func):
     return arg_val
 
 
+def handle_find_name_arg(arg_name, test_func, input_category, localizationkey, route):
+    arg_val = request.args.get(arg_name)
+
+    if arg_val and arg_val != "" and not test_func(arg_val):
+        return show_error_and_redirect(
+            utilities.get_allowed_characters_message(input_category, localizationkey),
+            route,
+        )
+
+    return arg_val
+
+
 @app.route("/find_course")
 @app.route("/find_course/<int:page>")
 def find_course(page=1):
@@ -565,12 +620,21 @@ def find_course(page=1):
 
     input_tests = [lambda: test_page(page)]
 
-    course_query = handle_find_args("coursename", input_tests, test_coursename)
     num_holes = handle_find_args("num_holes", input_tests, test_num_holes)
     type_query = handle_find_args("type_select", input_tests, lambda x: test_item_id(x, False))
     difficulty_query = handle_find_args("difficulty_select", input_tests, lambda x: test_item_id(x, False))
 
     test_inputs(input_tests)
+
+    course_query = handle_find_name_arg(
+        "coursename",
+        lambda x: test_coursename(x, False),
+        InputCategory.COURSENAME,
+        LocalizationKeys.coursename_allowed_characters_message,
+        "/find_course",
+    )
+    if type(course_query) is Response:
+        return course_query
 
     set_nav_page_to_context(NavPageCategory.FIND_COURSE)
 
@@ -649,11 +713,28 @@ def find_round(page=1):
 
     input_tests = [lambda: test_page(page)]
 
-    course_query = handle_find_args("coursename", input_tests, test_coursename)
     start_time = handle_find_args("start_time", input_tests, test_start_time)
-    user_query = handle_find_args("username", input_tests, test_username)
 
     test_inputs(input_tests)
+
+    course_query = handle_find_name_arg(
+        "coursename",
+        lambda x: test_coursename(x, False),
+        InputCategory.COURSENAME,
+        LocalizationKeys.coursename_allowed_characters_message,
+        "/find_round",
+    )
+    user_query = handle_find_name_arg(
+        "username",
+        lambda x: test_username(x, False),
+        InputCategory.USERNAME,
+        LocalizationKeys.username_allowed_characters_message,
+        "/find_round",
+    )
+
+    for q in [course_query, user_query]:
+        if type(q) is Response:
+            return q
 
     set_nav_page_to_context(NavPageCategory.FIND_ROUND)
 
@@ -1040,11 +1121,19 @@ def registered():
 def create():
     test_inputs(
         [
-            lambda: test_username(request.form["username"]),
             lambda: test_password(request.form["password"]),
             lambda: test_password(request.form["repeat_password"]),
         ]
     )
+
+    if not test_username(request.form["username"]):
+        return show_error_and_redirect(
+            utilities.get_allowed_characters_message(
+                InputCategory.USERNAME, LocalizationKeys.username_allowed_characters_message
+            )
+            + get_localization(LocalizationKeys.name_alnum_required_message),
+            "/register",
+        )
 
     username = request.form["username"]
     password = request.form["password"]
@@ -1066,12 +1155,13 @@ def login():
         set_nav_page_to_context(NavPageCategory.LOGIN)
         return render_template("login.html")
     if request.method == "POST":
-        test_inputs(
-            [
-                lambda: test_username(request.form["username"]),
-                lambda: test_password(request.form["password"]),
-            ]
-        )
+        test_inputs([lambda: test_password(request.form["password"])])
+
+        if not test_username(request.form["username"]):
+            return show_error_and_redirect(
+                get_localization(LocalizationKeys.wrong_username_or_password),
+                "/login",
+            )
 
         username = request.form["username"]
         password = request.form["password"]

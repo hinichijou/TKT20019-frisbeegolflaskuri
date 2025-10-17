@@ -613,35 +613,7 @@ def handle_find_name_arg(arg_name, test_func, input_category, localizationkey, r
     return arg_val
 
 
-@app.route("/find_course")
-@app.route("/find_course/<int:page>")
-def find_course(page=1):
-    require_login()
-
-    input_tests = [lambda: test_page(page)]
-
-    num_holes = handle_find_args("num_holes", input_tests, test_num_holes)
-    type_query = handle_find_args("type_select", input_tests, lambda x: test_item_id(x, False))
-    difficulty_query = handle_find_args("difficulty_select", input_tests, lambda x: test_item_id(x, False))
-
-    test_inputs(input_tests)
-
-    course_query = handle_find_name_arg(
-        "coursename",
-        lambda x: test_coursename(x, False),
-        InputCategory.COURSENAME,
-        LocalizationKeys.coursename_allowed_characters_message,
-        "/find_course",
-    )
-    if type(course_query) is Response:
-        return course_query
-
-    set_nav_page_to_context(NavPageCategory.FIND_COURSE)
-
-    arginput = (
-        course_query is not None or num_holes is not None or type_query is not None or difficulty_query is not None
-    )
-
+def handle_find_course_searchparams(course_query, num_holes, type_query, difficulty_query):
     searchparams = []
 
     if not type_query:
@@ -666,6 +638,44 @@ def find_course(page=1):
         num_holes = ""
     else:
         searchparams.append((FindCourseParam.NUM_HOLES, num_holes))
+
+    return course_query, num_holes, type_query, difficulty_query, searchparams
+
+
+@app.route("/find_course")
+@app.route("/find_course/<int:page>")
+def find_course(page=1):
+    require_login()
+
+    input_tests = [lambda: test_page(page)]
+
+    num_holes = handle_find_args("num_holes", input_tests, test_num_holes)
+    type_query = handle_find_args("type_select", input_tests, lambda x: test_item_id(x, False))
+    difficulty_query = handle_find_args("difficulty_select", input_tests, lambda x: test_item_id(x, False))
+
+    test_inputs(input_tests)
+
+    course_query = handle_find_name_arg(
+        "coursename",
+        lambda x: test_coursename(x, False),
+        InputCategory.COURSENAME,
+        LocalizationKeys.coursename_allowed_characters_message,
+        "/find_course",
+    )
+    if isinstance(course_query, Response):
+        return course_query
+
+    set_nav_page_to_context(NavPageCategory.FIND_COURSE)
+
+    arginput = (
+        course_query is not None or num_holes is not None or type_query is not None or difficulty_query is not None
+    )
+
+    # A function to suppress the pylint too many branches warning.
+    # I find it debatable if this is actually any more readable.
+    course_query, num_holes, type_query, difficulty_query, searchparams = handle_find_course_searchparams(
+        course_query, num_holes, type_query, difficulty_query
+    )
 
     # With default parameters returns all rounds if they are sent in the query
     if len(searchparams) > 0:
@@ -733,7 +743,7 @@ def find_round(page=1):
     )
 
     for q in [course_query, user_query]:
-        if type(q) is Response:
+        if isinstance(q, Response):
             return q
 
     set_nav_page_to_context(NavPageCategory.FIND_ROUND)

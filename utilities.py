@@ -1,7 +1,6 @@
 import datetime
 
 from enums import ResultCategory, InputCategory
-from localizationkeys import LocalizationKeys
 from localization import get_localization
 from constants import constants
 

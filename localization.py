@@ -114,7 +114,10 @@ localizations_fin = {
     "create_round_success": "Kierros luotu onnistuneesti!",
     "delete_course_success": "Rata poistettu onnistuneesti!",
     "delete_round_success": "Kierros poistettu onnistuneesti!",
-    "create_course_unsuccessful": "Rata ei onnistuttu lisäämään tietokantaan. Yritä uudelleen.",
+    "create_course_unsuccessful": (
+        "Rata ei onnistuttu lisäämään tietokantaan. "
+        "Varmista ettei samannimistä rataa ole jo tietokannassa ja yritä uudelleen."
+    ),
     "no_courses_found": "VIRHE: ei ratoja tietokannassa. Luo rata luodaksesi kierroksen.",
     "password_mismatch": "VIRHE: salasanat eivät ole samat",
     "username_taken": "VIRHE: tunnus on jo varattu",

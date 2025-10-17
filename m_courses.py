@@ -1,3 +1,4 @@
+import sqlite3
 import json
 import db
 from enums import FindCourseParam
@@ -8,12 +9,15 @@ default_format_options = {"hole_data": True}
 
 def add_course(data):
     sql = "INSERT INTO courses (coursename, num_holes, hole_data) VALUES (?, ?, ?)"
-    db.execute(sql, [data["coursename"], data["num_holes"], json.dumps(data["hole_data"])])
 
-    course_id = db.last_insert_id()
-
-    add_course_selection(course_id, data["difficulty_select"][0])
-    add_course_selection(course_id, data["type_select"][0])
+    #Coursename has unique constraint so we except a possible IntegrityError
+    try:
+        db.execute(sql, [data["coursename"], data["num_holes"], json.dumps(data["hole_data"])])
+        course_id = db.last_insert_id()
+        add_course_selection(course_id, data["difficulty_select"][0])
+        add_course_selection(course_id, data["type_select"][0])
+    except sqlite3.IntegrityError:
+        course_id = db.last_insert_id()
 
     return course_id
 

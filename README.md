@@ -63,9 +63,11 @@ TKT20019 - Tietokannat ja web-ohjelmointi harjoitustyö
 
 # Tietoturvatestaus:
 
-* Sovelluksen XSS-aukon käsittelyä voi testata kokeilemalla eri inputteihin (esim. rekisteröintisivu, loginsivu, radan nimi) esimerkiksi syöttettä `<script>alert("HAX");</script>`. Flaskin sivupohjien pitäisi aina escapeta käyttäjäsyötteet, jolloin koodia ei suoriteta selaimessa vaikka se tietokantaan pääsisikin. Tarkoituksena olisi vielä lisätä sallittujen merkkien tarkistus käyttäjäsyötteille, jolloin ongelmaa ei pitäisi edes teoriassa syntyä, mutta en ole tätä vielä toteuttanut.
+* Sovelluksen XSS-aukon käsittelyä voi testata kokeilemalla eri inputteihin (esim. rekisteröintisivu, loginsivu, radan nimi) esimerkiksi syöttettä `<script>alert("HAX");</script>`. Flaskin sivupohjien pitäisi aina escapeta käyttäjäsyötteet, jolloin koodia ei suoriteta selaimessa vaikka se tietokantaan pääsisikin.
 
 * Repositorion `tests` kansiosta löytyy tiedosto `csrf_test.html`, jolla voi testata, että csrf-aukko on paikattu. Kun tiedoston avaa selaimessa ja lomakkeen lähettää, se lähettää routeen `/delete_course/1` requestin, jonka ei kuitenkaan pitäisi mennä läpi, koska requestissa ei ole mukana csrf tokenia. Tällä hetkellä testi on kirjoitettu vain kyseiselle routelle, mutta aukko pitäisi olla samaan tapaan paikattu kaikissa post routeissa, jotka vaativat kirjautumista.
+
+* Sovelluksessa on käyttäjän vapaamuotoisille tekstisyötteille (käyttäjänimi ja radan nimi) asetettu rajoituksia sallituille merkeille, joten `<script>alert("HAX");</script>` tyylisten syötteiden ei pitäisi päästä edes tietokantaan. Sovelluksen edellämainitut tekstisyötekentät sallii kaikki [alnum](https://docs.python.org/3/library/stdtypes.html#str.isalnum) merkit kuin myös seuraavasti määritetyt erikoismerkit [github.com/hinichijou/TKT20019-frisbeegolflaskuri/blob/27239c0/constants.py?plain=1#L36](https://github.com/hinichijou/TKT20019-frisbeegolflaskuri/blob/93aa774f404cce2a5a58c0610d1b34f9304563ea/constants.py#L36). Salasanalle vastaavia rajoituksia ei ole, koska en nähnyt tähän mitään syytä, halusin vain jonkinlaiset rajoitukset käyttöliittymässä näkyville syötteille.
 
 # Testaus suurella tietomäärällä:
 

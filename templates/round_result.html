@@ -6,6 +6,8 @@
   <h2>{{ get_localization("round_view_score_board_header") }}</h2>
   {{ components.round_score_board(round, round_results, True) }}
   <p>
-    <a href="{{ url_for('show_round', round_id=round.id) }}" class="button_neutral">{{ get_localization("end_round_button") }}</a>
+    <a href="{{ url_for('show_round', round_id=round.id) }}" class="button_neutral">
+      {{ get_localization("end_round_button") }}
+    </a>
   </p>
 {% endblock content %}

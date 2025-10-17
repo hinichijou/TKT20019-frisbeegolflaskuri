@@ -16,12 +16,59 @@
       <nav>
         <div>
           <ul class="nav">
-            {{ components.nav_bar_item("nav_index", "index", url_for("index"), "return_to_index_button", a_args) }}
-            {{ components.nav_bar_item("nav_new_course", "new_course", url_for("new_course"), "create_course_button", a_args) }}
-            {{ components.nav_bar_item("nav_find_course", "find_course", url_for("find_course"), "search_courses_button", a_args) }}
-            {{ components.nav_bar_item("nav_new_round", "new_round", url_for("new_round"), "create_round_button", a_args) }}
-            {{ components.nav_bar_item("nav_find_round", "find_round", url_for("find_round"), "find_round_button", a_args) }}
-            {{ components.nav_bar_item("nav_logout", "logout", url_for("logout"), "log_out_button", a_args) }}
+            {{
+              components.nav_bar_item(
+                "nav_index",
+                "index",
+                url_for("index"),
+                "return_to_index_button",
+                a_args
+              )
+            }}
+            {{
+              components.nav_bar_item(
+                "nav_new_course",
+                "new_course",
+                url_for("new_course"),
+                "create_course_button",
+                a_args
+              )
+            }}
+            {{
+              components.nav_bar_item(
+                "nav_find_course",
+                "find_course",
+                url_for("find_course"),
+                "search_courses_button",
+                a_args
+              )
+            }}
+            {{
+              components.nav_bar_item(
+                "nav_new_round",
+                "new_round",
+                url_for("new_round"),
+                "create_round_button",
+                a_args
+              )
+            }}
+            {{
+              components.nav_bar_item(
+                "nav_find_round",
+                "find_round",
+                url_for("find_round"),
+                "find_round_button",
+                a_args)
+            }}
+            {{
+              components.nav_bar_item(
+                "nav_logout",
+                "logout",
+                url_for("logout"),
+                "log_out_button",
+                a_args
+              )
+            }}
           </ul>
         </div>
       </nav>

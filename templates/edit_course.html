@@ -14,7 +14,13 @@
       {% set course_diff_text = course["items"]["course_difficulty"][1]
               if "items" in course and "course_difficulty" in course["items"]
             else "course_diff_default" %}
-      {{ components.course_difficulty_select(selections.course_difficulty, True, defaultvalue=(course_diff_value, course_diff_text) ) }}
+      {{
+        components.course_difficulty_select(
+          selections.course_difficulty,
+          True,
+          defaultvalue=(course_diff_value, course_diff_text)
+        )
+      }}
     </p>
     <p>
       {% set course_type_value = "{},{}".format(*course["items"]["course_type"])
@@ -23,7 +29,13 @@
       {% set course_type_text = course["items"]["course_type"][1]
               if "items" in course and "course_type" in course["items"]
             else "course_type_default" %}
-      {{ components.course_type_select(selections.course_type, True, defaultvalue=(course_type_value, course_type_text) ) }}
+      {{
+        components.course_type_select(
+          selections.course_type,
+          True,
+          defaultvalue=(course_type_value, course_type_text)
+        )
+      }}
     </p>
     {{ components.submit_button_with_localized_text("next_button") }}
     <p>{{ components.return_to_course_view_link(course.id) }}</p>

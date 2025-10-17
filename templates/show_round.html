@@ -15,13 +15,18 @@
     </p>
   {% endif %}
   <div class="round_info">
-    {{ get_localization("round_item_creator") }} {{ components.user_link(round.creator_id, round.participators[round.creator_id]) }}<br />
+    {{ get_localization("round_item_creator") }}
+    {{ components.user_link(round.creator_id, round.participators[round.creator_id]) }}<br />
     {{ components.round_start_with_header(round["start_time"]) }}<br />
-    {{ get_localization("round_item_players_participating") }} {{ round.participators.keys() |length }} / {{ round.num_players }}
+    {{ get_localization("round_item_players_participating") }}
+    {{ round.participators.keys() |length }} / {{ round.num_players }}
   </div>
   {% set participating = session.user_id in round.participators.keys() %}
   {% if participating %}
-    <a href="{{ url_for('show_hole', round_id=round.id, player_id=session.user_id, hole_num=1) }}" class="button_neutral">
+    <a
+      href="{{ url_for('show_hole', round_id=round.id, player_id=session.user_id, hole_num=1) }}"
+      class="button_neutral"
+    >
       {{ get_localization("start_round_button") }}
     </a>
   {% endif %}

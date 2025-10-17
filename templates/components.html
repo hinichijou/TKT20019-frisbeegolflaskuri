@@ -1,4 +1,5 @@
-{# jinja kwargs have to be accessed at least once in any macro that should accept them. Means they are basically useless for this usecase. #}
+{# jinja kwargs have to be accessed at least once in any macro that should accept them.
+Means they are basically useless for this usecase. #}
 
 {% macro link_with_text(link, text, arg_dict) -%}
   <a href="{{ link }}"
@@ -13,7 +14,8 @@
 {%- endmacro %}
 
 {% macro user_input(type, name, arg_dict) -%}
-  {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
+  {# name is placed as id as it appeared later in the course material and name and id were the same in the course material.
+  Refactor if separate values are necessary #}
   <input type="{{ type }}"
          name="{{ name }}"
          id="{{ name }}"
@@ -50,7 +52,8 @@
 {%- endmacro %}
 
 {% macro user_input_with_header(headerkey, type, name, arg_dict) -%}
-  {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
+  {# name is placed as id as it appeared later in the course material and name and id were the same in the course material.
+  Refactor if separate values are necessary #}
   <label for="{{ name }}">{{ get_localization(headerkey) }}</label>
   <br />
   {{ user_input(type, name, arg_dict) }}
@@ -66,12 +69,22 @@
 {%- endmacro %}
 
 {% macro number_input(name, min, max, arg_dict) -%}
-  {% set arg_dict = dict(arg_dict, **{"min":min,"max":max, "oninput":"this.value = Math.min('{}', Math.max(this.value|0, '{}'))".format(max, min)}) -%}
+  {% set
+    arg_dict = dict(
+      arg_dict,
+      **{"min":min,"max":max, "oninput":"this.value = Math.min('{}', Math.max(this.value|0, '{}'))".format(max, min)}
+    )
+  -%}
   {{ user_input("number", name, arg_dict) }}
 {%- endmacro %}
 
 {% macro number_input_with_header(headerkey, name, min, max, arg_dict) -%}
-  {% set arg_dict = dict(arg_dict, **{"min":min,"max":max, "oninput":"this.value = Math.min('{}', Math.max(this.value|0, '{}'))".format(max, min)}) -%}
+  {% set
+    arg_dict = dict(
+      arg_dict,
+      **{"min":min,"max":max, "oninput":"this.value = Math.min('{}', Math.max(this.value|0, '{}'))".format(max, min)}
+    )
+  -%}
   {{ user_input_with_header(headerkey, "number", name, arg_dict) }}
 {%- endmacro %}
 
@@ -84,19 +97,52 @@
 {%- endmacro %}
 
 {% macro course_name_input(value = "") -%}
-  {{ text_input("course_name_header", "text", "coursename", constants.coursename_minlength, constants.coursename_maxlength, {"value":value, "required":""}) }}
+  {{
+    text_input(
+      "course_name_header",
+      "text",
+      "coursename",
+      constants.coursename_minlength,
+      constants.coursename_maxlength,
+      {"value":value, "required":""}
+    )
+  }}
 {%- endmacro %}
 
 {% macro amount_players_input(value=constants.round_min_players) -%}
-  {{ number_input_with_header("amount_players_header", "num_players", constants.round_min_players, constants.round_max_players, {"required":"", "value":value}) }}
+  {{
+    number_input_with_header(
+      "amount_players_header",
+      "num_players",
+      constants.round_min_players,
+      constants.round_max_players,
+      {"required":"", "value":value}
+    )
+  }}
 {%- endmacro %}
 
 {% macro par_input(index, value) -%}
-  {{ number_input_with_header("par_header", "par_{}".format(index) , constants.hole_par_min, constants.hole_par_max, {"required":"", "value":value}) }}
+  {{
+    number_input_with_header(
+      "par_header",
+      "par_{}".format(index),
+      constants.hole_par_min,
+      constants.hole_par_max,
+      {"required":"", "value":value}
+    )
+  }}
 {%- endmacro %}
 
 {% macro length_input(index, value) -%}
-  {{ number_input_with_header("hole_length_header", "length_{}".format(index) , constants.hole_length_min, constants.hole_length_max, {"required":"", "value":value}) }}
+  {{
+    number_input_with_header(
+      "hole_length_header",
+      "length_{}".format(index),
+      constants.hole_length_min,
+      constants.hole_length_max,
+      {"required":"", "value":value}
+    )
+  }}
 {%- endmacro %}
 
 {% macro par_input_default(index) -%}
@@ -107,8 +153,20 @@
   {{ length_input(index, constants.hole_length_default) }}
 {%- endmacro %}
 
-{% macro course_holes_input(headerkey="course_holes_header", arg_dict={"required":"True", "value":constants.course_holes_default}) -%}
-  {{ number_input_with_header(headerkey, "num_holes", constants.course_holes_min, constants.course_holes_max, arg_dict) }}
+{% macro course_holes_input(
+    headerkey="course_holes_header",
+    arg_dict={"required":"True", "value":constants.course_holes_default}
+  )
+-%}
+  {{
+    number_input_with_header(
+      headerkey,
+      "num_holes",
+      constants.course_holes_min,
+      constants.course_holes_max,
+      arg_dict
+    )
+  }}
 {%- endmacro %}
 
 {% macro course_holes_input_no_forced_value(headerkey="course_holes_header", arg_dict=None) -%}
@@ -116,7 +174,16 @@
 {%- endmacro %}
 
 {% macro base_password_input(headerkey, name) -%}
-  {{ text_input(headerkey, "password", name, constants.password_minlength, constants.password_maxlength, {"required":""}) }}
+  {{
+    text_input(
+      headerkey,
+      "password",
+      name,
+      constants.password_minlength,
+      constants.password_maxlength,
+      {"required":""}
+    )
+  }}
 {%- endmacro %}
 
 {% macro password_input() -%}
@@ -133,7 +200,8 @@
 {%- endmacro %}
 
 {% macro select(name, options, arg_dict) -%}
-  {# name is placed as id as it appeared later in the course material and name and id were the same in the course material. Refactor if separate values are necessary #}
+  {# name is placed as id as it appeared later in the course material and name and id were the same in the course material.
+  Refactor if separate values are necessary #}
   <select name="{{ name }}"
           id="{{ name }}"
           {% for k, v in arg_dict.items() -%}
@@ -157,7 +225,13 @@
   {{ select_with_header(headerkey, name, options, {"required":"", "inert":""}) }}
 {%- endmacro %}
 
-{% macro course_select(courses, required, headerkey = "select_course_header", defaultoption = ("", get_localization("course_select_default"))) -%}
+{% macro course_select(
+    courses,
+    required,
+    headerkey = "select_course_header",
+    defaultoption = ("", get_localization("course_select_default"))
+  )
+-%}
   {% set options = [defaultoption] %}
   {% for course in courses %}
     {% set dummy = options.append((course["id"], course["coursename"])) %}
@@ -240,7 +314,15 @@
 {%- endmacro %}
 
 {% macro find_by_course_difficulty(selection, query) -%}
-  {{ find_course_by_selection(selection, query, "difficulty_select", "find_by_course_difficulty_header", "course_diff_default") }}
+  {{
+    find_course_by_selection(
+      selection,
+      query,
+      "difficulty_select",
+      "find_by_course_difficulty_header",
+      "course_diff_default"
+    )
+  }}
 {%- endmacro %}
 
 {% macro course_type_inert_select(selection) -%}
@@ -304,7 +386,13 @@
 {%- endmacro %}
 
 {% macro hole_link(round_id, player_id, hole_num, text) -%}
-  {{ link_with_text("/hole/{}/{}/{}".format(round_id, player_id, hole_num), text, {"class":"nounderline_inherit_color"}) }}
+  {{
+    link_with_text(
+      "/hole/{}/{}/{}".format(round_id, player_id, hole_num),
+      text,
+      {"class":"nounderline_inherit_color"}
+    )
+  }}
 {%- endmacro %}
 
 {% macro return_to_course_view_link(course_id) -%}
@@ -424,7 +512,10 @@
             </th>
             {% for id in round["participators"].keys() %}
               {% set hole_result = round_results[id][i]["result"] if i in round_results[id] else "-" %}
-              {% set result_class = "" if hole_result == "-" else utilities.get_type_for_result(hole_result, round.hole_data[i|string]["par"]|int) %}
+              {% set
+                result_class = "" if hole_result == "-"
+                else utilities.get_type_for_result(hole_result, round.hole_data[i|string]["par"]|int)
+              %}
               <td class="{{ result_class }}">
                 {% if navigatable_results %}
                   {{ hole_link(round.id, id, i, hole_result) }}

@@ -11,10 +11,16 @@
       <p>
         {{ get_localization("hole_header").format(i) }}
         <br />
-        {% set par_val = round.hole_data[i|string]["par"] if i <= round.hole_data|length else constants.hole_par_default %}
+        {% set
+          par_val = round.hole_data[i|string]["par"] if i <= round.hole_data|length
+          else constants.hole_par_default
+        %}
         {{ components.par_input(i, par_val) }}
         <br />
-        {% set length_val = round.hole_data[i|string]["length"] if i <= round.hole_data|length else constants.hole_length_default %}
+        {% set
+          length_val = round.hole_data[i|string]["length"] if i <= round.hole_data|length
+          else constants.hole_length_default
+        %}
         {{ components.length_input(i, length_val) }}
       </p>
     {% endfor %}

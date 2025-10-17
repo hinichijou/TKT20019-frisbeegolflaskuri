@@ -288,7 +288,7 @@ def index(page=1):
     # Would make more sense to have separate pages before and after login
     if "user_id" in session:
         page_size, page_count = get_page_size_and_count(m_rounds.round_count())
-        rounds = m_rounds.get_all_rounds(page, page_size)
+        rounds = m_rounds.get_all_rounds(page, page_size, only_future_rounds=True)
     else:
         page_size = 1
         page_count = 1

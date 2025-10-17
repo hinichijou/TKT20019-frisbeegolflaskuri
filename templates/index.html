@@ -5,12 +5,19 @@
 {% block content %}
   {% if session.user_id %}
     <h2>{{ get_localization("all_rounds_header") }}</h2>
-    {% for round in rounds %}{{ components.round_list_item(round) }}{% endfor %}
+    {% if rounds|length == 0 %}
+        {{ get_localization("no_upcoming_rounds_message") }}
+        {{ components.link_with_text("/new_course", get_localization("no_rounds_course_link").capitalize()) }}
+        {{ get_localization("no_upcoming_rounds_message_2") }}
+        {{ components.link_with_text("/new_round", get_localization("no_rounds_round_link")) }}
+    {% else %}
+      {% for round in rounds %}{{ components.round_list_item(round) }}{% endfor %}
+    {% endif %}
   {% else %}
     <h3>
       {{ get_localization("welcome_message_1") }}
       {{ components.link_with_text("/register", get_localization("welcome_message_register_link")) }}
-       {{ get_localization("welcome_message_2") }}
+      {{ get_localization("welcome_message_2") }}
       {{ components.link_with_text("/login", get_localization("welcome_message_login_link")) }}
     </h3>
   {% endif %}

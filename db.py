@@ -17,11 +17,23 @@ def get_connection():
 def execute(sql, params=None):
     params = use_default_if_list_none(params)
 
-    con = get_connection()
-    result = con.execute(sql, params)
-    con.commit()
-    g.last_insert_id = result.lastrowid
-    con.close()
+    # There seems to be a bug (?) in the course material as the connection doesn't close after
+    # exception is thrown when unique constraint fails which causes the database connection
+    # not to close which in turn locks the database before restart. If we want to continue
+    # using the application after an sql exception is thrown we need to close the connection.
+    lastrowid = None
+    try:
+        # A Connection object can be used as a context manager that automatically commits or rolls back
+        # open transactions when leaving the body of the context manager.
+        with get_connection() as con:
+            result = con.execute(sql, params)
+            lastrowid = result.lastrowid
+    finally:
+        # This would seem to make sense? Otherwise the last insert id might not be what we expected if
+        # the previous insert caused an exception.
+        g.last_insert_id = lastrowid
+        # The context manager neither implicitly opens a new transaction nor closes the connection.
+        con.close()
 
 
 def last_insert_id():

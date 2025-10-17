@@ -1,3 +1,4 @@
+import datetime
 import json
 import db
 import m_courses
@@ -60,20 +61,26 @@ def update_round(data):
     )
 
 
-def get_all_rounds(page, page_size):
+def get_all_rounds(page, page_size, only_future_rounds=False):
     sql = (
         "SELECT rounds.id, coursename, username, start_time, num_players, "
         "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating "
         "FROM rounds "
         "JOIN users ON users.id=rounds.creator_id "
         "LEFT JOIN participations ON participations.round_id=rounds.id "
-        "GROUP BY rounds.id "
-        "LIMIT ? OFFSET ?"
     )
 
-    limit, offset = get_page_limit_and_offset(page, page_size)
+    if only_future_rounds:
+        sql = sql + "WHERE start_time >= ? "
 
-    rounds = db.fetch_all_from_db(sql, [limit, offset], resp_type=db.RespType.DICT)
+    sql = sql + "GROUP BY rounds.id ORDER BY start_time LIMIT ? OFFSET ?"
+
+    limit, offset = get_page_limit_and_offset(page, page_size)
+    params = [limit, offset]
+    if only_future_rounds:
+        params.insert(0, datetime.datetime.now().isoformat(timespec="minutes"))
+
+    rounds = db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)
 
     if not rounds:
         rounds = []
@@ -124,7 +131,7 @@ def find_rounds(searchparams, page, page_size):
         "FROM rounds "
         "JOIN users ON users.id=rounds.creator_id "
         "LEFT JOIN participations ON participations.round_id=rounds.id " + where + "GROUP BY rounds.id "
-        "ORDER BY start_time DESC "
+        "ORDER BY start_time "
         "LIMIT ? OFFSET ?"
     )
     result = db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)
@@ -216,7 +223,7 @@ def find_participating_rounds(user_id, page, page_size):
         "LEFT JOIN participations ON participations.round_id=rounds.id "
         "WHERE rounds.id IN (SELECT round_id FROM participations WHERE participations.participator_id = ?) "
         "GROUP BY rounds.id "
-        "ORDER BY start_time DESC "
+        "ORDER BY start_time "
         "LIMIT ? OFFSET ?"
     )
     result = db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)

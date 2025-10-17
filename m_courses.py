@@ -50,7 +50,7 @@ def update_course(data):
 
 
 def get_courses(page, page_size):
-    sql = "SELECT id, coursename, num_holes FROM courses LIMIT ? OFFSET ?"
+    sql = "SELECT id, coursename, num_holes FROM courses ORDER BY coursename LIMIT ? OFFSET ?"
     limit, offset = get_page_limit_and_offset(page, page_size)
     return db.fetch_all_from_db(sql, [limit, offset], resp_type=db.RespType.DICT)
 
@@ -135,7 +135,7 @@ def find_courses(searchparams, page, page_size):
             )
             types = [t for t in types if t not in (FindCourseParam.TYPE, FindCourseParam.DIFFICULTY)]
             where = create_where_condition(types, get_sql_for_param).rstrip()
-            sql += " " + where + " LIMIT ? OFFSET ?"
+            sql += " " + where + " ORDER BY coursename LIMIT ? OFFSET ?"
         else:
             where = create_where_condition(types, get_sql_for_param).rstrip()
             sql = (
@@ -144,11 +144,11 @@ def find_courses(searchparams, page, page_size):
                 "LEFT JOIN course_selections ON course_selections.course_id=courses.id "
                 + where
                 + " GROUP BY courses.id "
-                "LIMIT ? OFFSET ?"
+                "ORDER BY coursename LIMIT ? OFFSET ?"
             )
     else:
         where = create_where_condition(types, get_sql_for_param).rstrip()
-        sql = "SELECT courses.id, coursename, num_holes FROM courses " + where + " LIMIT ? OFFSET ?"
+        sql = "SELECT courses.id, coursename, num_holes FROM courses " + where + " ORDER BY coursename LIMIT ? OFFSET ?"
 
     return db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)
 

@@ -204,7 +204,7 @@ def delete_participation(round_id, user_id=""):
 
 
 def user_participations_count(user_id, timeparam):
-    sql =  (
+    sql = (
         "SELECT COUNT(participations.id) "
         "FROM participations "
         "JOIN rounds ON rounds.id=participations.round_id "

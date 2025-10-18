@@ -1006,7 +1006,7 @@ def show_user(user_id, r_page=1, p_page=1, p_r_page=1, p_p_page=1):
         (FindRoundParam.DATE_NOW_OR_AFTER, datetime.datetime.now().isoformat(timespec="minutes")),
     ]
 
-    p_params = {"r_page":r_page, "p_page":p_page, "p_r_page":p_r_page, "p_p_page":p_p_page}
+    p_params = {"r_page": r_page, "p_page": p_page, "p_r_page": p_r_page, "p_p_page": p_p_page}
 
     p_params["r_count"] = m_rounds.round_count(searchparams)
     p_params["r_page_size"], p_params["r_page_count"] = get_page_size_and_count(p_params["r_count"])
@@ -1037,7 +1037,7 @@ def show_user(user_id, r_page=1, p_page=1, p_r_page=1, p_p_page=1):
         user=user,
         future_created_rounds=future_created_rounds,
         future_participating_rounds=future_participating_rounds,
-        p_params = p_params,
+        p_params=p_params,
         past_created_rounds=past_created_rounds,
         past_participating_rounds=past_participating_rounds,
     )

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 class Singleton:
     def __new__(cls):
         if not hasattr(cls, "_instance"):

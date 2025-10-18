@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import json
 import random
 import sqlite3
@@ -49,7 +49,12 @@ for i in range(1, course_count + 1):
 
 for _ in range(1, rounds_count + 1):
     creator_id = random.randint(1, user_count)
-    start_time = datetime.datetime.now().isoformat(timespec="minutes")
+    day = random.randint(1, 28)
+    month = random.randint(1, 12)
+    year = random.randint(datetime.now().year - 1, datetime.now().year + 1)
+    hours = random.randint(0, 23)
+    minutes = random.randint(0, 59)
+    start_time = f"{year}-{month:02d}-{day:02d}T{hours:02d}:{minutes:02d}"
     num_players = random.randint(constants.round_min_players, constants.round_max_players)
     coursename = "course" + str(random.randint(1, course_count))
     num_holes = random.randint(constants.course_holes_min, constants.course_holes_max)

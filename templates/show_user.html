@@ -3,41 +3,135 @@
   {{ get_localization("user_page_header") }}
 {% endblock title %}
 {% block content %}
-  {% set created_rounds_available = rounds and rounds|length > 0 %}
-  {% set participating_rounds_available = participating_rounds and participating_rounds|length > 0 %}
+  {% set future_created_rounds_available = future_created_rounds and future_created_rounds|length > 0 %}
+  {% set
+    future_participating_rounds_available = future_participating_rounds and future_participating_rounds|length > 0
+  %}
+  {% set past_created_rounds_available = past_created_rounds and past_created_rounds|length > 0 %}
+  {% set
+    past_participating_rounds_available = past_participating_rounds and past_participating_rounds|length > 0
+  %}
   <h2>{{ user.username }}</h2>
   <div class="user_info">
     {{ get_localization("username_header") }} {{ user.username }}<br />
     {{ get_localization("user_id_header") }} {{ user.id }}<br />
-    {% if created_rounds_available %}
-      {{ get_localization("user_amount_rounds_created").format(r_count) }}<br />
+    {% if future_created_rounds_available %}
+      {{ get_localization("user_amount_rounds_created").format(p_params.r_count) }}<br />
     {% endif %}
-    {% if participating_rounds_available %}
-      {{ get_localization("user_amount_rounds_participating").format(p_count) }}<br />
+    {% if future_participating_rounds_available %}
+      {{ get_localization("user_amount_rounds_participating").format(p_params.p_count) }}<br />
+    {% endif %}
+    {% if past_created_rounds_available %}
+      {{ get_localization("past_user_amount_rounds_created").format(p_params.p_r_count) }}<br />
+    {% endif %}
+    {% if past_participating_rounds_available %}
+      {{ get_localization("past_user_amount_rounds_participating").format(p_params.p_p_count) }}<br />
     {% endif %}
   </div>
-  {% if created_rounds_available %}
+  {% if future_created_rounds_available %}
     <h3>{{ get_localization("rounds_created_by_user_header") }}</h3>
-    {% for round in rounds %}{{ components.round_list_item(round) }}{% endfor %}
-    {% if r_page_count and r_page_count > 1 %}
+    {% for round in future_created_rounds %}{{ components.round_list_item(round) }}{% endfor %}
+    {% if p_params.r_page_count and p_params.r_page_count > 1 %}
       {{ components.custom_href_page_navigation(
-          url_for("show_user", r_page=r_page - 1, p_page=p_page, user_id=user.id),
-          url_for("show_user", r_page=r_page + 1, p_page=p_page, user_id=user.id),
-          r_page,
-          r_page_count
+          url_for(
+            "show_user",
+            r_page=p_params.r_page - 1,
+            p_page=p_params.p_page,
+            p_r_page=p_params.p_r_page,
+            p_p_page=p_params.p_p_page,
+            user_id=user.id
+          ),
+          url_for(
+            "show_user",
+            r_page=p_params.r_page + 1,
+            p_page=p_params.p_page,
+            p_r_page=p_params.p_r_page,
+            p_p_page=p_params.p_p_page,
+            user_id=user.id
+          ),
+          p_params.r_page,
+          p_params.r_page_count
         )
       }}
     {% endif %}
   {% endif %}
-  {% if participating_rounds_available %}
+  {% if future_participating_rounds_available %}
     <h3>{{ get_localization("rounds_user_participating_header") }}</h3>
-    {% for round in participating_rounds %}{{ components.round_list_item(round) }}{% endfor %}
-    {% if p_page_count and p_page_count > 1 %}
+    {% for round in future_participating_rounds %}{{ components.round_list_item(round) }}{% endfor %}
+    {% if p_params.p_page_count and p_params.p_page_count > 1 %}
       {{ components.custom_href_page_navigation(
-          url_for("show_user", r_page=r_page, p_page=p_page - 1, user_id=user.id),
-          url_for("show_user", r_page=r_page, p_page=p_page + 1, user_id=user.id),
-          p_page,
-          p_page_count
+          url_for(
+            "show_user",
+            r_page=p_params.r_page,
+            p_page=p_params.p_page - 1,
+            p_r_page=p_params.p_r_page,
+            p_p_page=p_params.p_p_page,
+            user_id=user.id
+          ),
+          url_for(
+            "show_user",
+            r_page=p_params.r_page,
+            p_page=p_params.p_page + 1,
+            p_r_page=p_params.p_r_page,
+            p_p_page=p_params.p_p_page,
+            user_id=user.id
+          ),
+          p_params.p_page,
+          p_params.p_page_count
+        )
+      }}
+    {% endif %}
+  {% endif %}
+  {% if past_created_rounds_available %}
+    <h3>{{ get_localization("past_rounds_created_by_user_header") }}</h3>
+    {% for round in past_created_rounds %}{{ components.round_list_item(round) }}{% endfor %}
+    {% if p_params.p_r_page_count and p_params.p_r_page_count > 1 %}
+      {{ components.custom_href_page_navigation(
+          url_for(
+            "show_user",
+            r_page=p_params.r_page,
+            p_page=p_params.p_page,
+            p_r_page=p_params.p_r_page - 1,
+            p_p_page=p_params.p_p_page,
+            user_id=user.id
+          ),
+          url_for(
+            "show_user",
+            r_page=p_params.r_page,
+            p_page=p_params.p_page,
+            p_r_page=p_params.p_r_page + 1,
+            p_p_page=p_params.p_p_page,
+            user_id=user.id
+          ),
+          p_params.p_r_page,
+          p_params.p_r_page_count
+        )
+      }}
+    {% endif %}
+  {% endif %}
+  {% if past_participating_rounds_available %}
+    <h3>{{ get_localization("past_rounds_user_participating_header") }}</h3>
+    {% for round in past_participating_rounds %}{{ components.round_list_item(round) }}{% endfor %}
+    {% if p_params.p_p_page_count and p_params.p_p_page_count > 1 %}
+      {{ components.custom_href_page_navigation(
+          url_for(
+            "show_user",
+            r_page=p_params.r_page,
+            p_page=p_params.p_page,
+            p_r_page=p_params.p_r_page,
+            p_p_page=p_params.p_p_page - 1,
+            user_id=user.id
+          ),
+          url_for(
+            "show_user",
+            r_page=p_params.r_page,
+            p_page=p_params.p_page,
+            p_r_page=p_params.p_r_page,
+            p_p_page=p_params.p_p_page + 1,
+            user_id=user.id
+          ),
+          p_params.p_p_page,
+          p_params.p_p_page_count
         )
       }}
     {% endif %}

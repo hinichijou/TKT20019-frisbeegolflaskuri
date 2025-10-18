@@ -10,7 +10,7 @@ default_format_options = {"hole_data": True}
 def add_course(data):
     sql = "INSERT INTO courses (coursename, num_holes, hole_data) VALUES (?, ?, ?)"
 
-    #Coursename has unique constraint so we except a possible IntegrityError
+    # Coursename has unique constraint so we except a possible IntegrityError
     try:
         db.execute(sql, [data["coursename"], data["num_holes"], json.dumps(data["hole_data"])])
         course_id = db.last_insert_id()

@@ -762,7 +762,7 @@ def find_round(page=1):
         start_time = ""  # datetime.date.today().isoformat() would set to today
     else:
         # Search date only if something is set
-        searchparams.append((FindRoundParam.DATE, start_time + "%"))
+        searchparams.append((FindRoundParam.DATE_LIKE, start_time + "%"))
 
     if not user_query:
         user_query = ""
@@ -981,10 +981,18 @@ def update_round_full():
 
 
 @app.route("/user/<int:user_id>")
-@app.route("/user/<int:user_id>/<int:r_page>/<int:p_page>")
-def show_user(user_id, r_page=1, p_page=1):
+@app.route("/user/<int:user_id>/<int:r_page>/<int:p_page>/<int:p_r_page>/<int:p_p_page>")
+def show_user(user_id, r_page=1, p_page=1, p_r_page=1, p_p_page=1):
     require_login()
-    test_inputs([lambda: test_user_id(user_id), lambda: test_page(r_page), lambda: test_page(p_page)])
+    test_inputs(
+        [
+            lambda: test_user_id(user_id),
+            lambda: test_page(r_page),
+            lambda: test_page(p_page),
+            lambda: test_page(p_r_page),
+            lambda: test_page(p_p_page),
+        ]
+    )
 
     user = m_users.get_user(user_id)
 
@@ -993,26 +1001,45 @@ def show_user(user_id, r_page=1, p_page=1):
     set_nav_page_to_context(NavPageCategory.DEFAULT)
 
     # The queries below could be combined to a single query but this is good enough for the time being
-    searchparams = [(FindRoundParam.CREATORID, user_id)]
-    r_count = m_rounds.round_count(searchparams)
-    r_page_size, r_page_count = get_page_size_and_count(r_count)
-    rounds = m_rounds.find_rounds(searchparams, r_page, r_page_size)
+    searchparams = [
+        (FindRoundParam.CREATORID, user_id),
+        (FindRoundParam.DATE_NOW_OR_AFTER, datetime.datetime.now().isoformat(timespec="minutes")),
+    ]
 
-    p_count = m_rounds.user_participations_count(user_id)
-    p_page_size, p_page_count = get_page_size_and_count(p_count)
-    participating_rounds = m_rounds.find_participating_rounds(user_id, p_page, p_page_size)
+    p_params = {"r_page":r_page, "p_page":p_page, "p_r_page":p_r_page, "p_p_page":p_p_page}
+
+    p_params["r_count"] = m_rounds.round_count(searchparams)
+    p_params["r_page_size"], p_params["r_page_count"] = get_page_size_and_count(p_params["r_count"])
+    future_created_rounds = m_rounds.find_rounds(searchparams, p_params["r_page"], p_params["r_page_size"])
+
+    searchparams = [
+        (FindRoundParam.CREATORID, user_id),
+        (FindRoundParam.DATE_BEFORE, datetime.datetime.now().isoformat(timespec="minutes")),
+    ]
+    p_params["p_r_count"] = m_rounds.round_count(searchparams)
+    p_params["p_r_page_size"], p_params["p_r_page_count"] = get_page_size_and_count(p_params["p_r_count"])
+    past_created_rounds = m_rounds.find_rounds(searchparams, p_params["p_r_page"], p_params["p_r_page_size"])
+
+    p_params["p_count"] = m_rounds.user_participations_count(user_id, FindRoundParam.DATE_NOW_OR_AFTER)
+    p_params["p_page_size"], p_params["p_page_count"] = get_page_size_and_count(p_params["p_count"])
+    future_participating_rounds = m_rounds.find_participating_rounds(
+        user_id, p_params["p_page"], p_params["p_page_size"], FindRoundParam.DATE_NOW_OR_AFTER
+    )
+
+    p_params["p_p_count"] = m_rounds.user_participations_count(user_id, FindRoundParam.DATE_BEFORE)
+    p_params["p_p_page_size"], p_params["p_p_page_count"] = get_page_size_and_count(p_params["p_p_count"])
+    past_participating_rounds = m_rounds.find_participating_rounds(
+        user_id, p_params["p_p_page"], p_params["p_p_page_size"], FindRoundParam.DATE_BEFORE
+    )
 
     return render_template(
         "show_user.html",
         user=user,
-        rounds=rounds,
-        participating_rounds=participating_rounds,
-        r_page=r_page,
-        r_page_count=r_page_count,
-        r_count=r_count,
-        p_page=p_page,
-        p_page_count=p_page_count,
-        p_count=p_count,
+        future_created_rounds=future_created_rounds,
+        future_participating_rounds=future_participating_rounds,
+        p_params = p_params,
+        past_created_rounds=past_created_rounds,
+        past_participating_rounds=past_participating_rounds,
     )
 
 

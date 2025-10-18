@@ -26,11 +26,13 @@ class NavPageCategory(StrEnum):
 
 
 class FindRoundParam(Enum):
-    DATE = 1
+    DATE_LIKE = 1
     COURSENAME = 2
     CREATORID = 3
     ROUNDID = 4
     CREATORNAME = 5
+    DATE_NOW_OR_AFTER = 6
+    DATE_BEFORE = 7
 
 
 class FindCourseParam(Enum):

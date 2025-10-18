@@ -107,7 +107,7 @@ def get_round(round_id):
 
 def get_sql_for_param(param):
     match param:
-        case FindRoundParam.DATE:
+        case FindRoundParam.DATE_LIKE:
             return "start_time LIKE ?"
         case FindRoundParam.COURSENAME:
             return "coursename LIKE ?"
@@ -117,6 +117,10 @@ def get_sql_for_param(param):
             return "rounds.id = ?"
         case FindRoundParam.CREATORNAME:
             return "username LIKE ?"
+        case FindRoundParam.DATE_NOW_OR_AFTER:
+            return "start_time >= ?"
+        case FindRoundParam.DATE_BEFORE:
+            return "start_time < ?"
         case _:
             return ""
 
@@ -199,10 +203,25 @@ def delete_participation(round_id, user_id=""):
     db.execute(sql, params)
 
 
-def user_participations_count(user_id):
-    sql = "SELECT COUNT(id) FROM participations WHERE participator_id = ?"
+def user_participations_count(user_id, timeparam):
+    sql =  (
+        "SELECT COUNT(participations.id) "
+        "FROM participations "
+        "JOIN rounds ON rounds.id=participations.round_id "
+        "WHERE participator_id = ?"
+    )
 
-    result = db.fetch_one_from_db(sql, [user_id])
+    params = [user_id]
+
+    if timeparam:
+        if timeparam == FindRoundParam.DATE_NOW_OR_AFTER:
+            sql = sql + " AND start_time >= ?"
+        elif timeparam == FindRoundParam.DATE_BEFORE:
+            sql = sql + " AND start_time <= ?"
+
+        params.insert(1, datetime.datetime.now().isoformat(timespec="minutes"))
+
+    result = db.fetch_one_from_db(sql, params)
     return result[0]
 
 
@@ -213,8 +232,9 @@ def round_participations_count(round_id):
     return result[0]
 
 
-def find_participating_rounds(user_id, page, page_size):
-    params = (user_id,) + get_page_limit_and_offset(page, page_size)
+def find_participating_rounds(user_id, page, page_size, timeparam):
+    params = [user_id]
+    params.extend(get_page_limit_and_offset(page, page_size))
     sql = (
         "SELECT rounds.id, coursename, username, start_time, num_players, "
         "IFNULL(COUNT(participations.participator_id) + 1, 1) AS num_participating "
@@ -222,9 +242,17 @@ def find_participating_rounds(user_id, page, page_size):
         "JOIN users ON users.id=rounds.creator_id "
         "LEFT JOIN participations ON participations.round_id=rounds.id "
         "WHERE rounds.id IN (SELECT round_id FROM participations WHERE participations.participator_id = ?) "
-        "GROUP BY rounds.id "
-        "ORDER BY start_time "
-        "LIMIT ? OFFSET ?"
     )
+
+    if timeparam:
+        if timeparam == FindRoundParam.DATE_NOW_OR_AFTER:
+            sql = sql + "AND start_time >= ? "
+        elif timeparam == FindRoundParam.DATE_BEFORE:
+            sql = sql + "AND start_time <= ? "
+
+        params.insert(1, datetime.datetime.now().isoformat(timespec="minutes"))
+
+    sql = sql + "GROUP BY rounds.id ORDER BY start_time LIMIT ? OFFSET ?"
+
     result = db.fetch_all_from_db(sql, params, resp_type=db.RespType.DICT)
     return format_rounds(result) if result else result

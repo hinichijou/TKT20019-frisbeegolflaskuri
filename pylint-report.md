@@ -4,11 +4,13 @@ Pylint antaa seuraavan raportin sovelluksesta:
 
 ```
 ************* Module app
-app.py:1:0: C0302: Too many lines in module (1202/1000) (too-many-lines)
+app.py:1:0: C0302: Too many lines in module (1229/1000) (too-many-lines)
 app.py:861:4: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+************* Module m_rounds
+m_rounds.py:108:0: R0911: Too many return statements (8/6) (too-many-return-statements)
 
 ------------------------------------------------------------------
-Your code has been rated at 9.98/10 (previous run: 9.98/10, +0.00)
+Your code has been rated at 9.97/10 (previous run: 9.97/10, +0.01)
 ```
 
 Käydään seuraavaksi läpi tarkemmin raportin sisältö ja perustellaan, miksi kyseisiä asioita ei ole korjattu sovelluksessa.
@@ -18,10 +20,10 @@ Käydään seuraavaksi läpi tarkemmin raportin sisältö ja perustellaan, miksi
 Raportissa on seuraava ilmoitus liittyen moduulin rivien määrään:
 
 ```
-app.py:1:0: C0302: Too many lines in module (1202/1000) (too-many-lines)
+app.py:1:0: C0302: Too many lines in module (1229/1000) (too-many-lines)
 ```
 
-C0302 ilmoitus annetaan, jos moduulissa on yli 1000 riviä koodia, perusteena se, että liian suuri rivimäärä heikentää luettavauutta ja IDE:n suorituskykyä. Vaikka tämä pitää varmasti paikkaansa, on 1000 rivin rajooitus loppupeleissä mielivaltainen, enkä näe suurta eroa siinä onko moduulissa 1000 vai 1202 riviä koodia, joten jätän ilmoituksen huomiotta. Koodia voisi varmasti jakaa edelleen useampaan moduuliin, mutta pidän nykyistä jakoa jokseenkin perusteltavana tämän projektin tarpeisiin, eniten liipaisimella olisi syötteiden tarkistukseen liittyvä koodi, jonka voisi melko luontevasti jakaa omaan moduuliinsa.
+C0302 ilmoitus annetaan, jos moduulissa on yli 1000 riviä koodia, perusteena se, että liian suuri rivimäärä heikentää luettavauutta ja IDE:n suorituskykyä. Vaikka tämä pitää varmasti paikkaansa, on 1000 rivin rajooitus loppupeleissä mielivaltainen, enkä näe suurta eroa siinä onko moduulissa 1000 vai 1229 riviä koodia, joten jätän ilmoituksen huomiotta. Koodia voisi varmasti jakaa edelleen useampaan moduuliin, mutta pidän nykyistä jakoa jokseenkin perusteltavana tämän projektin tarpeisiin, eniten liipaisimella olisi syötteiden tarkistukseen liittyvä koodi, jonka voisi melko luontevasti jakaa omaan moduuliinsa.
 
 ## Enumeraten käyttö sen sijaan, että iteroi rangen len:in pohjalta
 
@@ -32,6 +34,16 @@ app.py:861:4: C0200: Consider using enumerate instead of iterating with range an
 ```
 
 C0200 ilmoitus annetaan, koska iteroin listan sen pituuden pohjalta ja viittaan arvoihin indeksin perusteella, sen sijaan, että käyttäisin enumeratea, joka palauttaa indeksin ja arvon indeksin kohdassa suoraan. Päätin tehdä näin koska etsin listasta poistettavaa indeksiä, jonka jälkeen break:aan ulos for-ehtolausekkeesta. Mielestäni, jos listasta poistaa jotain on miellyttävämpää olla iteroimatta listaa samalla, yleensä käyttäisin enumeratea listan iteroimiseen. Parempi olisi tietysti aina olla poistamatta listasta iteroitaessa, mutta tässä tapauksessa en näe siitä haittaakaan.
+
+## Liian monta returnia
+
+Raportissa on seuraava ilmoitus liittyen liian suureen returnien määrään funktiossa:
+
+```
+m_rounds.py:108:0: R0911: Too many return statements (8/6) (too-many-return-statements)
+```
+
+R0911 annetaan, jos yhdessä funktiossa on yli 6 returnia. Kyseinen funktio sisältää suhteellisen siistin match case -rakenteen, joten ilmoitus on mielestäni täysin turha. Vastaavissa tilanteissa voisi toki käyttää esim. dictionarya tai jotain vastaavaa, mutta ratkaisun paremmuus on mielestäni puhdas makuasia.
 
 ## pylintrc konfiguraation selitys
 

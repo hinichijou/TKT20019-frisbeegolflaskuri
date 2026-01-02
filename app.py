@@ -47,8 +47,8 @@ def before_request():
 
 @app.after_request
 def after_request(response):
-    elapsed_time = round(time.time() - g.start_time, 2)
-    print("elapsed time:", elapsed_time, "s")
+    #elapsed_time = round(time.time() - g.start_time, 2)
+    #print("elapsed time:", elapsed_time, "s")
     return response
 
 

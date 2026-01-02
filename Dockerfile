@@ -1,4 +1,3 @@
-
 FROM python:3.13.6-slim
 
 WORKDIR /usr/src/app
@@ -38,9 +37,6 @@ USER appuser
 RUN touch ./database.db
 
 RUN sqlite3 database.db < schema.sql && sqlite3 database.db < init.sql && sqlite3 database.db < indices.sql
-
-# Set appuser as the owner of the database file. This makes writing possible
-# RUN chown appuser:appuser database.db
 
 # Expose the port that the application listens on.
 EXPOSE 5000
